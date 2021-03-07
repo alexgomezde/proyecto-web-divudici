@@ -8,11 +8,13 @@ import consecutivoRoutes from './routes/consecutivos.js';
 
 const app = express();
 
-app.use('/consecutivos', consecutivoRoutes);
+
 
 app.use(bodyParser.json({ limit: "30mb", extended: true}));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true})); //send the request
 app.use(cors());
+
+app.use('/consecutivos', consecutivoRoutes);
 
 
 //database connection

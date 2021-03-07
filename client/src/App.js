@@ -1,21 +1,23 @@
-import React from 'react';
-import { Button, Container, Row, Col } from 'react-bootstrap';
+import React, { useEffect } from 'react';
+import { Container } from 'react-bootstrap';
+import { useDispatch } from 'react-redux';
+import { getConsecutivos } from './actions/consecutivos'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 
 
 
-import Consecutivos from './components/Consecutivos/Consecutivos'
+import Consecutivo from './components/Consecutivo/Consecutivo';
 
 
 const App = () => {
+    
+
     return (
         <div>
             <Container>
-                <Consecutivos></Consecutivos>
-               
+                <Consecutivo/>
             </Container>
-            
             
         </div>
     )
