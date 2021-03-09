@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-
 import { useDispatch } from 'react-redux';
-import { getConsecutivos } from '../../actions/consecutivos';
 import ConsecutivoData from '../ConsecutivoData/ConsecutivoData';
 import ConsecutivoForm from '../ConsecutivoForm/ConsecutivoForm';
+import { getConsecutivos } from '../../actions/consecutivos';
+
 
 import './styles.css';
 import { Button, Row, Col, FormControl, InputGroup } from 'react-bootstrap';
@@ -12,13 +12,44 @@ import { faSearch, faTimes,  faSync, faPlus, faEraser, faTools } from '@fortawes
 
 const Consecutivo = () => {
 
-    const [currenteId, setCurrenteId] = useState(null);
+    const [currentId, setCurrenteId] = useState(null);
     const [show, setShow] = useState(false);
     const dispatch = useDispatch();
-    
+    const [inputSearchTerm, setinputSearchTerm] = useState('');
+    const [selectedTypeSearch, setSelectedTypeSearch] = useState('');
+    const [inputSearchTermError, setinputSearchTermError] = useState('');
+
+    const reload=()=>{window.location.reload()};
+
+    const search = (e) => {
+
+        let inputSearchTermError = '';
+
+        if(!inputSearchTerm ){
+
+            inputSearchTermError = 'Debe ingresar un parámetro de búsqueda';
+        }
+
+        if(!selectedTypeSearch ){
+
+            inputSearchTermError = 'Debe ingresar el tipo de búsqueda';
+        }
+
+        if(inputSearchTermError){
+
+            setinputSearchTermError(inputSearchTermError);
+
+        }else{
+            setinputSearchTermError(inputSearchTermError);
+            setinputSearchTerm(inputSearchTermError);
+            setSelectedTypeSearch(selectedTypeSearch);
+        }
+    }
+
     useEffect(() => {
         dispatch(getConsecutivos());
-    }, [currenteId, dispatch]);
+    }, [ dispatch ]);
+
        
     return (
         <>
@@ -26,10 +57,10 @@ const Consecutivo = () => {
                 <Col md="12">
                     <div className="heading mt-4 mb-4">
                         <h2 className="d-inline mt-4" >Consecutivos</h2>
-                        <button className="float-right" >
+                        <button className="float-right">
                             <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
                         </button>
-                        <button className="float-right">
+                        <button className="float-right" onClick={reload}>
                             <FontAwesomeIcon icon={faSync} size="2x" className="text-white"/>
                         </button>
                     </div>
@@ -48,18 +79,19 @@ const Consecutivo = () => {
 
                                 <InputGroup >
                                     <InputGroup.Prepend>
-                                        <select className="form-control" id="input-dropdown-search"  searchable="Search here..">
+                                        <select className="form-control" id="input-dropdown-search"  searchable="Search here.." value={selectedTypeSearch} onChange={(e) => {setSelectedTypeSearch(e.target.value)}}>
                                             <option value="" disabled >Buscar...</option>
-                                            <option value="codigo">Código</option>
+                                            <option value="_id">Código</option>
                                             <option value="descripcion">Descripción</option>
                                         </select>
                                     </InputGroup.Prepend>
                                     
-                                    <FormControl  aria-describedby="basic-addon1" id="inputSearch" />
+                                    <FormControl  aria-describedby="basic-addon1" id="inputSearch" value={inputSearchTerm} onChange={(e) => {setinputSearchTerm(e.target.value)}} />
                                     <InputGroup.Append>
-                                        <Button variant="outline-light" id="searchButton"><FontAwesomeIcon icon={faSearch} /></Button>
+                                        <Button variant="outline-light" id="searchButton" onClick={search}><FontAwesomeIcon icon={faSearch} /></Button>
                                     </InputGroup.Append>
                                 </InputGroup>
+                                <small className="form-text text-danger ml-2">{inputSearchTermError}</small>
                             </Col>
                             <Col md="4">
                                 <Button variant="outline-light" className="btn-restaurant" ><FontAwesomeIcon icon={faEraser} /></Button>
@@ -71,7 +103,7 @@ const Consecutivo = () => {
                         <Row>
                         <div className="table-wrapper">
                             
-                            <ConsecutivoData  setShow={setShow} setCurrenteId={setCurrenteId}  />
+                            <ConsecutivoData setShow={setShow} currentId={currentId} setCurrenteId={setCurrenteId} inputSearchTerm={inputSearchTerm} selectedTypeSearch={selectedTypeSearch} />
                             
                         </div>
                         </Row>
@@ -81,7 +113,7 @@ const Consecutivo = () => {
                 </Col>
             </Row>
 
-            <ConsecutivoForm currenteId={currenteId} setCurrenteId={setCurrenteId} show={show} onHide={() => setShow(false)} setShow={setShow}/>
+            <ConsecutivoForm currentId={currentId} setCurrenteId={setCurrenteId} isOpen={show} setshow={setShow} onExit={reload}/>
         </>
     );
 }

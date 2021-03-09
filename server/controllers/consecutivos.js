@@ -18,7 +18,6 @@ export const getConsecutivos = async (req, res) => {
 export const createConsecutivo = async (req, res) => {
 
     const consecutivo = req.body;
-
     const newConsecutivo = new ConsecutivoMessage(consecutivo);
 
     try {
@@ -39,7 +38,7 @@ export const updateConsecutivo = async (req, res) => {
 
     if(!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send('No existe un consecutivo con ese id');
 
-    const updatedConsecutivo = await ConsecutivoMessage.findByIdAndUpdate(_id, consecutivo, { new: true} ); // new: true receive the updated consecutivo
+    const updatedConsecutivo = await ConsecutivoMessage.findByIdAndUpdate(_id, { ... consecutivo, _id}, { new: true} ); // new: true receive the updated consecutivo
 
     res.json(updatedConsecutivo);
 }

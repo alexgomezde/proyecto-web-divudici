@@ -3,7 +3,7 @@
 const reducer = (consecutivos = [], action) => {
     switch (action.type) {
         case 'DELETE':
-            return consecutivos.filter((consecutivo) => consecutivo._id !== action.payload);
+            return consecutivos.filter((consecutivo) => consecutivo._id !== action.payload); //keep all the consecutivos but the action.payload
         case 'UPDATE':
             return consecutivos.map((consecutivo) => consecutivo._id === action.payload.id ? action.payload : consecutivo);
         case 'FETCH_ALL':
