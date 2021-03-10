@@ -76,9 +76,7 @@ const ConsecutivoForm = ({currentId, setCurrenteId, isOpen, setshow, onExit}) =>
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        console.table(consecutivoData);
-
+        
         const isValid = validate();
 
         if(isValid){

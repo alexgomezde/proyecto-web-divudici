@@ -6,7 +6,7 @@ import { getConsecutivos } from '../../actions/consecutivos';
 
 
 import './styles.css';
-import { Button, Row, Col, FormControl, InputGroup } from 'react-bootstrap';
+import { Button, Row, Col, FormControl, Form, InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faTimes,  faSync, faPlus, faEraser, faTools } from '@fortawesome/free-solid-svg-icons';
 
@@ -23,6 +23,8 @@ const Consecutivo = () => {
 
     const search = (e) => {
 
+        e.preventDefault();
+        
         let inputSearchTermError = '';
 
         if(!inputSearchTerm ){
@@ -46,6 +48,13 @@ const Consecutivo = () => {
         }
     }
 
+    const clearForm = () => {
+        
+        setinputSearchTermError('');
+        setinputSearchTerm('');
+        setSelectedTypeSearch('');
+    }    
+    
     useEffect(() => {
         dispatch(getConsecutivos());
     }, [ dispatch ]);
@@ -74,31 +83,35 @@ const Consecutivo = () => {
                 </Col>
                 <Col md="9">
                     <div className="content">
-                        <Row className="mb-4 mt-4">
-                            <Col md="8" className="pl-0" >
-
-                                <InputGroup >
-                                    <InputGroup.Prepend>
-                                        <select className="form-control" id="input-dropdown-search"  searchable="Search here.." value={selectedTypeSearch} onChange={(e) => {setSelectedTypeSearch(e.target.value)}}>
-                                            <option value="" disabled >Buscar...</option>
-                                            <option value="_id">Código</option>
-                                            <option value="descripcion">Descripción</option>
-                                        </select>
-                                    </InputGroup.Prepend>
-                                    
-                                    <FormControl  aria-describedby="basic-addon1" id="inputSearch" value={inputSearchTerm} onChange={(e) => {setinputSearchTerm(e.target.value)}} />
-                                    <InputGroup.Append>
-                                        <Button variant="outline-light" id="searchButton" onClick={search}><FontAwesomeIcon icon={faSearch} /></Button>
-                                    </InputGroup.Append>
-                                </InputGroup>
-                                <small className="form-text text-danger ml-2">{inputSearchTermError}</small>
-                            </Col>
-                            <Col md="4">
-                                <Button variant="outline-light" className="btn-restaurant" ><FontAwesomeIcon icon={faEraser} /></Button>
-                                <Button variant="outline-light" className="ml-3 btn-restaurant" onClick={() => setShow(true)} ><FontAwesomeIcon icon={faPlus} /></Button>
+                        <Form autoComplete="off" noValidate onSubmit={search}>
+                            <Row className="mb-4 mt-4">
                                 
-                            </Col>
-                        </Row>
+                                <Col md="8" className="pl-0" >
+
+                                    <InputGroup >
+                                        <InputGroup.Prepend>
+                                            <select className="form-control" id="input-dropdown-search"  searchable="Search here.." value={selectedTypeSearch} onChange={(e) => {setSelectedTypeSearch(e.target.value)}}>
+                                                <option value="" disabled >Buscar...</option>
+                                                <option value="_id">Código</option>
+                                                <option value="descripcion">Descripción</option>
+                                            </select>
+                                        </InputGroup.Prepend>
+                                        
+                                        <FormControl  aria-describedby="basic-addon1" id="inputSearch" value={inputSearchTerm} onChange={(e) => {setinputSearchTerm(e.target.value)}} />
+                                        <InputGroup.Append>
+                                            <Button type="submit" variant="outline-light" id="searchButton"><FontAwesomeIcon icon={faSearch} /></Button>
+                                        </InputGroup.Append>
+                                    </InputGroup>
+                                    <small className="form-text text-danger ml-2">{inputSearchTermError}</small>
+                                </Col>
+                                <Col md="4">
+                                    <Button variant="outline-light" className="btn-restaurant" onClick={clearForm} ><FontAwesomeIcon icon={faEraser} /></Button>
+                                    <Button variant="outline-light" className="ml-3 btn-restaurant" onClick={() => setShow(true)} ><FontAwesomeIcon icon={faPlus} /></Button>
+                                    
+                                </Col>
+                                
+                            </Row>
+                        </Form>
                         
                         <Row>
                         <div className="table-wrapper">
