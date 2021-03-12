@@ -2,11 +2,9 @@ import * as api from  '../api';
 
 //Action Creators = functions that return actions
 export const getConsecutivos = () => async (dispatch) => {
-
-    
     try {
         const { data } = await api.fetchConsecutivos(); //data comes from the response 
-        dispatch({ type: 'FETCH_ALL', payload: data});
+        dispatch({ type: 'FETCH_ALL_CONSECUTIVO', payload: data});
     } catch (error) {
         console.log(error);
     }
@@ -15,7 +13,7 @@ export const getConsecutivos = () => async (dispatch) => {
 export const createConsecutivo = (consecutivo) => async (dispatch) => {
     try {
         const { data } = await api.createConsecutivo(consecutivo);
-        dispatch({ type: 'CREATE', payload: data});
+        dispatch({ type: 'CREATE_CONSECUTIVO', payload: data});
     } catch (error) {
         console.log(error);
     }
@@ -24,7 +22,7 @@ export const createConsecutivo = (consecutivo) => async (dispatch) => {
 export const updateConsecutivo = (id, consecutivo) => async(dispatch) => {
     try {
         const { data } = await api.updateConsecutivo(id, consecutivo);
-        dispatch({ type: 'UPDATE', payload: data });
+        dispatch({ type: 'UPDATE_CONSECUTIVO', payload: data });
     } catch (error) {
         console.log(error);
     }
@@ -33,7 +31,7 @@ export const updateConsecutivo = (id, consecutivo) => async(dispatch) => {
 export const deleteConsecutivo = (id) => async (dispatch) => {
     try {
         await api.deleteConsecutivo(id);
-        dispatch({ type: 'DELETE', payload: id});
+        dispatch({ type: 'DELETE_CONSECUTIVO', payload: id});
     } catch (error) {
         console.log(error);
     }

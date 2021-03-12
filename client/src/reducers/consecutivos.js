@@ -2,13 +2,13 @@
 
 const reducer = (consecutivos = [], action) => {
     switch (action.type) {
-        case 'DELETE':
+        case 'DELETE_CONSECUTIVO':
             return consecutivos.filter((consecutivo) => consecutivo._id !== action.payload); //keep all the consecutivos but the action.payload
-        case 'UPDATE':
+        case 'UPDATE_CONSECUTIVO':
             return consecutivos.map((consecutivo) => consecutivo._id === action.payload.id ? action.payload : consecutivo);
-        case 'FETCH_ALL':
+        case 'FETCH_ALL_CONSECUTIVO':
             return action.payload;
-        case 'CREATE':
+        case 'CREATE_CONSECUTIVO':
             return [...consecutivos, action.payload];
     
         default:
