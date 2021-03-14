@@ -3,6 +3,7 @@ import axios from 'axios';
 const urlConsecutvios = 'http://localhost:5000/consecutivos';
 const urlRestaurantes = 'http://localhost:5000/restaurantes';
 const urlUnidadesMedidas = 'http://localhost:5000/unidadesMedida';
+const urlPaises = 'http://localhost:5000/paises';
 
 export const fetchConsecutivos = () => axios.get(urlConsecutvios);
 export const createConsecutivo = (newConsecutivo) => axios.post(urlConsecutvios, newConsecutivo);
@@ -18,3 +19,8 @@ export const fetchUnidadesMedidas = () => axios.get(urlUnidadesMedidas);
 export const createUnidadMedida = (newUnidadMedida) => axios.post(urlUnidadesMedidas, newUnidadMedida);
 export const updateUnidadMedida = (id, updatedUnidadMedida) => axios.patch(`${urlUnidadesMedidas}/${id}`, updatedUnidadMedida);
 export const deleteUnidadMedida = (id) => axios.delete(`${urlUnidadesMedidas}/${id}`);
+
+export const fetchPaises = () => axios.get(urlPaises);
+export const createPais = (newPais) => axios.post(urlPaises, newPais);
+export const updatePais = (id, updatedPais) => axios.patch(`${urlPaises}/${id}`, updatedPais);
+export const deletePais = (id) => axios.delete(`${urlPaises}/${id}`);

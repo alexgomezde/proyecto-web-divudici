@@ -6,6 +6,7 @@ import cors from 'cors';
 import consecutivoRoutes from './routes/consecutivos.js';
 import restauranteRoutes from './routes/restaurantes.js';
 import unidadesMedidaRoutes from './routes/unidadesMedida.js';
+import paisesRoutes from './routes/paises.js';
 
 
 const app = express();
@@ -19,6 +20,7 @@ app.use(cors());
 app.use('/consecutivos', consecutivoRoutes);
 app.use('/restaurantes', restauranteRoutes);
 app.use('/unidadesMedida', unidadesMedidaRoutes);
+app.use('/paises', paisesRoutes);
 
 
 //database connection

@@ -8,6 +8,7 @@ import './app.css';
 import Consecutivo from './components/Consecutivo/Consecutivo';
 import Restaurante from './components/Restaurante/Restaurante';
 import UnidadMedida from './components/UnidadMedida/UnidadMedida';
+import Pais from './components/Pais/Pais';
 
 
 const App = () => {
@@ -17,8 +18,9 @@ const App = () => {
         <div>
             <Container>
                 {/* <Consecutivo/>
-                <Restaurante/> */}
-                <UnidadMedida />
+                <Restaurante/>
+                <UnidadMedida /> */}
+                <Pais />
             </Container>
             
         </div>
