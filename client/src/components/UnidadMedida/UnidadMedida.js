@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import RestauranteForm from '../RestauranteForm/RestauranteForm';
-import RestauranteData from '../RestauranteData/RestauranteData';
+import UnidadMedidaForm from '../UnidadMedidaForm/UnidadMedidaForm';
+import UnidadMedidaData from '../UnidadMedidaData/UnidadMedidaData';
 import { getConsecutivos } from '../../actions/consecutivos';
-import { getRestaurantes } from '../../actions/restaurantes';
+import { getUnidadesMedidas } from '../../actions/unidadesMedidas';
 
 
 import './styles.css';
 import { Button, Row, Col, FormControl, Form, InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faTimes,  faSync, faPlus, faEraser, faStore } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faTimes,  faSync, faPlus, faEraser, faBalanceScaleLeft } from '@fortawesome/free-solid-svg-icons';
 
 
-const Restaurante = () => {
+const UnidadMedida = () => {
 
     const [currentId, setCurrenteId] = useState(null);
     const [show, setShow] = useState(false);
@@ -61,7 +61,7 @@ const Restaurante = () => {
     
     useEffect(() => {
         dispatch(getConsecutivos());
-        dispatch(getRestaurantes());
+        dispatch(getUnidadesMedidas());
     }, [ currentId, currentConsecutivo, dispatch ]);
     
     
@@ -71,7 +71,7 @@ const Restaurante = () => {
             <Row>
                 <Col md="12">
                     <div className="heading mt-4 mb-4">
-                        <h2 className="d-inline mt-4" >Restaurantes</h2>
+                        <h2 className="d-inline mt-4" >Unidades de Medida</h2>
                         <button className="float-right">
                             <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
                         </button>
@@ -84,7 +84,7 @@ const Restaurante = () => {
                 </Col>  
                 <Col md="3">
                     <div className="sidebar text-center">
-                    <FontAwesomeIcon icon={faStore} size="9x" className="text-white mt-5"/>
+                    <FontAwesomeIcon icon={faBalanceScaleLeft} size="9x" className="text-white mt-5"/>
                     </div>
                 </Col>
                 <Col md="9">
@@ -99,7 +99,7 @@ const Restaurante = () => {
                                             <select className="form-control" id="input-dropdown-search"  searchable="Search here.." value={selectedTypeSearch} onChange={(e) => {setSelectedTypeSearch(e.target.value)}}>
                                                 <option value="" disabled >Buscar...</option>
                                                 <option value="codigo">Código</option>
-                                                <option value="nombre">Nombre</option>
+                                                <option value="detalle">Detalle</option>
                                             </select>
                                         </InputGroup.Prepend>
                                         
@@ -122,7 +122,7 @@ const Restaurante = () => {
                         <Row>
                         <div className="table-wrapper">
                             
-                            <RestauranteData setShow={setShow} currentId={currentId} setCurrenteId={setCurrenteId} inputSearchTerm={inputSearchTerm} selectedTypeSearch={selectedTypeSearch} />
+                            <UnidadMedidaData setShow={setShow} currentId={currentId} setCurrenteId={setCurrenteId} inputSearchTerm={inputSearchTerm} selectedTypeSearch={selectedTypeSearch} />
                             
                         </div>
                         </Row>
@@ -132,11 +132,11 @@ const Restaurante = () => {
                 </Col>
             </Row>
 
-            <RestauranteForm currentId={currentId} setCurrenteId={setCurrenteId} isOpen={show} setshow={setShow} onExit={reload} currentConsecutivo={currentConsecutivo} setCurrentConsecutivo={setCurrentConsecutivo} />
+            <UnidadMedidaForm currentId={currentId} setCurrenteId={setCurrenteId} isOpen={show} setshow={setShow} onExit={reload} currentConsecutivo={currentConsecutivo} setCurrentConsecutivo={setCurrentConsecutivo} />
         </>
     );
 }
 
-export default Restaurante;
+export default UnidadMedida;
 
 

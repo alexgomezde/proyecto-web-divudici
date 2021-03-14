@@ -4,7 +4,7 @@ import './styles.css';
 import { Button, Row, Col, Form, FormControl, Modal, FormGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
-import { getConsecutivos, createConsecutivo, updateConsecutivo } from '../../actions/consecutivos';
+import { updateConsecutivo } from '../../actions/consecutivos';
 import { createRestaurante, updateRestaurante } from '../../actions/restaurantes';
 
 
