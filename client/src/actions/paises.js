@@ -2,6 +2,7 @@ import * as api from  '../api';
 
 //Action Creators = functions that return actions
 export const getPaises = () => async (dispatch) => {
+    
     try {
         const { data } = await api.fetchPaises(); //data comes from the response 
         dispatch({ type: 'FETCH_ALL_PAISES', payload: data});

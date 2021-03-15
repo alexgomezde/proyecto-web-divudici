@@ -4,6 +4,7 @@ const urlConsecutvios = 'http://localhost:5000/consecutivos';
 const urlRestaurantes = 'http://localhost:5000/restaurantes';
 const urlUnidadesMedidas = 'http://localhost:5000/unidadesMedida';
 const urlPaises = 'http://localhost:5000/paises';
+const urlMarcas = 'http://localhost:5000/marcas';
 
 export const fetchConsecutivos = () => axios.get(urlConsecutvios);
 export const createConsecutivo = (newConsecutivo) => axios.post(urlConsecutvios, newConsecutivo);
@@ -24,3 +25,8 @@ export const fetchPaises = () => axios.get(urlPaises);
 export const createPais = (newPais) => axios.post(urlPaises, newPais);
 export const updatePais = (id, updatedPais) => axios.patch(`${urlPaises}/${id}`, updatedPais);
 export const deletePais = (id) => axios.delete(`${urlPaises}/${id}`);
+
+export const fetchMarcas = () => axios.get(urlMarcas);
+export const createMarca = (newMarca) => axios.post(urlMarcas, newMarca);
+export const updateMarca= (id, updatedMarca) => axios.patch(`${urlMarcas}/${id}`, updatedMarca);
+export const deleteMarca = (id) => axios.delete(`${urlMarcas}/${id}`);
