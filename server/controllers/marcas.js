@@ -20,7 +20,7 @@ export const createMarca = async (req, res) => {
     const marca = req.body;
     const newMarca = new MarcaMessage(marca);
 
-    console.table(marca);
+    console.log("Creando marca");
 
     try {
 

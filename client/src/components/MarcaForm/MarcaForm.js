@@ -7,9 +7,10 @@ import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
 import { updateConsecutivo } from '../../actions/consecutivos';
 import { createMarca, updateMarca } from '../../actions/marcas';
 import FileBase from 'react-file-base64';
+import { getMarcas } from '../../actions/marcas';
 
 
-const MarcaForm = ({currentId, setCurrenteId, isOpen, setshow, onExit, currentConsecutivo, setCurrentConsecutivo}) => {
+const MarcaForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutivo, setCurrentConsecutivo}) => {
 
     const dispatch = useDispatch();
     const paises = useSelector((state) => state.paises);
@@ -122,8 +123,11 @@ const MarcaForm = ({currentId, setCurrenteId, isOpen, setshow, onExit, currentCo
         if(isValid){
             if(currentId) {
                 dispatch(updateMarca(currentId, marcaData));
+                setCurrenteId(null);
+                dispatch(getMarcas());
                 clearForm();
                 setshow(false);
+                ;
             }else{
 
                 dispatch(createMarca(marcaData));
@@ -137,7 +141,18 @@ const MarcaForm = ({currentId, setCurrenteId, isOpen, setshow, onExit, currentCo
     }
         
     const clearForm = () => {
-        setMarcaData({nombre: '', bandera: ''});
+        setCurrenteId(null);
+        setMarcaData({
+            nombre: '', 
+            id_nacionalidad: '',
+            descripcion: '', 
+            fotoMarca: '', 
+            cedulaJuridica: '',
+            nombreEmpresa: '', 
+            detalleEmpresa: '', 
+            telefono: '', 
+            fotoEmpresa: '',
+        });
     }
 
     console.table(marcaData)
@@ -145,7 +160,7 @@ const MarcaForm = ({currentId, setCurrenteId, isOpen, setshow, onExit, currentCo
     
     return(
 
-        <Modal show={isOpen} onHide={setshow}  className="modal" onExit={onExit}>
+        <Modal show={isOpen} onHide={setshow} onExit={clearForm} className="modal">
             <Modal.Header className="mheader" closeButton>
             <Modal.Title>{ currentId ? 'Editar Marca' : 'Crear Marca'}</Modal.Title>
             </Modal.Header>

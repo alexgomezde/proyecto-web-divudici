@@ -4,6 +4,7 @@ import restaurantes from './restaurantes';
 import unidadesMedidas from './unidadesMedidas';
 import paises from './paises';
 import marcas from './marcas';
+import buffets from './buffets';
 
 
 export default combineReducers({ 
@@ -11,5 +12,6 @@ export default combineReducers({
     restaurantes, 
     unidadesMedidas,
     paises,
-    marcas
+    marcas,
+    buffets
 });

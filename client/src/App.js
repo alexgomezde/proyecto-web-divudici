@@ -10,6 +10,7 @@ import Restaurante from './components/Restaurante/Restaurante';
 import UnidadMedida from './components/UnidadMedida/UnidadMedida';
 import Pais from './components/Pais/Pais';
 import Marca from './components/Marca/Marca';
+import Buffet from './components/Buffet/Buffet';
 
 
 const App = () => {
@@ -21,8 +22,9 @@ const App = () => {
                 {/* <Consecutivo/>
                 <Restaurante/>
                 <UnidadMedida />
-                <Pais /> */}
-                <Marca />
+                <Pais />
+                <Marca /> */}
+                <Buffet />
             </Container>
             
         </div>

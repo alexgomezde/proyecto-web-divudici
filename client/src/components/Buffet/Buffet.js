@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch} from 'react-redux';
-import MarcaForm from '../MarcaForm/MarcaForm';
-import MarcaData from '../MarcaData/MarcaData';
+import BuffetForm from '../BuffetForm/BuffetForm';
+import BuffetData from '../BuffetData/BuffetData';
 import { getConsecutivos } from '../../actions/consecutivos';
-import { getMarcas } from '../../actions/marcas';
-import { getPaises} from '../../actions/paises';
+import { getBuffets } from '../../actions/buffets';
+import { getUnidadesMedidas } from '../../actions/unidadesMedidas';
 
 
 
 // import './styles.css';
 import { Button, Row, Col, FormControl, Form, InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faTimes,  faSync, faPlus, faEraser, faCopyright } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faTimes,  faSync, faPlus, faEraser, faUtensils } from '@fortawesome/free-solid-svg-icons';
 
 
-const Marca = () => {
+
+const Buffet = () => {
 
     const [currentId, setCurrenteId] = useState(null);
     const [show, setShow] = useState(false);
@@ -64,8 +65,8 @@ const Marca = () => {
     
     useEffect(() => {
         dispatch(getConsecutivos());
-        dispatch(getPaises());
-        dispatch(getMarcas());
+        dispatch(getUnidadesMedidas());
+        dispatch(getBuffets());
     }, [ currentId, currentConsecutivo, dispatch ]);
 
 
@@ -74,7 +75,7 @@ const Marca = () => {
             <Row>
                 <Col md="12">
                     <div className="heading mt-4 mb-4">
-                        <h2 className="d-inline mt-4" >Marcas</h2>
+                        <h2 className="d-inline mt-4" >Buffets</h2>
                         <button className="float-right">
                             <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
                         </button>
@@ -87,7 +88,7 @@ const Marca = () => {
                 </Col>  
                 <Col md="3">
                     <div className="sidebar text-center">
-                    <FontAwesomeIcon icon={faCopyright} size="9x" className="text-white mt-5"/>
+                    <FontAwesomeIcon icon={faUtensils} size="9x" className="text-white mt-5"/>
                     </div>
                 </Col>
                 <Col md="9">
@@ -102,9 +103,7 @@ const Marca = () => {
                                             <select className="form-control" id="input-dropdown-search"  searchable="Search here.." value={selectedTypeSearch} onChange={(e) => {setSelectedTypeSearch(e.target.value)}}>
                                                 <option value="" disabled >Buscar...</option>
                                                 <option value="codigo">Código</option>
-                                                <option value="nombre">Nombre Marca</option>
-                                                <option value="nombreEmpresa">Nombre Empresa</option>
-                                                <option value="nacionalidad">Nacionalidad</option>
+                                                <option value="nombre">Nombre</option>
                                             </select>
                                         </InputGroup.Prepend>
                                         
@@ -127,7 +126,7 @@ const Marca = () => {
                         <Row>
                         <div className="table-wrapper">
                             
-                            <MarcaData setShow={setShow} currentId={currentId} setCurrenteId={setCurrenteId} inputSearchTerm={inputSearchTerm} selectedTypeSearch={selectedTypeSearch} />
+                            <BuffetData setShow={setShow} currentId={currentId} setCurrenteId={setCurrenteId} inputSearchTerm={inputSearchTerm} selectedTypeSearch={selectedTypeSearch} />
                             
                         </div>
                         </Row>
@@ -137,11 +136,11 @@ const Marca = () => {
                 </Col>
             </Row>
 
-            <MarcaForm currentId={currentId} setCurrenteId={setCurrenteId} isOpen={show} setshow={setShow}  currentConsecutivo={currentConsecutivo} setCurrentConsecutivo={setCurrentConsecutivo} />
+            <BuffetForm currentId={currentId} setCurrenteId={setCurrenteId} isOpen={show} setshow={setShow}  currentConsecutivo={currentConsecutivo} setCurrentConsecutivo={setCurrentConsecutivo} />
         </>
     );
 }
 
-export default Marca;
+export default Buffet;
 
 
