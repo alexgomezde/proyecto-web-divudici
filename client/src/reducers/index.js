@@ -5,6 +5,7 @@ import unidadesMedidas from './unidadesMedidas';
 import paises from './paises';
 import marcas from './marcas';
 import buffets from './buffets';
+import eventos from './eventos';
 
 
 export default combineReducers({ 
@@ -13,5 +14,6 @@ export default combineReducers({
     unidadesMedidas,
     paises,
     marcas,
-    buffets
+    buffets,
+    eventos
 });

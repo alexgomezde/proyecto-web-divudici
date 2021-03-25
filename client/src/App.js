@@ -11,6 +11,7 @@ import UnidadMedida from './components/UnidadMedida/UnidadMedida';
 import Pais from './components/Pais/Pais';
 import Marca from './components/Marca/Marca';
 import Buffet from './components/Buffet/Buffet';
+import Evento from './components/Evento/Evento';
 
 
 const App = () => {
@@ -23,8 +24,9 @@ const App = () => {
                 <Restaurante/>
                 <UnidadMedida />
                 <Pais />
-                <Marca /> */}
-                <Buffet />
+                <Marca />
+                <Buffet /> */}
+                <Evento />
             </Container>
             
         </div>
