@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import './MarcaFormStyles.css';
 import { Button, Row, Col, Form, FormControl, Modal, FormGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
@@ -160,7 +159,7 @@ const MarcaForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutiv
     
     return(
 
-        <Modal show={isOpen} onHide={setshow} onExit={clearForm} className="modal">
+        <Modal size="xl" show={isOpen} onHide={setshow} onExit={clearForm} className="modal">
             <Modal.Header className="mheader" closeButton>
             <Modal.Title>{ currentId ? 'Editar Marca' : 'Crear Marca'}</Modal.Title>
             </Modal.Header>
@@ -222,7 +221,7 @@ const MarcaForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutiv
                                 <Col md="3" className="text-right pt-1">
                                     <Form.Label>Foto de la Marca</Form.Label>
                                 </Col>
-                                <Col>
+                                <Col md="2">
                                     <FormGroup>
                                         <FileBase className={ (marcaData.fotoMarcaError) ? 'is-invalid' : ''} type="file" multiple={false} name="fotoMarca" value={marcaData.fotoMarca} onDone={({base64}) => setMarcaData({ ...marcaData, fotoMarca: base64})}></FileBase>
                                         <small className="form-text text-danger">{marcaData.fotoMarcaError}</small>
@@ -248,7 +247,7 @@ const MarcaForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutiv
                                 <Col md="3"className="text-right pt-1">
                                     <Form.Label >Cédula Jurídcia</Form.Label>
                                 </Col>
-                                <Col>
+                                <Col md="3">
                                     <FormGroup>
                                     <FormControl className={ (marcaData.cedulaJuridicaError) ? 'is-invalid' : ''} type="number" name="cedulaJuridica" value={marcaData.cedulaJuridica} onChange={(e) => setMarcaData({ ...marcaData, cedulaJuridica: e.target.value})}></FormControl>
                                         <small className="form-text text-danger">{marcaData.cedulaJuridicaError}</small>

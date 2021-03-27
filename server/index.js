@@ -10,6 +10,7 @@ import paisesRoutes from './routes/paises.js';
 import marcaRoutes from './routes/marcas.js';
 import buffetRoutes from './routes/buffets.js';
 import eventoRoutes from './routes/eventos.js';
+import bebidaRoutes from './routes/bebidas.js';
 
 
 const app = express();
@@ -27,6 +28,7 @@ app.use('/paises', paisesRoutes);
 app.use('/marcas', marcaRoutes);
 app.use('/buffets', buffetRoutes);
 app.use('/eventos', eventoRoutes);
+app.use('/bebidas', bebidaRoutes);
 
 
 //database connection
