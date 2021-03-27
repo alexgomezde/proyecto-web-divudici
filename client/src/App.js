@@ -13,6 +13,7 @@ import Marca from './components/Marca/Marca';
 import Buffet from './components/Buffet/Buffet';
 import Evento from './components/Evento/Evento';
 import BebidaCaliente from './components/BebidaCaliente/BebidaCaliente';
+import BebidaHelada from './components/BebidaHelada/BebidaHelada';
 
 
 const App = () => {
@@ -29,6 +30,7 @@ const App = () => {
                 <Buffet />
                 <Evento /> */}
                 <BebidaCaliente />
+                <BebidaHelada/>
             </Container>
             
         </div>

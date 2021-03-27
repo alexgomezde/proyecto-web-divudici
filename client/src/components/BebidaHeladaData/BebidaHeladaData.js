@@ -9,7 +9,7 @@ import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Button, Table } from 'react-bootstrap';
 
 
-const BebidaCalienteData = ({ setShow, currentId,  setCurrenteId, inputSearchTerm, selectedTypeSearch}) => {
+const BebidaHeladaeData = ({ setShow, currentId,  setCurrenteId, inputSearchTerm, selectedTypeSearch}) => {
 
     
     const dispatch = useDispatch();
@@ -31,23 +31,24 @@ const BebidaCalienteData = ({ setShow, currentId,  setCurrenteId, inputSearchTer
             <tbody className="text-white">
                 {bebidas.filter( bebida => {
 
-                    if(bebida.codigo.includes("BC-")){
-
+                    if(bebida.codigo.includes("BH-")){
                         if(!inputSearchTerm){
                             return bebida;
-
+    
                         }else if( selectedTypeSearch === "codigo"){
-
+    
                             if(bebida.codigo.toLowerCase().includes(inputSearchTerm.toLowerCase())){
                                 return bebida;
                             }
                         }else if( selectedTypeSearch === "nombre"){
-
+    
                             if(bebida.nombre.toLowerCase().includes(inputSearchTerm.toLowerCase())){
                                 return bebida;
                             }
                         }
+
                     }
+                    
                 }).map( bebida => {
         
                     return(
@@ -76,4 +77,4 @@ const BebidaCalienteData = ({ setShow, currentId,  setCurrenteId, inputSearchTer
     );
 }
 
-export default BebidaCalienteData; 
+export default BebidaHeladaeData; 
