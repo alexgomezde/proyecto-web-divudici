@@ -1,22 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector} from 'react-redux';
-import BebidaGaseosaForm from '../BebidaGaseosaForm/BebidaGaseosaForm';
-import BebidaGaseosaData from '../BebidaGaseosaData/BebidaGaseosaData';
+import EspecialidadForm from '../EspecialidadForm/EspecialidadForm';
+import EspecialidadData from '../EspecialidadData/EspecialidadData';
 import { getConsecutivos } from '../../actions/consecutivos';
-import { getBebidas } from '../../actions/bebidas';
-import { getRestaurantes } from '../../actions/restaurantes';
-import { getMarcas } from '../../actions/marcas';
-import { getPaises } from '../../actions/paises';
-
+import { getEspecialidades } from '../../actions/especialidades';
 
 import { Button, Row, Col, FormControl, Form, InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faTimes,  faSync, faPlus, faEraser } from '@fortawesome/free-solid-svg-icons';
-import CanLogo from '../../images/can.svg';
+import { faSearch, faTimes,  faSync, faPlus, faEraser, faUtensils } from '@fortawesome/free-solid-svg-icons';
+import BuffetLogo from '../../images/buffet.svg';
 
 
-
-const BebidaGaseosa = () => {
+const Especialidad = () => {
 
     const [currentId, setCurrenteId] = useState(null);
     const [show, setShow] = useState(false);
@@ -26,7 +21,7 @@ const BebidaGaseosa = () => {
     const [inputSearchTermError, setinputSearchTermError] = useState('');
     const [currentConsecutivo, setCurrentConsecutivo] = useState(null);
 
-    const selectedConsecutivo = useSelector((state) => !currentConsecutivo ? state.consecutivos.find((c) => c.prefijo === "BG-") : null);
+    const selectedConsecutivo = useSelector((state) => !currentConsecutivo ? state.consecutivos.find((c) => c.prefijo === "ESP-") : null);
 
     const reload=()=>{window.location.reload()};
 
@@ -66,10 +61,7 @@ const BebidaGaseosa = () => {
     
     useEffect(() => {
         dispatch(getConsecutivos());
-        dispatch(getRestaurantes());
-        dispatch(getBebidas());
-        dispatch(getMarcas());
-        dispatch(getPaises());
+        dispatch(getEspecialidades());
     }, [ currentId, currentConsecutivo, dispatch ]);
 
 
@@ -78,7 +70,7 @@ const BebidaGaseosa = () => {
             <Row>
                 <Col md="12">
                     <div className="heading mt-4 mb-4">
-                        <h2 className="d-inline mt-4" >Bebidas Gaseosas</h2>
+                        <h2 className="d-inline mt-4" >Especialidades</h2>
                         <button className="float-right">
                             <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
                         </button>
@@ -91,7 +83,7 @@ const BebidaGaseosa = () => {
                 </Col>  
                 <Col md="3">
                     <div className="sidebar text-center">
-                        <img src={CanLogo} alt="Can logo" width="110px" className="mt-5"></img>
+                        <img src={BuffetLogo} alt="Especialidad logo" width="130px" className="mt-5"></img>
                     </div>
                 </Col>
                 <Col md="9">
@@ -129,7 +121,7 @@ const BebidaGaseosa = () => {
                         <Row>
                         <div className="table-wrapper">
                             
-                            <BebidaGaseosaData setShow={setShow} currentId={currentId} setCurrenteId={setCurrenteId} inputSearchTerm={inputSearchTerm} selectedTypeSearch={selectedTypeSearch} />
+                            <EspecialidadData setShow={setShow} currentId={currentId} setCurrenteId={setCurrenteId} inputSearchTerm={inputSearchTerm} selectedTypeSearch={selectedTypeSearch} />
                             
                         </div>
                         </Row>
@@ -139,11 +131,9 @@ const BebidaGaseosa = () => {
                 </Col>
             </Row>
 
-            <BebidaGaseosaForm currentId={currentId} setCurrenteId={setCurrenteId} isOpen={show} setshow={setShow}  currentConsecutivo={currentConsecutivo} setCurrentConsecutivo={setCurrentConsecutivo} selectedConsecutivo={selectedConsecutivo}/>
+            <EspecialidadForm currentId={currentId} setCurrenteId={setCurrenteId} isOpen={show} setshow={setShow}  currentConsecutivo={currentConsecutivo} setCurrentConsecutivo={setCurrentConsecutivo} selectedConsecutivo={selectedConsecutivo}/>
         </>
     );
 }
 
-export default BebidaGaseosa;
-
-
+export default Especialidad;

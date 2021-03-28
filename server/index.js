@@ -11,6 +11,7 @@ import marcaRoutes from './routes/marcas.js';
 import buffetRoutes from './routes/buffets.js';
 import eventoRoutes from './routes/eventos.js';
 import bebidaRoutes from './routes/bebidas.js';
+import especialidadRoutes from './routes/especialidades.js';
 
 
 const app = express();
@@ -29,6 +30,7 @@ app.use('/marcas', marcaRoutes);
 app.use('/buffets', buffetRoutes);
 app.use('/eventos', eventoRoutes);
 app.use('/bebidas', bebidaRoutes);
+app.use('/especialidades', especialidadRoutes);
 
 
 //database connection

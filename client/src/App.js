@@ -3,8 +3,6 @@ import { Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 
-
-
 import Consecutivo from './components/Consecutivo/Consecutivo';
 import Restaurante from './components/Restaurante/Restaurante';
 import UnidadMedida from './components/UnidadMedida/UnidadMedida';
@@ -17,6 +15,7 @@ import BebidaHelada from './components/BebidaHelada/BebidaHelada';
 import BebidaGaseosa from './components/BebidaGaseosa/BebidaGaseosa';
 import BebidaLicor from './components/BebidaLicor/BebidaLicor';
 import BebidaVino from './components/BebidaVino/BebidaVino';
+import Especialidad from './components/Especialidad/Especialidad';
 
 
 const App = () => {
@@ -35,8 +34,9 @@ const App = () => {
                 <BebidaCaliente />
                 <BebidaHelada/>
                 <BebidaGaseosa/>
-                <BebidaLicor/> */}
-                <BebidaVino/>
+                <BebidaLicor/>
+                <BebidaVino/> */}
+                <Especialidad/>
             </Container>
             
         </div>
