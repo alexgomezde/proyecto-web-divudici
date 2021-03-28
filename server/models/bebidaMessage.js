@@ -25,7 +25,7 @@ const bebidaSchema = mongoose.Schema({
     descripcion: String, 
     foto: String,
     cantidad: Number, 
-    añoCosecha: Number
+    annoCosecha: Number
 });
 
 const BebidaMessage = mongoose.model('BebidaMessage', bebidaSchema);

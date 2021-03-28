@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector} from 'react-redux';
-import BebidaLicorForm from '../BebidaLicorForm/BebidaLicorForm';
-import BebidaLicorData from '../BebidaLicorData/BebidaLicorData';
+import BebidaVinoForm from '../BebidaVinoForm/BebidaVinoForm';
+import BebidaVinoData from '../BebidaVinoData/BebidaVinoData';
 import { getConsecutivos } from '../../actions/consecutivos';
 import { getBebidas } from '../../actions/bebidas';
 import { getRestaurantes } from '../../actions/restaurantes';
@@ -11,9 +11,11 @@ import { getPaises } from '../../actions/paises';
 
 import { Button, Row, Col, FormControl, Form, InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faTimes,  faSync, faPlus, faEraser, faWineBottle } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faTimes,  faSync, faPlus, faEraser, faWineGlassAlt } from '@fortawesome/free-solid-svg-icons';
 
-const BebidaLicor = () => {
+
+
+const BebidaVino = () => {
 
     const [currentId, setCurrenteId] = useState(null);
     const [show, setShow] = useState(false);
@@ -23,7 +25,7 @@ const BebidaLicor = () => {
     const [inputSearchTermError, setinputSearchTermError] = useState('');
     const [currentConsecutivo, setCurrentConsecutivo] = useState(null);
 
-    const selectedConsecutivo = useSelector((state) => !currentConsecutivo ? state.consecutivos.find((c) => c.prefijo === "L-") : null);
+    const selectedConsecutivo = useSelector((state) => !currentConsecutivo ? state.consecutivos.find((c) => c.prefijo === "V-") : null);
 
     const reload=()=>{window.location.reload()};
 
@@ -75,7 +77,7 @@ const BebidaLicor = () => {
             <Row>
                 <Col md="12">
                     <div className="heading mt-4 mb-4">
-                        <h2 className="d-inline mt-4" >Licores</h2>
+                        <h2 className="d-inline mt-4" >Vinos</h2>
                         <button className="float-right">
                             <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
                         </button>
@@ -88,7 +90,7 @@ const BebidaLicor = () => {
                 </Col>  
                 <Col md="3">
                     <div className="sidebar text-center">
-                     <FontAwesomeIcon icon={faWineBottle} size="9x" className="text-white mt-5"/>
+                     <FontAwesomeIcon icon={faWineGlassAlt} size="9x" className="text-white mt-5"/>
                     </div>
                 </Col>
                 <Col md="9">
@@ -104,8 +106,10 @@ const BebidaLicor = () => {
                                                 <option value="" disabled >Buscar...</option>
                                                 <option value="codigo">Código</option>
                                                 <option value="nombre">Nombre</option>
+                                                <option value="anno">Año</option>
                                                 <option value="nacionalidad">Nacionalidad</option>
                                                 <option value="nombreRestaurante">Restaurante</option>
+                                                <option value="precio">Precio</option>
                                             </select>
                                         </InputGroup.Prepend>
                                         
@@ -128,7 +132,7 @@ const BebidaLicor = () => {
                         <Row>
                         <div className="table-wrapper">
                             
-                            <BebidaLicorData setShow={setShow} currentId={currentId} setCurrenteId={setCurrenteId} inputSearchTerm={inputSearchTerm} selectedTypeSearch={selectedTypeSearch} />
+                            <BebidaVinoData setShow={setShow} currentId={currentId} setCurrenteId={setCurrenteId} inputSearchTerm={inputSearchTerm} selectedTypeSearch={selectedTypeSearch} />
                             
                         </div>
                         </Row>
@@ -138,11 +142,11 @@ const BebidaLicor = () => {
                 </Col>
             </Row>
 
-            <BebidaLicorForm currentId={currentId} setCurrenteId={setCurrenteId} isOpen={show} setshow={setShow}  currentConsecutivo={currentConsecutivo} setCurrentConsecutivo={setCurrentConsecutivo} selectedConsecutivo={selectedConsecutivo}/>
+            <BebidaVinoForm currentId={currentId} setCurrenteId={setCurrenteId} isOpen={show} setshow={setShow}  currentConsecutivo={currentConsecutivo} setCurrentConsecutivo={setCurrentConsecutivo} selectedConsecutivo={selectedConsecutivo}/>
         </>
     );
 }
 
-export default BebidaLicor;
+export default BebidaVino;
 
 
