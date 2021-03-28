@@ -9,7 +9,7 @@ import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Button, Table } from 'react-bootstrap';
 
 
-const BebidaHeladaData = ({ setShow, currentId,  setCurrenteId, inputSearchTerm, selectedTypeSearch}) => {
+const BebidaGaseosaData = ({ setShow, currentId,  setCurrenteId, inputSearchTerm, selectedTypeSearch}) => {
 
     
     const dispatch = useDispatch();
@@ -24,14 +24,13 @@ const BebidaHeladaData = ({ setShow, currentId,  setCurrenteId, inputSearchTerm,
                     <th>Código</th>
                     <th>Nombre</th>
                     <th>Precio</th>
-                    <th>Restaurante</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody className="text-white">
                 {bebidas.filter( bebida => {
 
-                    if(bebida.codigo.includes("BH-")){
+                    if(bebida.codigo.includes("BG-")){
                         if(!inputSearchTerm){
                             return bebida;
     
@@ -56,14 +55,6 @@ const BebidaHeladaData = ({ setShow, currentId,  setCurrenteId, inputSearchTerm,
                             <td key={bebida.codigo}>{bebida.codigo}</td>
                             <td key={bebida.nombre}>{bebida.nombre}</td>
                             <td key={bebida.precioUnitario}>{bebida.precioUnitario}</td>
-                            {restaurantes.map( restaurante => {
-                                if(restaurante._id === bebida.id_restaurante){
-
-                                    return(
-                                        <td key={bebida.id_unidadMedida}>{restaurante.nombre}</td>
-                                    )
-                                }
-                            })}
                             <td>
                                 <Button variant="outline-light" className="btn-action" onClick={() => {setCurrenteId(bebida._id); setShow(true)}} ><FontAwesomeIcon icon={faPen}></FontAwesomeIcon></Button>
                                 <Button variant="outline-light" className="btn-action" onClick={() => dispatch(deleteBebida(bebida._id))}><FontAwesomeIcon icon={faTrash}></FontAwesomeIcon></Button>
@@ -77,4 +68,4 @@ const BebidaHeladaData = ({ setShow, currentId,  setCurrenteId, inputSearchTerm,
     );
 }
 
-export default BebidaHeladaData; 
+export default BebidaGaseosaData; 

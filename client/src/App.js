@@ -14,6 +14,7 @@ import Buffet from './components/Buffet/Buffet';
 import Evento from './components/Evento/Evento';
 import BebidaCaliente from './components/BebidaCaliente/BebidaCaliente';
 import BebidaHelada from './components/BebidaHelada/BebidaHelada';
+import BebidaGaseosa from './components/BebidaGaseosa/BebidaGaseosa';
 
 
 const App = () => {
@@ -28,9 +29,10 @@ const App = () => {
                 <Pais />
                 <Marca />
                 <Buffet />
-                <Evento /> */}
+                <Evento />
                 <BebidaCaliente />
-                <BebidaHelada/>
+                <BebidaHelada/> */}
+                <BebidaGaseosa/>
             </Container>
             
         </div>
