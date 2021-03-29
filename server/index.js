@@ -14,11 +14,10 @@ import bebidaRoutes from './routes/bebidas.js';
 import especialidadRoutes from './routes/especialidades.js';
 import mesaRoutes from './routes/mesas.js';
 import puestoRoutes from './routes/puestos.js';
+import empleadoRoutes from './routes/empleados.js';
 
 
 const app = express();
-
-
 
 app.use(bodyParser.json({ limit: "30mb", extended: true}));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true})); //send the request
@@ -35,6 +34,7 @@ app.use('/bebidas', bebidaRoutes);
 app.use('/especialidades', especialidadRoutes);
 app.use('/mesas', mesaRoutes);
 app.use('/puestos', puestoRoutes);
+app.use('/empleados', empleadoRoutes);
 
 
 //database connection
