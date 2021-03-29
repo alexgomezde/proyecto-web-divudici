@@ -9,6 +9,7 @@ const urlBuffets = 'http://localhost:5000/buffets';
 const urlEventos = 'http://localhost:5000/eventos';
 const urlBebidas = 'http://localhost:5000/bebidas';
 const urlEspecialidades = 'http://localhost:5000/especialidades';
+const urlMesas= 'http://localhost:5000/mesas';
 
 export const fetchConsecutivos = () => axios.get(urlConsecutvios);
 export const createConsecutivo = (newConsecutivo) => axios.post(urlConsecutvios, newConsecutivo);
@@ -54,3 +55,8 @@ export const fetchEspecialidades = () => axios.get(urlEspecialidades);
 export const createEspecialidad = (newEspecialidad) => axios.post(urlEspecialidades, newEspecialidad);
 export const updateEspecialidad = (id, updatedEspecialidad) => axios.patch(`${urlEspecialidades}/${id}`, updatedEspecialidad);
 export const deleteEspecialidad = (id) => axios.delete(`${urlEspecialidades}/${id}`);
+
+export const fetchMesas = () => axios.get(urlMesas);
+export const createMesa = (newMesa) => axios.post(urlMesas, newMesa);
+export const updateMesa = (id, updatedMesa) => axios.patch(`${urlMesas}/${id}`, updatedMesa);
+export const deleteMesa = (id) => axios.delete(`${urlMesas}/${id}`);

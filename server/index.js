@@ -12,6 +12,7 @@ import buffetRoutes from './routes/buffets.js';
 import eventoRoutes from './routes/eventos.js';
 import bebidaRoutes from './routes/bebidas.js';
 import especialidadRoutes from './routes/especialidades.js';
+import mesaRoutes from './routes/mesas.js';
 
 
 const app = express();
@@ -31,6 +32,7 @@ app.use('/buffets', buffetRoutes);
 app.use('/eventos', eventoRoutes);
 app.use('/bebidas', bebidaRoutes);
 app.use('/especialidades', especialidadRoutes);
+app.use('/mesas', mesaRoutes);
 
 
 //database connection

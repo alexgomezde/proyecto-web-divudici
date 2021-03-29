@@ -8,6 +8,7 @@ import buffets from './buffets';
 import eventos from './eventos';
 import bebidas from './bebidas';
 import especialidades from './especialidades';
+import mesas from './mesas';
 
 
 export default combineReducers({ 
@@ -19,5 +20,6 @@ export default combineReducers({
     buffets,
     eventos,
     bebidas,
-    especialidades
+    especialidades,
+    mesas
 });
