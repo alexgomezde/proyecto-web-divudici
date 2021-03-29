@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector} from 'react-redux';
-import BebidaCalienteForm from '../BebidaCalienteForm/BebidaCalienteForm';
-import BebidaCalienteData from '../BebidaCalienteData/BebidaCalienteData';
+import PuestoForm from '../PuestoForm/PuestoForm';
+import PuestoData from '../PuestoData/PuestoData';
 import { getConsecutivos } from '../../actions/consecutivos';
-import { getBebidas } from '../../actions/bebidas';
-import { getRestaurantes } from '../../actions/restaurantes';
+import { getPuestos } from '../../actions/puestos';
+import { getEventos } from '../../actions/eventos';
 
-import { Button, Row, Col, FormControl, Form, InputGroup } from 'react-bootstrap';
+import { Button, Row, Col, FormControl, Form, InputGroup, ButtonGroup, ToggleButton} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faTimes,  faSync, faPlus, faEraser, faMugHot } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faTimes,  faSync, faPlus, faEraser } from '@fortawesome/free-solid-svg-icons';
+import CheftLogo from '../../images/chef.svg';
 
-const BebidaCaliente = () => {
+const Puesto = () => {
 
     const [currentId, setCurrenteId] = useState(null);
     const [show, setShow] = useState(false);
@@ -19,8 +20,14 @@ const BebidaCaliente = () => {
     const [selectedTypeSearch, setSelectedTypeSearch] = useState('');
     const [inputSearchTermError, setinputSearchTermError] = useState('');
     const [currentConsecutivo, setCurrentConsecutivo] = useState(null);
+    const [checked, setChecked] = useState(false);
+    const [radioValue, setRadioValue] = useState(null);
+    const radios = [
+        { name: 'Interno al Restaurante', value: '1' },
+        { name: 'Externo al Restaurante', value: '2' }
+    ];
 
-    const selectedConsecutivo = useSelector((state) => !currentConsecutivo ? state.consecutivos.find((c) => c.prefijo === "BC-") : null);
+    const selectedConsecutivo = useSelector((state) => !currentConsecutivo ? state.consecutivos.find((c) => c.prefijo === "PU-") : null);
 
     const reload=()=>{window.location.reload()};
 
@@ -56,12 +63,13 @@ const BebidaCaliente = () => {
         setinputSearchTermError('');
         setinputSearchTerm('');
         setSelectedTypeSearch('');
+        setRadioValue(null);
     }   
     
     useEffect(() => {
         dispatch(getConsecutivos());
-        dispatch(getRestaurantes());
-        dispatch(getBebidas());
+        dispatch(getEventos());
+        dispatch(getPuestos());
     }, [ currentId, currentConsecutivo, dispatch ]);
 
 
@@ -70,7 +78,7 @@ const BebidaCaliente = () => {
             <Row>
                 <Col md="12">
                     <div className="heading mt-4 mb-4">
-                        <h2 className="d-inline mt-4" >Bebidas Calientes</h2>
+                        <h2 className="d-inline mt-4" >Puestos</h2>
                         <button className="float-right">
                             <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
                         </button>
@@ -78,12 +86,10 @@ const BebidaCaliente = () => {
                             <FontAwesomeIcon icon={faSync} size="2x" className="text-white"/>
                         </button>
                     </div>
-                    
-
                 </Col>  
                 <Col md="3">
                     <div className="sidebar text-center">
-                    <FontAwesomeIcon icon={faMugHot} size="9x" className="text-white mt-5"/>
+                        <img src={CheftLogo} alt="Chef logo" width="130px" className="mt-5"></img>
                     </div>
                 </Col>
                 <Col md="9">
@@ -116,12 +122,30 @@ const BebidaCaliente = () => {
                                 </Col>
                                 
                             </Row>
+                            <Row>
+                                <ButtonGroup toggle className="mb-3 ">
+                                    {radios.map((radio, idx) => (
+                                    <ToggleButton
+                                        key={idx}
+                                        type="radio"
+                                        variant="secondary"
+                                        name="radio"
+                                        value={radio.value}
+                                        className="border"
+                                        checked={radioValue === radio.value}
+                                        onChange={(e) => setRadioValue(e.currentTarget.value)}
+                                    >
+                                        {radio.name}
+                                    </ToggleButton>
+                                    ))}
+                                </ButtonGroup>
+                            </Row>
                         </Form>
                         
                         <Row>
                         <div className="table-wrapper">
                             
-                            <BebidaCalienteData setShow={setShow} currentId={currentId} setCurrenteId={setCurrenteId} inputSearchTerm={inputSearchTerm} selectedTypeSearch={selectedTypeSearch} />
+                            <PuestoData setShow={setShow} currentId={currentId} setCurrenteId={setCurrenteId} inputSearchTerm={inputSearchTerm} selectedTypeSearch={selectedTypeSearch} radioValue={radioValue} />
                             
                         </div>
                         </Row>
@@ -131,9 +155,9 @@ const BebidaCaliente = () => {
                 </Col>
             </Row>
 
-            <BebidaCalienteForm currentId={currentId} setCurrenteId={setCurrenteId} isOpen={show} setshow={setShow}  currentConsecutivo={currentConsecutivo} setCurrentConsecutivo={setCurrentConsecutivo} selectedConsecutivo={selectedConsecutivo}/>
+            <PuestoForm currentId={currentId} setCurrenteId={setCurrenteId} isOpen={show} setshow={setShow}  currentConsecutivo={currentConsecutivo} setCurrentConsecutivo={setCurrentConsecutivo} selectedConsecutivo={selectedConsecutivo}/>
         </>
     );
 }
 
-export default BebidaCaliente;
+export default Puesto;

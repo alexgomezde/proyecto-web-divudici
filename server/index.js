@@ -13,6 +13,7 @@ import eventoRoutes from './routes/eventos.js';
 import bebidaRoutes from './routes/bebidas.js';
 import especialidadRoutes from './routes/especialidades.js';
 import mesaRoutes from './routes/mesas.js';
+import puestoRoutes from './routes/puestos.js';
 
 
 const app = express();
@@ -33,6 +34,7 @@ app.use('/eventos', eventoRoutes);
 app.use('/bebidas', bebidaRoutes);
 app.use('/especialidades', especialidadRoutes);
 app.use('/mesas', mesaRoutes);
+app.use('/puestos', puestoRoutes);
 
 
 //database connection

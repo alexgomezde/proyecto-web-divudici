@@ -30,3 +30,8 @@
   background-color: #fff;
   color: #2e4471;
 }
+
+.btn-restaurant:checked {
+  background-color: blueviolet;
+  color: blueviolet;
+}
