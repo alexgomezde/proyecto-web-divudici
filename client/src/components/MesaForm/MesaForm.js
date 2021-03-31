@@ -73,9 +73,12 @@ const MesaForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutivo
         let nombreExiste = false;
 
         mesas.forEach(mesa => {
+
+            if(currentId !== mesa._id){
             
-            if(mesa.nombre.toLowerCase().trim() === mesaData.nombre.toLowerCase().trim()){
-                nombreExiste = true;
+                if(mesa.nombre.toLowerCase().trim() === mesaData.nombre.toLowerCase().trim()){
+                    nombreExiste = true;
+                }
             }
         });
 

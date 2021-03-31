@@ -28,7 +28,7 @@ const App = () => {
     return (
         <div>
             <Container>
-                {/* <Consecutivo/>
+                <Consecutivo/>
                 <Restaurante/>
                 <UnidadMedida />
                 <Pais />
@@ -43,7 +43,7 @@ const App = () => {
                 <Especialidad/>
                 <Mesa/>
                 <Puesto/>
-                <Empleado/> */}
+                <Empleado/>
                 <Usuario/>
             </Container>
             

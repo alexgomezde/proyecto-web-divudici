@@ -10,6 +10,7 @@ const UsuarioForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
 
     const dispatch = useDispatch();
     const restaurantes = useSelector((state) => state.restaurantes);
+    const usuarios = useSelector((state) => state.usuarios);
     const [checked, setChecked] = useState(false);
     const [checkedEdit, setCheckedEdit] = useState(false);
     const [radioValue, setRadioValue] = useState(null);
@@ -102,6 +103,8 @@ const UsuarioForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
 
         if(!usuarioData.login){
             loginError = 'Debe ingresar el login del usuario';
+        }else if(verificarLogin()){
+            loginError = 'El login no esta disponible';
         }
 
         if(!usuarioData.password){
@@ -126,7 +129,24 @@ const UsuarioForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
         
         return true;
     }
+    
+    const verificarLogin = () => {
 
+        let nombreExiste = false;
+
+        usuarios.forEach(usuario => {
+
+            if(currentId !== usuario._id){
+
+                if(usuario.login.toLowerCase().trim() === usuarioData.login.toLowerCase().trim()){
+                    nombreExiste = true;
+                }
+
+            }
+        });
+
+        return nombreExiste;
+    }
 
     useEffect(() => { if(selectedConsecutivo){setUsuarioData({ ...usuarioData, id_consecutivo : selectedConsecutivo._id, codigo : selectedConsecutivo.prefijo + selectedConsecutivo.valor})} }, [selectedConsecutivo]);
 
