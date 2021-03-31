@@ -11,6 +11,7 @@ import especialidades from './especialidades';
 import mesas from './mesas';
 import puestos from './puestos';
 import empleados from './empleados';
+import usuarios from './usuarios';
 
 
 export default combineReducers({ 
@@ -25,5 +26,6 @@ export default combineReducers({
     especialidades,
     mesas,
     puestos,
-    empleados
+    empleados,
+    usuarios
 });

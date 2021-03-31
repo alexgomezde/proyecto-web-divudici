@@ -12,6 +12,7 @@ const urlEspecialidades = 'http://localhost:5000/especialidades';
 const urlMesas = 'http://localhost:5000/mesas';
 const urlPuestos = 'http://localhost:5000/puestos';
 const urlEmpleados = 'http://localhost:5000/empleados';
+const urlUsuarios = 'http://localhost:5000/usuarios';
 
 export const fetchConsecutivos = () => axios.get(urlConsecutvios);
 export const createConsecutivo = (newConsecutivo) => axios.post(urlConsecutvios, newConsecutivo);
@@ -72,3 +73,8 @@ export const fetchEmpleados = () => axios.get(urlEmpleados);
 export const createEmpleado = (newEmpleado) => axios.post(urlEmpleados, newEmpleado);
 export const updateEmpleado = (id, updatedEmpleado) => axios.patch(`${urlEmpleados}/${id}`, updatedEmpleado);
 export const deleteEmpleado = (id) => axios.delete(`${urlEmpleados}/${id}`);
+
+export const fetchUsuarios = () => axios.get(urlUsuarios);
+export const createUsuario = (newUsuario) => axios.post(urlUsuarios, newUsuario);
+export const updateUsuario = (id, updatedUsuario) => axios.patch(`${urlUsuarios}/${id}`, updatedUsuario);
+export const deleteUsuario = (id) => axios.delete(`${urlUsuarios}/${id}`);

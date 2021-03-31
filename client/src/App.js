@@ -19,6 +19,7 @@ import Especialidad from './components/Especialidad/Especialidad';
 import Mesa from './components/Mesa/Mesa';
 import Puesto from './components/Puesto/Puesto';
 import Empleado from './components/Empleado/Empleado';
+import Usuario from './components/Usuario/Usuario';
 
 
 const App = () => {
@@ -41,8 +42,9 @@ const App = () => {
                 <BebidaVino/>
                 <Especialidad/>
                 <Mesa/>
-                <Puesto/> */}
-                <Empleado/>
+                <Puesto/>
+                <Empleado/> */}
+                <Usuario/>
             </Container>
             
         </div>

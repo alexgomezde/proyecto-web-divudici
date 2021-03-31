@@ -15,6 +15,7 @@ import especialidadRoutes from './routes/especialidades.js';
 import mesaRoutes from './routes/mesas.js';
 import puestoRoutes from './routes/puestos.js';
 import empleadoRoutes from './routes/empleados.js';
+import usuarioRoutes from './routes/usuarios.js';
 
 
 const app = express();
@@ -35,6 +36,7 @@ app.use('/especialidades', especialidadRoutes);
 app.use('/mesas', mesaRoutes);
 app.use('/puestos', puestoRoutes);
 app.use('/empleados', empleadoRoutes);
+app.use('/usuarios', usuarioRoutes);
 
 
 //database connection
