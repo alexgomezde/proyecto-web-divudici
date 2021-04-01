@@ -22,6 +22,7 @@ import Empleado from './components/Empleado/Empleado';
 import Usuario from './components/Usuario/Usuario';
 import ProductoComestible from './components/ProductoComestible/ProductoComestible';
 import ProductoDesechable from './components/ProductoDesechable/ProductoDesechable';
+import ProductoLimpieza from './components/ProductoLimpieza/ProductoLimpieza';
 
 
 const App = () => {
@@ -47,8 +48,9 @@ const App = () => {
                 <Puesto/>
                 <Empleado/>
                 <Usuario/>
-                <ProductoComestible/> */}
-                <ProductoDesechable/>
+                <ProductoComestible/>
+                <ProductoDesechable/> */}
+                <ProductoLimpieza/>
             </Container>
             
         </div>
