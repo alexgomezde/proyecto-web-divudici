@@ -24,6 +24,7 @@ import ProductoComestible from './components/ProductoComestible/ProductoComestib
 import ProductoDesechable from './components/ProductoDesechable/ProductoDesechable';
 import ProductoLimpieza from './components/ProductoLimpieza/ProductoLimpieza';
 import ProductoTecnologia from './components/ProductoTecnologia/ProductoTecnologia';
+import ProductoUtencilio from './components/ProductoUtencilio/ProductoUtencilio';
 
 
 const App = () => {
@@ -51,8 +52,9 @@ const App = () => {
                 <Usuario/>
                 <ProductoComestible/>
                 <ProductoDesechable/>
-                <ProductoLimpieza/> */}
-                <ProductoTecnologia/>
+                <ProductoLimpieza/>
+                <ProductoTecnologia/> */}
+                <ProductoUtencilio/>
             </Container>
             
         </div>
