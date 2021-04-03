@@ -14,6 +14,7 @@ const urlPuestos = 'http://localhost:5000/puestos';
 const urlEmpleados = 'http://localhost:5000/empleados';
 const urlUsuarios = 'http://localhost:5000/usuarios';
 const urlProductos = 'http://localhost:5000/productos';
+const urlProveedores = 'http://localhost:5000/proveedores';
 
 export const fetchConsecutivos = () => axios.get(urlConsecutvios);
 export const createConsecutivo = (newConsecutivo) => axios.post(urlConsecutvios, newConsecutivo);
@@ -84,3 +85,8 @@ export const fetchProductos = () => axios.get(urlProductos);
 export const createProducto = (newProducto) => axios.post(urlProductos, newProducto);
 export const updateProducto = (id, updatedProducto) => axios.patch(`${urlProductos}/${id}`, updatedProducto);
 export const deleteProducto = (id) => axios.delete(`${urlProductos}/${id}`);
+
+export const fetchProveedores = () => axios.get(urlProveedores);
+export const createProveedor = (newProducto) => axios.post(urlProveedores, newProducto);
+export const updateProveedor = (id, updatedProducto) => axios.patch(`${urlProveedores}/${id}`, updatedProducto);
+export const deleteProveedor = (id) => axios.delete(`${urlProveedores}/${id}`);

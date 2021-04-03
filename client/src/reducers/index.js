@@ -13,6 +13,7 @@ import puestos from './puestos';
 import empleados from './empleados';
 import usuarios from './usuarios';
 import productos from './productos';
+import proveedores from './proveedores';
 
 
 export default combineReducers({ 
@@ -29,5 +30,6 @@ export default combineReducers({
     puestos,
     empleados,
     usuarios,
-    productos
+    productos,
+    proveedores
 });

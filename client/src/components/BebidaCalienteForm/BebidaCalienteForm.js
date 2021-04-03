@@ -106,15 +106,6 @@ const BebidaCalienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentC
                 clearForm();
                 setshow(false);
             }else{
-
-           
-                // const ingredientesArray = bebidaData.ingredientes.split(",");
-                // console.log(ingredientesArray.length);
-                // console.log(ingredientesArray);
-
- 
-                // console.log(ingredientesArray[0]);
-                // setBebidaData({ ...bebidaData, ingredientes: ingredientesArray});
                 console.table(bebidaData);
                 dispatch(createBebida(bebidaData));
                 selectedConsecutivo.valor++;
