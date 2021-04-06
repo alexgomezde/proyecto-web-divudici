@@ -15,6 +15,7 @@ const ProveedorForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsec
 
     const dispatch = useDispatch();
     const productos = useSelector((state) => state.productos);
+    const consecutivos = useSelector((state) => state.consecutivos);
     const proveedor = useSelector((state) => currentId ? state.proveedores.find((r) => r._id === currentId) : null);
     const selectedConsecutivo = useSelector((state) => !currentConsecutivo ? state.consecutivos.find((c) => c.prefijo === "PRO-") : null);
     const [currentProductRestId, setCurrentProductRestId] = useState(null);
@@ -204,12 +205,20 @@ const ProveedorForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsec
 
     }
 
-    //populate data on edit
-    useEffect(() => { if(selectedConsecutivo){
+    const generarCodigo = () => {
 
-            setProveedorData({ ...proveedorData, id_consecutivo : selectedConsecutivo._id, codigo : selectedConsecutivo.prefijo + selectedConsecutivo.valor});
-        } 
-    }, [selectedConsecutivo]);
+        consecutivos.forEach(element => {
+
+            if(element.prefijo === "PRO-"){
+                proveedorData.id_consecutivo = element._id;
+                proveedorData.codigo  = element.prefijo + element.valor;
+
+                
+            }
+        });
+
+        return proveedorData.codigo;
+    }
 
     //populate data on edit
     useEffect(() => { if(proveedor){setProveedorData(proveedor)} 
@@ -300,7 +309,7 @@ const ProveedorForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsec
                                         </Col>
                                         <Col>
                                             <FormGroup>
-                                                <FormControl type="text" disabled name="codigo" value={proveedorData.codigo} ></FormControl>
+                                                <FormControl type="text" disabled name="codigo" value={ !currentId ? generarCodigo() : proveedorData.codigo} ></FormControl>
                                             </FormGroup>
                                         </Col>
                                     </Row>
