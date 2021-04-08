@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Row, Col, Form, FormControl, Modal, FormGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEraser, faSave, faGreaterThan, faLessThan } from '@fortawesome/free-solid-svg-icons';
-import { updateConsecutivo } from '../../actions/consecutivos';
+import { createConsecutivo, getConsecutivos, updateConsecutivo } from '../../actions/consecutivos';
 import { createProveedor, updateProveedor } from '../../actions/proveedores';
 import FileBase from 'react-file-base64';
 import { getProveedores } from '../../actions/proveedores';
@@ -17,10 +17,17 @@ const ProveedorForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsec
     const productos = useSelector((state) => state.productos);
     const consecutivos = useSelector((state) => state.consecutivos);
     const proveedor = useSelector((state) => currentId ? state.proveedores.find((r) => r._id === currentId) : null);
-    const selectedConsecutivo = useSelector((state) => !currentConsecutivo ? state.consecutivos.find((c) => c.prefijo === "PRO-") : null);
     const [currentProductRestId, setCurrentProductRestId] = useState(null);
     const [currentProductProvId, setCurrentProductProvId] = useState(null);
-    console.log(currentProductRestId);
+    const [tempIdConsecutivo, setTempIdConsecutivo] = useState("");
+
+    const [consecutivoData, setConsecutivoData] = useState({
+        tipo: 'Proveedores', 
+        descripcion: 'Proveedor creado automáticamente', 
+        valor: '', 
+        tienePrefijo: true, 
+        prefijo: ''    
+    });
     
     const [proveedorData, setProveedorData] = useState({
         id_consecutivo: '',
@@ -207,17 +214,48 @@ const ProveedorForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsec
 
     const generarCodigo = () => {
 
-        consecutivos.forEach(element => {
+        let codigoEncontrado = false;
+        let codigo = '';
+        let valorMayor = 0;
 
-            if(element.prefijo === "PRO-"){
-                proveedorData.id_consecutivo = element._id;
-                proveedorData.codigo  = element.prefijo + element.valor;
+        consecutivos.forEach(consecutivo => {
 
-                
+            if(consecutivo.prefijo === "PRO-"){
+
+                if(consecutivo.valor > valorMayor){
+
+                    valorMayor = consecutivo.valor;
+                }
+                codigoEncontrado = true;
             }
         });
 
-        return proveedorData.codigo;
+        valorMayor++;
+
+        if(!codigoEncontrado){
+            consecutivoData.valor= 1;
+            consecutivoData.prefijo = 'PRO-';
+            
+            codigo = `PRO-1`;
+        }else{
+
+            codigo = `PRO-${valorMayor}`;
+
+            consecutivoData.valor= valorMayor++;
+            consecutivoData.prefijo = 'PRO-';
+        }
+
+        proveedorData.codigo = codigo;
+
+        return codigo;
+    }
+
+    const getConsecutivoId = () => {
+        consecutivos.forEach(consecutivo => {
+            if(consecutivo.prefijo === consecutivoData.prefijo && consecutivo.valor === consecutivoData.valor){
+                return consecutivo._id;
+            }
+        });
     }
 
     //populate data on edit
@@ -241,9 +279,12 @@ const ProveedorForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsec
                 ;
             }else{
 
+                dispatch(createConsecutivo(consecutivoData));
+                setTempIdConsecutivo(getConsecutivoId());
+                setProveedorData({ ...proveedorData, id_consecutivo : tempIdConsecutivo});
                 dispatch(createProveedor(proveedorData));
-                selectedConsecutivo.valor++;
-                dispatch(updateConsecutivo(selectedConsecutivo._id, selectedConsecutivo));
+                dispatch(getConsecutivos());
+                generarCodigo();
                 clearForm();
                 setshow(false);
             }

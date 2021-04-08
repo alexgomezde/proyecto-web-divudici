@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Row, Col, Form, FormControl, Modal, FormGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
-import { getConsecutivos, updateConsecutivo } from '../../actions/consecutivos';
+import { getConsecutivos, updateConsecutivo, createConsecutivo } from '../../actions/consecutivos';
 import { createProducto, getProductos, updateProducto } from '../../actions/productos';
 
 const ProductoLimpiezaForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutivo, setCurrentConsecutivo, selectedConsecutivo}) => {
@@ -12,11 +12,17 @@ const ProductoLimpiezaForm = ({currentId, setCurrenteId, isOpen, setshow, curren
     const restaurantes = useSelector((state) => state.restaurantes);
     const marcas = useSelector((state) => state.marcas);
     const unidadesMedidas = useSelector((state) => state.unidadesMedidas);
-
-
+    const consecutivos = useSelector((state) => state.consecutivos);
     const limpieza = useSelector((state) => currentId ? state.productos.find((b) => b._id === currentId) : null);
-    // const selectedConsecutivo = useSelector((state) => !currentConsecutivo ? state.consecutivos.find((c) => c.prefijo === "EVE-") : null);
-    console.table(selectedConsecutivo);
+    const [tempIdConsecutivo, setTempIdConsecutivo] = useState("");
+
+    const [consecutivoData, setConsecutivoData] = useState({
+        tipo: 'Limpieza e Higiene', 
+        descripcion: 'Producto de limpieza creado automáticamente', 
+        valor: '', 
+        tienePrefijo: true, 
+        prefijo: ''    
+    });
 
     const [limpiezaData, setLimpiezaData] = useState({
         id_consecutivo: '',
@@ -95,6 +101,52 @@ const ProductoLimpiezaForm = ({currentId, setCurrenteId, isOpen, setshow, curren
         return true;
     }
 
+    const generarCodigo = () => {
+
+        let codigoEncontrado = false;
+        let codigo = '';
+        let valorMayor = 0;
+        let prefix = 'LH-';
+
+        consecutivos.forEach(consecutivo => {
+
+            if(consecutivo.prefijo === prefix){
+
+                if(consecutivo.valor > valorMayor){
+
+                    valorMayor = consecutivo.valor;
+                }
+                codigoEncontrado = true;
+            }
+        });
+
+        valorMayor++;
+
+        if(!codigoEncontrado){
+            consecutivoData.valor= 1;
+            consecutivoData.prefijo = prefix;
+            
+            codigo = prefix;
+        }else{
+
+            codigo = prefix + valorMayor;
+
+            consecutivoData.valor= valorMayor++;
+            consecutivoData.prefijo = prefix;
+        }
+
+        limpiezaData.codigo = codigo;
+
+        return codigo;
+    }
+
+    const getConsecutivoId = () => {
+        consecutivos.forEach(consecutivo => {
+            if(consecutivo.prefijo === consecutivoData.prefijo && consecutivo.valor === consecutivoData.valor){
+                return consecutivo._id;
+            }
+        });
+    }
 
     useEffect(() => { if(selectedConsecutivo){setLimpiezaData({ ...limpiezaData, id_consecutivo : selectedConsecutivo._id, codigo : selectedConsecutivo.prefijo + selectedConsecutivo.valor})} }, [selectedConsecutivo]);
 
@@ -118,10 +170,12 @@ const ProductoLimpiezaForm = ({currentId, setCurrenteId, isOpen, setshow, curren
                 setshow(false);
             }else{
 
+                dispatch(createConsecutivo(consecutivoData));
+                setTempIdConsecutivo(getConsecutivoId());
+                setLimpiezaData({ ...limpiezaData, id_consecutivo : tempIdConsecutivo});
                 dispatch(createProducto(limpiezaData));
-                selectedConsecutivo.valor++;
-                dispatch(updateConsecutivo(selectedConsecutivo._id, selectedConsecutivo));
                 dispatch(getConsecutivos());
+                generarCodigo();
                 clearForm();
                 setshow(false);
             }
@@ -168,7 +222,7 @@ const ProductoLimpiezaForm = ({currentId, setCurrenteId, isOpen, setshow, curren
                                 </Col>
                                 <Col>
                                     <FormGroup>
-                                        <FormControl type="text" disabled name="codigo" value={limpiezaData.codigo}></FormControl>
+                                        <FormControl type="text" disabled name="codigo" value={!currentId ? generarCodigo() : limpiezaData.codigo}></FormControl>
                                     </FormGroup>
                                 </Col>
                             </Row>

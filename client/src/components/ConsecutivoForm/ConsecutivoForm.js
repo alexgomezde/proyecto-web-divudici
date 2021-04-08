@@ -4,7 +4,7 @@ import './styles.css';
 import { Button, Row, Col, Form, FormControl, Modal, FormGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
-import { createConsecutivo, updateConsecutivo } from '../../actions/consecutivos';
+import { createConsecutivo, getConsecutivos, updateConsecutivo } from '../../actions/consecutivos';
 
 
 const ConsecutivoForm = ({currentId, setCurrenteId, isOpen, setshow, onExit}) => {
@@ -70,7 +70,6 @@ const ConsecutivoForm = ({currentId, setCurrenteId, isOpen, setshow, onExit}) =>
         if(consecutivo){
             setConsecutivoData(consecutivo);
             setChecked(consecutivo.tienePrefijo);
-            console.log(`TIENE PREFIJO: ${consecutivo.tienePrefijo}` )
         } 
     }, [consecutivo]);
 
@@ -82,6 +81,8 @@ const ConsecutivoForm = ({currentId, setCurrenteId, isOpen, setshow, onExit}) =>
         if(isValid){
             if(currentId) {
                 dispatch(updateConsecutivo(currentId, consecutivoData));
+                setCurrenteId(null);
+                dispatch(getConsecutivos());
                 clearForm();
                 setshow(false);
     
@@ -89,6 +90,7 @@ const ConsecutivoForm = ({currentId, setCurrenteId, isOpen, setshow, onExit}) =>
 
                 dispatch(createConsecutivo(consecutivoData));
                 clearForm();
+                dispatch(getConsecutivos());
                 setshow(false);
             }
         }
@@ -97,12 +99,13 @@ const ConsecutivoForm = ({currentId, setCurrenteId, isOpen, setshow, onExit}) =>
         
 
     const clearForm = () => {
+        setCurrenteId(null);
         setConsecutivoData({tipo: '', descripcion: '', valor: '', tienePrefijo: '', prefijo: ''});
     }
     
     return(
 
-        <Modal show={isOpen} onHide={setshow} onExit={onExit} className="modal">
+        <Modal show={isOpen} onHide={setshow} onExit={clearForm} className="modal">
             <Modal.Header className="mheader" closeButton>
             <Modal.Title>{ currentId ? 'Editar Consecutivo' : 'Información de Consecutivos'}</Modal.Title>
             </Modal.Header>

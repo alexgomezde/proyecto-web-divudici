@@ -3,20 +3,25 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Row, Col, Form, FormControl, Modal, FormGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
-import { getConsecutivos, updateConsecutivo } from '../../actions/consecutivos';
+import { getConsecutivos, createConsecutivo, updateConsecutivo, deleteConsecutivo } from '../../actions/consecutivos';
 import { createProducto, getProductos, updateProducto } from '../../actions/productos';
 
-const ProductoUtencilioForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutivo, setCurrentConsecutivo, selectedConsecutivo}) => {
+const ProductoUtencilioForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutivo, setCurrentConsecutivo}) => {
 
     const dispatch = useDispatch();
     const restaurantes = useSelector((state) => state.restaurantes);
+    const consecutivos = useSelector((state) => state.consecutivos);
     const marcas = useSelector((state) => state.marcas);
-    const unidadesMedidas = useSelector((state) => state.unidadesMedidas);
-
-
+    const [tempIdConsecutivo, setTempIdConsecutivo] = useState("")
     const utencilio = useSelector((state) => currentId ? state.productos.find((b) => b._id === currentId) : null);
-    // const selectedConsecutivo = useSelector((state) => !currentConsecutivo ? state.consecutivos.find((c) => c.prefijo === "EVE-") : null);
-    console.table(selectedConsecutivo);
+
+    const [consecutivoData, setConsecutivoData] = useState({
+        tipo: 'Equipos y Utencilios', 
+        descripcion: 'Equipos y Utencilio creado automáticamente', 
+        valor: '', 
+        tienePrefijo: true, 
+        prefijo: ''    
+    });
 
     const [utencilioData, setUtencilioData] = useState({
         id_consecutivo: '',
@@ -72,14 +77,60 @@ const ProductoUtencilioForm = ({currentId, setCurrenteId, isOpen, setshow, curre
         return true;
     }
 
+    const generarCodigo = () => {
 
-    useEffect(() => { if(selectedConsecutivo){setUtencilioData({ ...utencilioData, id_consecutivo : selectedConsecutivo._id, codigo : selectedConsecutivo.prefijo + selectedConsecutivo.valor})} }, [selectedConsecutivo]);
+        let codigoEncontrado = false;
+        let codigo = '';
+        let valorMayor = 0;
+
+        consecutivos.forEach(consecutivo => {
+
+            if(consecutivo.prefijo === "EU-"){
+
+                if(consecutivo.valor > valorMayor){
+
+                    valorMayor = consecutivo.valor;
+                }
+                codigoEncontrado = true;
+            }
+        });
+
+        valorMayor++;
+
+        if(!codigoEncontrado){
+            consecutivoData.valor= 1;
+            consecutivoData.prefijo = 'EU-';
+            
+            codigo = `EU-1`;
+        }else{
+
+            codigo = `EU-${valorMayor}`;
+
+            consecutivoData.valor= valorMayor++;
+            consecutivoData.prefijo = 'EU-';
+        }
+
+        utencilioData.codigo = codigo;
+
+        return codigo;
+    }
+
+    const getConsecutivoId = () => {
+        consecutivos.forEach(consecutivo => {
+            if(consecutivo.prefijo === consecutivoData.prefijo && consecutivo.valor === consecutivoData.valor){
+                return consecutivo._id;
+            }
+        });
+    }
+
 
     //populate data on edit
     useEffect(() => { if(utencilio){setUtencilioData(utencilio)} }, [utencilio]);
-    
 
-    
+    useEffect(() => {
+        dispatch(getConsecutivos());
+
+    }, [ dispatch, tempIdConsecutivo]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -95,10 +146,12 @@ const ProductoUtencilioForm = ({currentId, setCurrenteId, isOpen, setshow, curre
                 setshow(false);
             }else{
 
+                dispatch(createConsecutivo(consecutivoData));
+                setTempIdConsecutivo(getConsecutivoId());
+                setUtencilioData({ ...utencilioData, id_consecutivo : tempIdConsecutivo});
                 dispatch(createProducto(utencilioData));
-                selectedConsecutivo.valor++;
-                dispatch(updateConsecutivo(selectedConsecutivo._id, selectedConsecutivo));
                 dispatch(getConsecutivos());
+                generarCodigo();
                 clearForm();
                 setshow(false);
             }
@@ -137,7 +190,7 @@ const ProductoUtencilioForm = ({currentId, setCurrenteId, isOpen, setshow, curre
                         </Col>
                         <Col>
                             <FormGroup>
-                                <FormControl type="text" disabled name="codigo" value={utencilioData.codigo}></FormControl>
+                                <FormControl type="text" disabled name="codigo" value={ !currentId ? generarCodigo() : utencilioData.codigo}></FormControl>
                             </FormGroup>
                         </Col>
                     </Row>

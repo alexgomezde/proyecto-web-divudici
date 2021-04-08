@@ -22,8 +22,6 @@ const ProductoUtencilio = () => {
     const [inputSearchTermError, setinputSearchTermError] = useState('');
     const [currentConsecutivo, setCurrentConsecutivo] = useState(null);
 
-    const selectedConsecutivo = useSelector((state) => !currentConsecutivo ? state.consecutivos.find((c) => c.prefijo === "EU-") : null);
-
     const reload=()=>{window.location.reload()};
 
     const search = (e) => {
@@ -136,7 +134,7 @@ const ProductoUtencilio = () => {
                 </Col>
             </Row>
 
-            <ProductoUtencilioForm currentId={currentId} setCurrenteId={setCurrenteId} isOpen={show} setshow={setShow}  currentConsecutivo={currentConsecutivo} setCurrentConsecutivo={setCurrentConsecutivo} selectedConsecutivo={selectedConsecutivo}/>
+            <ProductoUtencilioForm currentId={currentId} setCurrenteId={setCurrenteId} isOpen={show} setshow={setShow}  currentConsecutivo={currentConsecutivo} setCurrentConsecutivo={setCurrentConsecutivo} />
         </>
     );
 }

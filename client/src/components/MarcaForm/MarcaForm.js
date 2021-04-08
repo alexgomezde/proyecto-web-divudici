@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Row, Col, Form, FormControl, Modal, FormGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
-import { updateConsecutivo } from '../../actions/consecutivos';
+import { getConsecutivos, createConsecutivo, updateConsecutivo } from '../../actions/consecutivos';
 import { createMarca, updateMarca } from '../../actions/marcas';
 import FileBase from 'react-file-base64';
 import { getMarcas } from '../../actions/marcas';
@@ -14,7 +14,17 @@ const MarcaForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutiv
     const dispatch = useDispatch();
     const paises = useSelector((state) => state.paises);
     const marca = useSelector((state) => currentId ? state.marcas.find((r) => r._id === currentId) : null);
-    const selectedConsecutivo = useSelector((state) => !currentConsecutivo ? state.consecutivos.find((c) => c.prefijo === "M-") : null);
+    const consecutivos = useSelector((state) => state.consecutivos);
+
+    const [tempIdConsecutivo, setTempIdConsecutivo] = useState("");
+
+    const [consecutivoData, setConsecutivoData] = useState({
+        tipo: 'Marcas', 
+        descripcion: 'Marca creada automáticamente', 
+        valor: '', 
+        tienePrefijo: true, 
+        prefijo: ''    
+    });
     const [marcaData, setMarcaData] = useState({
         id_consecutivo: '',
         codigo: '',
@@ -101,12 +111,53 @@ const MarcaForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutiv
 
     }
 
-    //populate data on edit
-    useEffect(() => { if(selectedConsecutivo){
+    const generarCodigo = () => {
 
-            setMarcaData({ ...marcaData, id_consecutivo : selectedConsecutivo._id, codigo : selectedConsecutivo.prefijo + selectedConsecutivo.valor});
-        } 
-    }, [selectedConsecutivo]);
+        let codigoEncontrado = false;
+        let codigo = '';
+        let valorMayor = 0;
+        let prefix = 'M-';
+
+        consecutivos.forEach(consecutivo => {
+
+            if(consecutivo.prefijo === prefix){
+
+                if(consecutivo.valor > valorMayor){
+
+                    valorMayor = consecutivo.valor;
+                }
+                codigoEncontrado = true;
+            }
+        });
+
+        valorMayor++;
+
+        if(!codigoEncontrado){
+            consecutivoData.valor= 1;
+            consecutivoData.prefijo = prefix;
+            
+            codigo = prefix;
+        }else{
+
+            codigo = prefix + valorMayor;
+
+            consecutivoData.valor= valorMayor++;
+            consecutivoData.prefijo = prefix;
+        }
+
+        marcaData.codigo = codigo;
+
+        return codigo;
+    }
+
+    const getConsecutivoId = () => {
+        consecutivos.forEach(consecutivo => {
+            if(consecutivo.prefijo === consecutivoData.prefijo && consecutivo.valor === consecutivoData.valor){
+                return consecutivo._id;
+            }
+        });
+    }
+
 
     //populate data on edit
     useEffect(() => { if(marca){setMarcaData(marca)} 
@@ -129,9 +180,12 @@ const MarcaForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutiv
                 ;
             }else{
 
+                dispatch(createConsecutivo(consecutivoData));
+                setTempIdConsecutivo(getConsecutivoId());
+                setMarcaData({ ...marcaData, id_consecutivo : tempIdConsecutivo});
                 dispatch(createMarca(marcaData));
-                selectedConsecutivo.valor++;
-                dispatch(updateConsecutivo(selectedConsecutivo._id, selectedConsecutivo));
+                dispatch(getConsecutivos());
+                generarCodigo();
                 clearForm();
                 setshow(false);
             }
@@ -174,7 +228,7 @@ const MarcaForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutiv
                                 </Col>
                                 <Col>
                                     <FormGroup>
-                                        <FormControl type="text" disabled name="codigo" value={marcaData.codigo} ></FormControl>
+                                        <FormControl type="text" disabled name="codigo" value={!currentId ? generarCodigo() : marcaData.codigo} ></FormControl>
                                     </FormGroup>
                                 </Col>
                             </Row>
@@ -247,7 +301,7 @@ const MarcaForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutiv
                                 <Col md="3"className="text-right pt-1">
                                     <Form.Label >Cédula Jurídcia</Form.Label>
                                 </Col>
-                                <Col md="3">
+                                <Col>
                                     <FormGroup>
                                     <FormControl className={ (marcaData.cedulaJuridicaError) ? 'is-invalid' : ''} type="number" name="cedulaJuridica" value={marcaData.cedulaJuridica} onChange={(e) => setMarcaData({ ...marcaData, cedulaJuridica: e.target.value})}></FormControl>
                                         <small className="form-text text-danger">{marcaData.cedulaJuridicaError}</small>

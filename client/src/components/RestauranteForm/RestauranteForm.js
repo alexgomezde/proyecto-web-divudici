@@ -4,15 +4,24 @@ import './styles.css';
 import { Button, Row, Col, Form, FormControl, Modal, FormGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
-import { updateConsecutivo } from '../../actions/consecutivos';
-import { createRestaurante, updateRestaurante } from '../../actions/restaurantes';
+import { getConsecutivos, createConsecutivo, updateConsecutivo } from '../../actions/consecutivos';
+import { createRestaurante, getRestaurantes, updateRestaurante } from '../../actions/restaurantes';
 
 
 const RestauranteForm = ({currentId, setCurrenteId, isOpen, setshow, onExit, currentConsecutivo, setCurrentConsecutivo}) => {
 
     const dispatch = useDispatch();
     const restaurante = useSelector((state) => currentId ? state.restaurantes.find((r) => r._id === currentId) : null);
-    const selectedConsecutivo = useSelector((state) => !currentConsecutivo ? state.consecutivos.find((c) => c.tipo === "Restaurantes") : null);
+    const consecutivos = useSelector((state) => state.consecutivos);
+    const [tempIdConsecutivo, setTempIdConsecutivo] = useState("");
+
+    const [consecutivoData, setConsecutivoData] = useState({
+        tipo: 'Tecnología', 
+        descripcion: 'Equipo creado automáticamente', 
+        valor: '', 
+        tienePrefijo: true, 
+        prefijo: ''    
+    });
 
     const [checked, setChecked] = useState(true);    
     const [restauranteData, setRestauranteData] = useState({
@@ -69,12 +78,52 @@ const RestauranteForm = ({currentId, setCurrenteId, isOpen, setshow, onExit, cur
 
     }
 
-    //populate data on edit
-    useEffect(() => { if(selectedConsecutivo){
+    const generarCodigo = () => {
 
-            setRestauranteData({ ...restauranteData, id_consecutivo : selectedConsecutivo._id, codigo : selectedConsecutivo.prefijo + selectedConsecutivo.valor});
-        } 
-    }, [selectedConsecutivo]);
+        let codigoEncontrado = false;
+        let codigo = '';
+        let valorMayor = 0;
+        let prefix = 'RES-';
+
+        consecutivos.forEach(consecutivo => {
+
+            if(consecutivo.prefijo === prefix){
+
+                if(consecutivo.valor > valorMayor){
+
+                    valorMayor = consecutivo.valor;
+                }
+                codigoEncontrado = true;
+            }
+        });
+
+        valorMayor++;
+
+        if(!codigoEncontrado){
+            consecutivoData.valor= 1;
+            consecutivoData.prefijo = prefix;
+            
+            codigo = prefix;
+        }else{
+
+            codigo = prefix + valorMayor;
+
+            consecutivoData.valor= valorMayor++;
+            consecutivoData.prefijo = prefix;
+        }
+
+        restauranteData.codigo = codigo;
+
+        return codigo;
+    }
+
+    const getConsecutivoId = () => {
+        consecutivos.forEach(consecutivo => {
+            if(consecutivo.prefijo === consecutivoData.prefijo && consecutivo.valor === consecutivoData.valor){
+                return consecutivo._id;
+            }
+        });
+    }
 
     //populate data on edit
     useEffect(() => { if(restaurante){setRestauranteData(restaurante)} 
@@ -90,34 +139,36 @@ const RestauranteForm = ({currentId, setCurrenteId, isOpen, setshow, onExit, cur
         if(isValid){
             if(currentId) {
                 dispatch(updateRestaurante(currentId, restauranteData));
+                setCurrenteId(null);
+                dispatch(getRestaurantes());
                 clearForm();
                 setshow(false);
            
     
             }else{
 
+                dispatch(createConsecutivo(consecutivoData));
+                setTempIdConsecutivo(getConsecutivoId());
+                setRestauranteData({ ...restauranteData, id_consecutivo : tempIdConsecutivo});
                 dispatch(createRestaurante(restauranteData));
-                selectedConsecutivo.valor++;
-                dispatch(updateConsecutivo(selectedConsecutivo._id, selectedConsecutivo));
+                dispatch(getConsecutivos());
+                generarCodigo();
                 clearForm();
                 setshow(false);
-
-                
             }
         }
 
     }
         
-
     const clearForm = () => {
+        setCurrenteId(null);
         setRestauranteData({nombre: '', especialidad: '', direccion: '', telefono: ''});
     }
 
     
-    
     return(
 
-        <Modal show={isOpen} onHide={setshow}  className="modal" onExit={onExit}>
+        <Modal show={isOpen} onHide={setshow}  className="modal" onExit={clearForm}>
             <Modal.Header className="mheader" closeButton>
             <Modal.Title>{ currentId ? 'Editar Restaurante' : 'Crear Restaurante'}</Modal.Title>
             </Modal.Header>
@@ -129,7 +180,7 @@ const RestauranteForm = ({currentId, setCurrenteId, isOpen, setshow, onExit, cur
                         </Col>
                         <Col>
                             <FormGroup>
-                                <FormControl type="text" disabled name="codigo" value={restauranteData.codigo} ></FormControl>
+                                <FormControl type="text" disabled name="codigo" value={!currentId ? generarCodigo() : restauranteData.codigo} ></FormControl>
                             </FormGroup>
                         </Col>
                     </Row>

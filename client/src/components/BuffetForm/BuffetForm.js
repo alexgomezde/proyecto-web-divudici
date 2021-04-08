@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Row, Col, Form, FormControl, Modal, FormGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
-import { updateConsecutivo } from '../../actions/consecutivos';
-import { createBuffet, updateBuffet } from '../../actions/buffets';
+import { getConsecutivos, createConsecutivo, updateConsecutivo } from '../../actions/consecutivos';
+import { createBuffet, getBuffets, updateBuffet } from '../../actions/buffets';
 import FileBase from 'react-file-base64';
 import { getMarcas } from '../../actions/marcas';
 
@@ -13,8 +13,18 @@ const BuffetForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecuti
 
     const dispatch = useDispatch();
     const unidadesMedidas = useSelector((state) => state.unidadesMedidas);
+    const consecutivos = useSelector((state) => state.consecutivos);
     const buffet = useSelector((state) => currentId ? state.buffets.find((r) => r._id === currentId) : null);
-    const selectedConsecutivo = useSelector((state) => !currentConsecutivo ? state.consecutivos.find((c) => c.prefijo === "BUF-") : null);
+    const [tempIdConsecutivo, setTempIdConsecutivo] = useState("");
+
+    const [consecutivoData, setConsecutivoData] = useState({
+        tipo: 'Buffet', 
+        descripcion: 'Buffet creado automáticamente', 
+        valor: '', 
+        tienePrefijo: true, 
+        prefijo: ''    
+    });
+
     const [buffetData, setBuffetData] = useState({
         id_consecutivo: '',
         codigo: '',
@@ -66,24 +76,59 @@ const BuffetForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecuti
             setBuffetData({ ...buffetData, nombreError, precioError, tipoError, id_unidadMedidaError, fotoError});
             return false;
         }
-
-        
         return true;
-
     }
 
-    //populate data on edit
-    useEffect(() => { if(selectedConsecutivo){
+    const generarCodigo = () => {
 
-            setBuffetData({ ...buffetData, id_consecutivo : selectedConsecutivo._id, codigo : selectedConsecutivo.prefijo + selectedConsecutivo.valor});
-        } 
-    }, [selectedConsecutivo]);
+        let codigoEncontrado = false;
+        let codigo = '';
+        let valorMayor = 0;
+        let prefix = 'BUF-';
+
+        consecutivos.forEach(consecutivo => {
+
+            if(consecutivo.prefijo === prefix){
+
+                if(consecutivo.valor > valorMayor){
+
+                    valorMayor = consecutivo.valor;
+                }
+                codigoEncontrado = true;
+            }
+        });
+
+        valorMayor++;
+
+        if(!codigoEncontrado){
+            consecutivoData.valor= 1;
+            consecutivoData.prefijo = prefix;
+            
+            codigo = prefix;
+        }else{
+
+            codigo = prefix + valorMayor;
+
+            consecutivoData.valor= valorMayor++;
+            consecutivoData.prefijo = prefix;
+        }
+
+        buffetData.codigo = codigo;
+
+        return codigo;
+    }
+
+    const getConsecutivoId = () => {
+        consecutivos.forEach(consecutivo => {
+            if(consecutivo.prefijo === consecutivoData.prefijo && consecutivo.valor === consecutivoData.valor){
+                return consecutivo._id;
+            }
+        });
+    }
 
     //populate data on edit
     useEffect(() => { if(buffet){setBuffetData(buffet)} 
     }, [buffet]);
-
-    
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -94,16 +139,18 @@ const BuffetForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecuti
             if(currentId) {
                 dispatch(updateBuffet(currentId, buffetData));
                 setCurrenteId(null);
-                dispatch(getMarcas());
+                dispatch(getBuffets());
                 clearForm();
                 setshow(false);
                 ;
             }else{
 
+                dispatch(createConsecutivo(consecutivoData));
+                setTempIdConsecutivo(getConsecutivoId());
+                setBuffetData({ ...buffetData, id_consecutivo : tempIdConsecutivo});
                 dispatch(createBuffet(buffetData));
-                selectedConsecutivo.valor++;
-                dispatch(updateConsecutivo(selectedConsecutivo._id, selectedConsecutivo));
-                setCurrentConsecutivo(null);
+                dispatch(getConsecutivos());
+                generarCodigo();
                 clearForm();
                 setshow(false);
             }
@@ -143,7 +190,7 @@ const BuffetForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecuti
                         </Col>
                         <Col>
                             <FormGroup>
-                                <FormControl type="text" disabled name="codigo" value={buffetData.codigo} ></FormControl>
+                                <FormControl type="text" disabled name="codigo" value={!currentId ? generarCodigo() : buffetData.codigo} ></FormControl>
                             </FormGroup>
                         </Col>
                     </Row>

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Row, Col, Form, FormControl, Modal, FormGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
-import { getConsecutivos, updateConsecutivo } from '../../actions/consecutivos';
+import { getConsecutivos, updateConsecutivo, createConsecutivo } from '../../actions/consecutivos';
 import { createBebida, getBebidas, updateBebida } from '../../actions/bebidas';
 import FileBase from 'react-file-base64';
 
@@ -15,10 +15,17 @@ const BebidaVinoForm = ({currentId, setCurrenteId, isOpen, setshow, currentConse
     const restaurantes = useSelector((state) => state.restaurantes);
     const marcas = useSelector((state) => state.marcas);
     const nacionalidades = useSelector((state) => state.paises);
-
+    const consecutivos = useSelector((state) => state.consecutivos);
     const bebida = useSelector((state) => currentId ? state.bebidas.find((b) => b._id === currentId) : null);
-    // const selectedConsecutivo = useSelector((state) => !currentConsecutivo ? state.consecutivos.find((c) => c.prefijo === "EVE-") : null);
-    console.table(selectedConsecutivo);
+    const [tempIdConsecutivo, setTempIdConsecutivo] = useState("");
+
+    const [consecutivoData, setConsecutivoData] = useState({
+        tipo: 'Vinos', 
+        descripcion: 'Vino creado automáticamente', 
+        valor: '', 
+        tienePrefijo: true, 
+        prefijo: ''    
+    });
 
     const [bebidaVino, setBebidaVino] = useState({
         id_consecutivo: '',
@@ -117,9 +124,52 @@ const BebidaVinoForm = ({currentId, setCurrenteId, isOpen, setshow, currentConse
         return true;
     }
 
+    const generarCodigo = () => {
 
-    useEffect(() => { if(selectedConsecutivo){setBebidaVino({ ...bebidaVino, id_consecutivo : selectedConsecutivo._id, codigo : selectedConsecutivo.prefijo + selectedConsecutivo.valor})} }, [selectedConsecutivo]);
+        let codigoEncontrado = false;
+        let codigo = '';
+        let valorMayor = 0;
+        let prefix = 'V-';
 
+        consecutivos.forEach(consecutivo => {
+
+            if(consecutivo.prefijo === prefix){
+
+                if(consecutivo.valor > valorMayor){
+
+                    valorMayor = consecutivo.valor;
+                }
+                codigoEncontrado = true;
+            }
+        });
+
+        valorMayor++;
+
+        if(!codigoEncontrado){
+            consecutivoData.valor= 1;
+            consecutivoData.prefijo = prefix;
+            
+            codigo = prefix;
+        }else{
+
+            codigo = prefix + valorMayor;
+
+            consecutivoData.valor= valorMayor++;
+            consecutivoData.prefijo = prefix;
+        }
+
+        bebidaVino.codigo = codigo;
+
+        return codigo;
+    }
+
+    const getConsecutivoId = () => {
+        consecutivos.forEach(consecutivo => {
+            if(consecutivo.prefijo === consecutivoData.prefijo && consecutivo.valor === consecutivoData.valor){
+                return consecutivo._id;
+            }
+        });
+    }
     //populate data on edit
     useEffect(() => { if(bebida){setBebidaVino(bebida)} }, [bebida]);
     
@@ -140,11 +190,12 @@ const BebidaVinoForm = ({currentId, setCurrenteId, isOpen, setshow, currentConse
                 setshow(false);
             }else{
 
-                console.table(bebidaVino);
+                dispatch(createConsecutivo(consecutivoData));
+                setTempIdConsecutivo(getConsecutivoId());
+                setBebidaVino({ ...bebidaVino, id_consecutivo : tempIdConsecutivo});
                 dispatch(createBebida(bebidaVino));
-                selectedConsecutivo.valor++;
-                dispatch(updateConsecutivo(selectedConsecutivo._id, selectedConsecutivo));
                 dispatch(getConsecutivos());
+                generarCodigo();
                 clearForm();
                 setshow(false);
             }
@@ -195,7 +246,7 @@ const BebidaVinoForm = ({currentId, setCurrenteId, isOpen, setshow, currentConse
                                 </Col>
                                 <Col>
                                     <FormGroup>
-                                        <FormControl type="text" disabled name="codigo" value={bebidaVino.codigo}></FormControl>
+                                        <FormControl type="text" disabled name="codigo" value={!currentId ? generarCodigo() : bebidaVino.codigo}></FormControl>
                                     </FormGroup>
                                 </Col>
                             </Row>

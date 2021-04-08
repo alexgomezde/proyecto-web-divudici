@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Row, Col, Form, FormControl, Modal, FormGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
-import { getConsecutivos, updateConsecutivo } from '../../actions/consecutivos';
+import { getConsecutivos, updateConsecutivo, createConsecutivo } from '../../actions/consecutivos';
 import { createEmpleado, getEmpleados, updateEmpleado } from '../../actions/empleados';
 import FileBase from 'react-file-base64';
 
@@ -15,13 +15,17 @@ const EmpleadoForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecu
     const restaurantes = useSelector((state) => state.restaurantes);
     const nacionalidades = useSelector((state) => state.paises);
     const puestos = useSelector((state) => state.puestos);
-
-    console.log(restaurantes);
-
-
+    const consecutivos = useSelector((state) => state.consecutivos);
     const empleado = useSelector((state) => currentId ? state.empleados.find((b) => b._id === currentId) : null);
-    // const selectedConsecutivo = useSelector((state) => !currentConsecutivo ? state.consecutivos.find((c) => c.prefijo === "EVE-") : null);
-    console.table(selectedConsecutivo);
+    const [tempIdConsecutivo, setTempIdConsecutivo] = useState("");
+
+    const [consecutivoData, setConsecutivoData] = useState({
+        tipo: 'Empleados', 
+        descripcion: 'Empleado creado automáticamente', 
+        valor: '', 
+        tienePrefijo: true, 
+        prefijo: ''    
+    });
 
     const [empleadoData, setEmpleadoData] = useState({
         id_consecutivo: '',
@@ -117,8 +121,52 @@ const EmpleadoForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecu
         return true;
     }
 
+    const generarCodigo = () => {
 
-    useEffect(() => { if(selectedConsecutivo){setEmpleadoData({ ...empleadoData, id_consecutivo : selectedConsecutivo._id, codigo : selectedConsecutivo.prefijo + selectedConsecutivo.valor})} }, [selectedConsecutivo]);
+        let codigoEncontrado = false;
+        let codigo = '';
+        let valorMayor = 0;
+        let prefix = 'EMP-';
+
+        consecutivos.forEach(consecutivo => {
+
+            if(consecutivo.prefijo === prefix){
+
+                if(consecutivo.valor > valorMayor){
+
+                    valorMayor = consecutivo.valor;
+                }
+                codigoEncontrado = true;
+            }
+        });
+
+        valorMayor++;
+
+        if(!codigoEncontrado){
+            consecutivoData.valor= 1;
+            consecutivoData.prefijo = prefix;
+            
+            codigo = prefix;
+        }else{
+
+            codigo = prefix + valorMayor;
+
+            consecutivoData.valor= valorMayor++;
+            consecutivoData.prefijo = prefix;
+        }
+
+        empleadoData.codigo = codigo;
+
+        return codigo;
+    }
+
+    const getConsecutivoId = () => {
+        consecutivos.forEach(consecutivo => {
+            if(consecutivo.prefijo === consecutivoData.prefijo && consecutivo.valor === consecutivoData.valor){
+                return consecutivo._id;
+            }
+        });
+    }
 
     //populate data on edit
     useEffect(() => { if(empleado){setEmpleadoData(empleado)} }, [empleado]);
@@ -139,11 +187,12 @@ const EmpleadoForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecu
                 clearForm();
                 setshow(false);
             }else{
-                console.table(empleadoData);
+                dispatch(createConsecutivo(consecutivoData));
+                setTempIdConsecutivo(getConsecutivoId());
+                setEmpleadoData({ ...empleadoData, id_consecutivo : tempIdConsecutivo});
                 dispatch(createEmpleado(empleadoData));
-                selectedConsecutivo.valor++;
-                dispatch(updateConsecutivo(selectedConsecutivo._id, selectedConsecutivo));
                 dispatch(getConsecutivos());
+                generarCodigo();
                 clearForm();
                 setshow(false);
             }
@@ -195,7 +244,7 @@ const EmpleadoForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecu
                                 </Col>
                                 <Col>
                                     <FormGroup>
-                                        <FormControl type="text" disabled name="codigo" value={empleadoData.codigo} ></FormControl>
+                                        <FormControl type="text" disabled name="codigo" value={!currentId ? generarCodigo() : empleadoData.codigo} ></FormControl>
                                     </FormGroup>
                                 </Col>
                             </Row>

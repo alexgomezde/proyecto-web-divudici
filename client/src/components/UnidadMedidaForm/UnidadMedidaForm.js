@@ -4,15 +4,25 @@ import './styles.css';
 import { Button, Row, Col, Form, FormControl, Modal, FormGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
-import { updateConsecutivo } from '../../actions/consecutivos';
-import { createUnidadMedida, updateUnidadMedida } from '../../actions/unidadesMedidas';
+import { getConsecutivos, createConsecutivo, updateConsecutivo  } from '../../actions/consecutivos';
+import { createUnidadMedida, getUnidadesMedidas, updateUnidadMedida } from '../../actions/unidadesMedidas';
 
 
 const UnidadMedidaForm = ({currentId, setCurrenteId, isOpen, setshow, onExit, currentConsecutivo, setCurrentConsecutivo}) => {
 
     const dispatch = useDispatch();
     const unidadMedida = useSelector((state) => currentId ? state.unidadesMedidas.find((u) => u._id === currentId) : null);
-    const selectedConsecutivo = useSelector((state) => !currentConsecutivo ? state.consecutivos.find((c) => c.prefijo === "UM-") : null);
+    const consecutivos = useSelector((state) => state.consecutivos);
+    const [tempIdConsecutivo, setTempIdConsecutivo] = useState("");
+
+    const [consecutivoData, setConsecutivoData] = useState({
+        tipo: 'Unidades de Medida', 
+        descripcion: 'Unidad de Medida creada automáticamente', 
+        valor: '', 
+        tienePrefijo: true, 
+        prefijo: ''    
+    });
+
     const [unidadMedidaData, setUnidadMedidaData] = useState({
         id_consecutivo: '',
         codigo: '', 
@@ -25,14 +35,6 @@ const UnidadMedidaForm = ({currentId, setCurrenteId, isOpen, setshow, onExit, cu
         escalaError: '', 
         detalleError: ''    
     });
-
-    //populate data on edit
-    useEffect(() => { if(selectedConsecutivo){
-
-            setUnidadMedidaData({ ...unidadMedidaData, id_consecutivo : selectedConsecutivo._id, codigo : selectedConsecutivo.prefijo + selectedConsecutivo.valor});
-        } 
-    }, [selectedConsecutivo]);
-
 
     const [scales, setScales] = useState([
         { label: "Unidad", value: "Unidad", symbol: "" },
@@ -108,13 +110,9 @@ const UnidadMedidaForm = ({currentId, setCurrenteId, isOpen, setshow, onExit, cu
             }else if(e.target.value === unit.value){
                 setUnidadMedidaData({ ...unidadMedidaData, detalle: e.target.value, simbologia: unit.symbology});
             }
-
-            
         });
     };
    
-    
-
     const validate = () => {
 
         let unidadError ='';
@@ -143,13 +141,57 @@ const UnidadMedidaForm = ({currentId, setCurrenteId, isOpen, setshow, onExit, cu
 
     }
 
-    
+    const generarCodigo = () => {
+
+        let codigoEncontrado = false;
+        let codigo = '';
+        let valorMayor = 0;
+        let prefix = 'UM-';
+
+        consecutivos.forEach(consecutivo => {
+
+            if(consecutivo.prefijo === prefix){
+
+                if(consecutivo.valor > valorMayor){
+
+                    valorMayor = consecutivo.valor;
+                }
+                codigoEncontrado = true;
+            }
+        });
+
+        valorMayor++;
+
+        if(!codigoEncontrado){
+            consecutivoData.valor= 1;
+            consecutivoData.prefijo = prefix;
+            
+            codigo = prefix;
+        }else{
+
+            codigo = prefix + valorMayor;
+
+            consecutivoData.valor= valorMayor++;
+            consecutivoData.prefijo = prefix;
+        }
+
+        unidadMedidaData.codigo = codigo;
+
+        return codigo;
+    }
+
+    const getConsecutivoId = () => {
+        consecutivos.forEach(consecutivo => {
+            if(consecutivo.prefijo === consecutivoData.prefijo && consecutivo.valor === consecutivoData.valor){
+                return consecutivo._id;
+            }
+        });
+    }
+
 
     //populate data on edit
     useEffect(() => { if(unidadMedida){setUnidadMedidaData(unidadMedida)} 
     }, [unidadMedida]);
-
-    
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -159,15 +201,18 @@ const UnidadMedidaForm = ({currentId, setCurrenteId, isOpen, setshow, onExit, cu
         if(isValid){
             if(currentId) {
                 dispatch(updateUnidadMedida(currentId, unidadMedidaData));
+                setCurrenteId(null);
+                dispatch(getUnidadesMedidas());
                 clearForm();
                 setshow(false);
-           
-    
             }else{
 
+                dispatch(createConsecutivo(consecutivoData));
+                setTempIdConsecutivo(getConsecutivoId());
+                setUnidadMedidaData({ ...unidadMedidaData, id_consecutivo : tempIdConsecutivo});
                 dispatch(createUnidadMedida(unidadMedidaData));
-                selectedConsecutivo.valor++;
-                dispatch(updateConsecutivo(selectedConsecutivo._id, selectedConsecutivo));
+                dispatch(getConsecutivos());
+                generarCodigo();
                 clearForm();
                 setshow(false);
 
@@ -179,6 +224,7 @@ const UnidadMedidaForm = ({currentId, setCurrenteId, isOpen, setshow, onExit, cu
         
 
     const clearForm = () => {
+        setCurrenteId(null);
         setUnidadMedidaData({unidad: '', escala: '', simbolo: '', detalle: '', simbologia: ''});
     }
 
@@ -187,7 +233,7 @@ const UnidadMedidaForm = ({currentId, setCurrenteId, isOpen, setshow, onExit, cu
     
     return(
 
-        <Modal show={isOpen} onHide={setshow}  className="modal" onExit={onExit}>
+        <Modal show={isOpen} onHide={setshow} onExit={clearForm}  className="modal">
             <Modal.Header className="mheader" closeButton>
             <Modal.Title>{ currentId ? 'Editar Unidad de Medida' : 'Crear Unidad de Medida'}</Modal.Title>
             </Modal.Header>
@@ -199,7 +245,7 @@ const UnidadMedidaForm = ({currentId, setCurrenteId, isOpen, setshow, onExit, cu
                         </Col>
                         <Col>
                             <FormGroup>
-                                <FormControl type="text" disabled name="codigo" value={unidadMedidaData.codigo} ></FormControl>
+                                <FormControl type="text" disabled name="codigo" value={!currentId ? generarCodigo() : unidadMedidaData.codigo} ></FormControl>
                             </FormGroup>
                         </Col>
                     </Row>

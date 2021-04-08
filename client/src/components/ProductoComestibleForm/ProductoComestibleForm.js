@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Row, Col, Form, FormControl, Modal, FormGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
-import { getConsecutivos, updateConsecutivo } from '../../actions/consecutivos';
+import { getConsecutivos, updateConsecutivo, createConsecutivo } from '../../actions/consecutivos';
 import { createProducto, getProductos, updateProducto } from '../../actions/productos';
 import FileBase from 'react-file-base64';
 
@@ -15,11 +15,17 @@ const ProductoComestibleForm = ({currentId, setCurrenteId, isOpen, setshow, curr
     const restaurantes = useSelector((state) => state.restaurantes);
     const marcas = useSelector((state) => state.marcas);
     const unidadesMedidas = useSelector((state) => state.unidadesMedidas);
-
-
+    const consecutivos = useSelector((state) => state.consecutivos);
     const comestible = useSelector((state) => currentId ? state.productos.find((b) => b._id === currentId) : null);
-    // const selectedConsecutivo = useSelector((state) => !currentConsecutivo ? state.consecutivos.find((c) => c.prefijo === "EVE-") : null);
-    console.table(selectedConsecutivo);
+    const [tempIdConsecutivo, setTempIdConsecutivo] = useState("");
+
+    const [consecutivoData, setConsecutivoData] = useState({
+        tipo: 'Comestibles', 
+        descripcion: 'Comestible creado automáticamente', 
+        valor: '', 
+        tienePrefijo: true, 
+        prefijo: ''    
+    });
 
     const [comestibleData, setComestibleData] = useState({
         id_consecutivo: '',
@@ -97,8 +103,53 @@ const ProductoComestibleForm = ({currentId, setCurrenteId, isOpen, setshow, curr
         return true;
     }
 
+    const generarCodigo = () => {
 
-    useEffect(() => { if(selectedConsecutivo){setComestibleData({ ...comestibleData, id_consecutivo : selectedConsecutivo._id, codigo : selectedConsecutivo.prefijo + selectedConsecutivo.valor})} }, [selectedConsecutivo]);
+        let codigoEncontrado = false;
+        let codigo = '';
+        let valorMayor = 0;
+        let prefix = 'COM-';
+
+        consecutivos.forEach(consecutivo => {
+
+            if(consecutivo.prefijo === prefix){
+
+                if(consecutivo.valor > valorMayor){
+
+                    valorMayor = consecutivo.valor;
+                }
+                codigoEncontrado = true;
+            }
+        });
+
+        valorMayor++;
+
+        if(!codigoEncontrado){
+            consecutivoData.valor= 1;
+            consecutivoData.prefijo = prefix;
+            
+            codigo = prefix;
+        }else{
+
+            codigo = prefix + valorMayor;
+
+            consecutivoData.valor= valorMayor++;
+            consecutivoData.prefijo = prefix;
+        }
+
+        comestibleData.codigo = codigo;
+
+        return codigo;
+    }
+
+    const getConsecutivoId = () => {
+        consecutivos.forEach(consecutivo => {
+            if(consecutivo.prefijo === consecutivoData.prefijo && consecutivo.valor === consecutivoData.valor){
+                return consecutivo._id;
+            }
+        });
+    }
+
 
     //populate data on edit
     useEffect(() => { if(comestible){setComestibleData(comestible)} }, [comestible]);
@@ -120,10 +171,12 @@ const ProductoComestibleForm = ({currentId, setCurrenteId, isOpen, setshow, curr
                 setshow(false);
             }else{
 
+                dispatch(createConsecutivo(consecutivoData));
+                setTempIdConsecutivo(getConsecutivoId());
+                setComestibleData({ ...comestibleData, id_consecutivo : tempIdConsecutivo});
                 dispatch(createProducto(comestibleData));
-                selectedConsecutivo.valor++;
-                dispatch(updateConsecutivo(selectedConsecutivo._id, selectedConsecutivo));
                 dispatch(getConsecutivos());
+                generarCodigo();
                 clearForm();
                 setshow(false);
             }
@@ -170,7 +223,7 @@ const ProductoComestibleForm = ({currentId, setCurrenteId, isOpen, setshow, curr
                                 </Col>
                                 <Col>
                                     <FormGroup>
-                                        <FormControl type="text" disabled name="codigo" value={comestibleData.codigo}></FormControl>
+                                        <FormControl type="text" disabled name="codigo" value={!currentId ? generarCodigo() : comestibleData.codigo}></FormControl>
                                     </FormGroup>
                                 </Col>
                             </Row>

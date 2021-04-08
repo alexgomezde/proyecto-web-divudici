@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Row, Col, Form, FormControl, Modal, FormGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
-import { getConsecutivos, updateConsecutivo } from '../../actions/consecutivos';
+import { getConsecutivos, updateConsecutivo, createConsecutivo } from '../../actions/consecutivos';
 import { createMesa, getMesas, updateMesa } from '../../actions/mesas';
 
 
@@ -14,7 +14,16 @@ const MesaForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutivo
     const restaurantes = useSelector((state) => state.restaurantes);
     const mesas = useSelector((state) => state.mesas);
     const mesa = useSelector((state) => currentId ? state.mesas.find((b) => b._id === currentId) : null);
-    console.table(selectedConsecutivo);
+    const consecutivos = useSelector((state) => state.consecutivos);
+    const [tempIdConsecutivo, setTempIdConsecutivo] = useState("");
+
+    const [consecutivoData, setConsecutivoData] = useState({
+        tipo: 'Mesas', 
+        descripcion: 'Mesa creada automáticamente', 
+        valor: '', 
+        tienePrefijo: true, 
+        prefijo: ''    
+    });
 
     const [mesaData, setMesaData] = useState({
         id_consecutivo: '',
@@ -85,15 +94,56 @@ const MesaForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutivo
         return nombreExiste;
     }
 
+    const generarCodigo = () => {
 
-    useEffect(() => { if(selectedConsecutivo){setMesaData({ ...mesaData, id_consecutivo : selectedConsecutivo._id, codigo : selectedConsecutivo.prefijo + selectedConsecutivo.valor})} }, [selectedConsecutivo]);
+        let codigoEncontrado = false;
+        let codigo = '';
+        let valorMayor = 0;
+        let prefix = 'ME-';
+
+        consecutivos.forEach(consecutivo => {
+
+            if(consecutivo.prefijo === prefix){
+
+                if(consecutivo.valor > valorMayor){
+
+                    valorMayor = consecutivo.valor;
+                }
+                codigoEncontrado = true;
+            }
+        });
+
+        valorMayor++;
+
+        if(!codigoEncontrado){
+            consecutivoData.valor= 1;
+            consecutivoData.prefijo = prefix;
+            
+            codigo = prefix;
+        }else{
+
+            codigo = prefix + valorMayor;
+
+            consecutivoData.valor= valorMayor++;
+            consecutivoData.prefijo = prefix;
+        }
+
+        mesaData.codigo = codigo;
+
+        return codigo;
+    }
+
+    const getConsecutivoId = () => {
+        consecutivos.forEach(consecutivo => {
+            if(consecutivo.prefijo === consecutivoData.prefijo && consecutivo.valor === consecutivoData.valor){
+                return consecutivo._id;
+            }
+        });
+    }
 
     //populate data on edit
     useEffect(() => { if(mesa){setMesaData(mesa)} }, [mesa]);
     
-
-    
-
     const handleSubmit = (e) => {
         e.preventDefault();
         
@@ -108,11 +158,12 @@ const MesaForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutivo
                 setshow(false);
             }else{
 
-                console.table(mesaData);
+                dispatch(createConsecutivo(consecutivoData));
+                setTempIdConsecutivo(getConsecutivoId());
+                setMesaData({ ...mesaData, id_consecutivo : tempIdConsecutivo});
                 dispatch(createMesa(mesaData));
-                selectedConsecutivo.valor++;
-                dispatch(updateConsecutivo(selectedConsecutivo._id, selectedConsecutivo));
                 dispatch(getConsecutivos());
+                generarCodigo();
                 clearForm();
                 setshow(false);
             }
@@ -153,7 +204,7 @@ const MesaForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutivo
                             </Col>
                             <Col>
                                 <FormGroup>
-                                    <FormControl type="text" disabled name="codigo" value={mesaData.codigo}></FormControl>
+                                    <FormControl type="text" disabled name="codigo" value={!currentId ? generarCodigo() : mesaData.codigo}></FormControl>
                                 </FormGroup>
                             </Col>
                         </Row>

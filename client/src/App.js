@@ -34,8 +34,8 @@ const App = () => {
     return (
         <div>
             <Container>
-                {/* <Consecutivo/>
-                <Restaurante/>
+                <Consecutivo/>
+                {/* <Restaurante/>
                 <UnidadMedida />
                 <Pais />
                 <Marca />
@@ -55,8 +55,8 @@ const App = () => {
                 <ProductoDesechable/>
                 <ProductoLimpieza/>
                 <ProductoTecnologia/>
-                <ProductoUtencilio/> */}
-                <Proveedor/>
+                <ProductoUtencilio/>
+                <Proveedor/> */}
             </Container>
             
         </div>

@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Row, Col, Form, FormControl, Modal, FormGroup,  } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
-import { updateConsecutivo } from '../../actions/consecutivos';
-import { createPais, updatePais } from '../../actions/paises';
+import { getConsecutivos, createConsecutivo, updateConsecutivo } from '../../actions/consecutivos';
+import { createPais, updatePais, getPaises } from '../../actions/paises';
 import FileBase from 'react-file-base64';
 
 
@@ -13,7 +13,17 @@ const PaisFrom = ({currentId, setCurrenteId, isOpen, setshow, onExit, currentCon
 
     const dispatch = useDispatch();
     const pais = useSelector((state) => currentId ? state.paises.find((r) => r._id === currentId) : null);
-    const selectedConsecutivo = useSelector((state) => !currentConsecutivo ? state.consecutivos.find((c) => c.prefijo === "P-") : null);
+    const consecutivos = useSelector((state) => state.consecutivos);
+    const [tempIdConsecutivo, setTempIdConsecutivo] = useState("");
+
+    const [consecutivoData, setConsecutivoData] = useState({
+        tipo: 'Países', 
+        descripcion: 'País creado automáticamente', 
+        valor: '', 
+        tienePrefijo: true, 
+        prefijo: ''    
+    });
+
     const [paisData, setPaisData] = useState({
         id_consecutivo: '',
         codigo: '', 
@@ -29,7 +39,6 @@ const PaisFrom = ({currentId, setCurrenteId, isOpen, setshow, onExit, currentCon
 
         let nombreError ='';
         let banderaError = '';
-
 
         if(!paisData.nombre){
             nombreError = 'Debe ingresar un nombre para el país';
@@ -49,19 +58,59 @@ const PaisFrom = ({currentId, setCurrenteId, isOpen, setshow, onExit, currentCon
 
     }
 
-    //populate data on edit
-    useEffect(() => { if(selectedConsecutivo){
+    const generarCodigo = () => {
 
-            setPaisData({ ...paisData, id_consecutivo : selectedConsecutivo._id, codigo : selectedConsecutivo.prefijo + selectedConsecutivo.valor});
-        } 
-    }, [selectedConsecutivo]);
+        let codigoEncontrado = false;
+        let codigo = '';
+        let valorMayor = 0;
+        let prefix = 'P-';
+
+        consecutivos.forEach(consecutivo => {
+
+            if(consecutivo.prefijo === prefix){
+
+                if(consecutivo.valor > valorMayor){
+
+                    valorMayor = consecutivo.valor;
+                }
+                codigoEncontrado = true;
+            }
+        });
+
+        valorMayor++;
+
+        if(!codigoEncontrado){
+            consecutivoData.valor= 1;
+            consecutivoData.prefijo = prefix;
+            
+            codigo = prefix;
+        }else{
+
+            codigo = prefix + valorMayor;
+
+            consecutivoData.valor= valorMayor++;
+            consecutivoData.prefijo = prefix;
+        }
+
+        paisData.codigo = codigo;
+
+        return codigo;
+    }
+
+    const getConsecutivoId = () => {
+        consecutivos.forEach(consecutivo => {
+            if(consecutivo.prefijo === consecutivoData.prefijo && consecutivo.valor === consecutivoData.valor){
+                return consecutivo._id;
+            }
+        });
+    }
+
 
     //populate data on edit
     useEffect(() => { if(pais){setPaisData(pais)} 
     }, [pais]);
 
     
-
     const handleSubmit = (e) => {
         e.preventDefault();
         
@@ -70,13 +119,18 @@ const PaisFrom = ({currentId, setCurrenteId, isOpen, setshow, onExit, currentCon
         if(isValid){
             if(currentId) {
                 dispatch(updatePais(currentId, paisData));
+                setCurrenteId(null);
+                dispatch(getPaises());
                 clearForm();
                 setshow(false);
             }else{
 
+                dispatch(createConsecutivo(consecutivoData));
+                setTempIdConsecutivo(getConsecutivoId());
+                setPaisData({ ...paisData, id_consecutivo : tempIdConsecutivo});
                 dispatch(createPais(paisData));
-                selectedConsecutivo.valor++;
-                dispatch(updateConsecutivo(selectedConsecutivo._id, selectedConsecutivo));
+                dispatch(getConsecutivos());
+                generarCodigo();
                 clearForm();
                 setshow(false);
             }
@@ -86,6 +140,7 @@ const PaisFrom = ({currentId, setCurrenteId, isOpen, setshow, onExit, currentCon
         
 
     const clearForm = () => {
+        setCurrenteId(null);
         setPaisData({nombre: '', bandera: ''});
     }
 
@@ -94,7 +149,7 @@ const PaisFrom = ({currentId, setCurrenteId, isOpen, setshow, onExit, currentCon
     
     return(
 
-        <Modal show={isOpen} onHide={setshow}  className="modal" onExit={onExit}>
+        <Modal show={isOpen} onHide={setshow}  onExit={clearForm} className="modal">
             <Modal.Header className="mheader" closeButton>
             <Modal.Title>{ currentId ? 'Editar País' : 'Crear País'}</Modal.Title>
             </Modal.Header>
@@ -106,7 +161,7 @@ const PaisFrom = ({currentId, setCurrenteId, isOpen, setshow, onExit, currentCon
                         </Col>
                         <Col>
                             <FormGroup>
-                                <FormControl type="text" disabled name="codigo" value={paisData.codigo} ></FormControl>
+                                <FormControl type="text" disabled name="codigo" value={!currentId ? generarCodigo() : paisData.codigo} ></FormControl>
                             </FormGroup>
                         </Col>
                     </Row>
