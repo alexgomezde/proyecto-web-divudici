@@ -13,6 +13,7 @@ const urlMesas = 'http://localhost:5000/mesas';
 const urlPuestos = 'http://localhost:5000/puestos';
 const urlEmpleados = 'http://localhost:5000/empleados';
 const urlUsuarios = 'http://localhost:5000/usuarios';
+const urlUsuariosLogin = 'http://localhost:5000/usuarios/login';
 const urlProductos = 'http://localhost:5000/productos';
 const urlProveedores = 'http://localhost:5000/proveedores';
 
@@ -80,6 +81,7 @@ export const fetchUsuarios = () => axios.get(urlUsuarios);
 export const createUsuario = (newUsuario) => axios.post(urlUsuarios, newUsuario);
 export const updateUsuario = (id, updatedUsuario) => axios.patch(`${urlUsuarios}/${id}`, updatedUsuario);
 export const deleteUsuario = (id) => axios.delete(`${urlUsuarios}/${id}`);
+export const login  = (usuarioData) => axios.post(urlUsuariosLogin, usuarioData);
 
 export const fetchProductos = () => axios.get(urlProductos);
 export const createProducto = (newProducto) => axios.post(urlProductos, newProducto);

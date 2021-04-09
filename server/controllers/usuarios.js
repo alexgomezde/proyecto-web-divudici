@@ -53,3 +53,33 @@ export const deleteUsuario = async (req, res) => {
 
     res.json({message: 'Usuario eliminado correctamente'});
 }
+
+export const login = async (req, res) => {
+
+    const { login, password} = req.body;
+    try {
+
+        const existingUser =  await UsuarioMessage.findOne({ login });
+
+        if(!existingUser) return res.status(404).json({message: "Usuario no existe"});
+
+        let isPasswordCorrect = false;
+
+        if(password === existingUser.password){
+
+            isPasswordCorrect = true;
+        }
+
+
+        if(!isPasswordCorrect) return res.status(404).json({message: "Credenciales inválidas"});
+
+        //const successUser = { login: existingUser.login, id: existingUser._id, privilegio: existingUser.privilegio};
+
+        res.status(200).json({ result: existingUser});
+
+    } catch (error) {
+        
+        res.status(500).json({ message: 'Something went wrong' });
+    }
+    
+}
