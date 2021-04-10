@@ -30,6 +30,12 @@ import Proveedor from './components/Proveedor/Proveedor';
 import Auth from './components/Auth/Auth';
 import UpperNav from './components/UpperNav/UpperNav';
 import Home from './components/Home/Home';
+import Seguridad from './components/Seguridad/Seguridad';
+import ProveedorHome from './components/ProveedorHome/ProveedorHome';
+import ProductosHome from './components/ProductosHome/ProductosHome';
+import Administracion from './components/Administracion/Administracion';
+import EspecialHome from './components/EspecialHome/EspecialHome';
+import BebidaHome from './components/BebidaHome/BebidaHome';
 
 
 const App = () => {
@@ -65,7 +71,13 @@ const App = () => {
                     <Route path="/limpieza" exact component={ProductoLimpieza} />
                     <Route path="/tecnologia" exact component={ProductoTecnologia} />
                     <Route path="/utencilios" exact component={ProductoUtencilio} />
-                    <Route path="/proveedores" exact component={Proveedor} />
+                    <Route path="/proveedor" exact component={Proveedor} />
+                    <Route path="/seguridad" exact component={Seguridad} />
+                    <Route path="/proveedores" exact component={ProveedorHome} />
+                    <Route path="/productos" exact component={ProductosHome} />
+                    <Route path="/administracion" exact component={Administracion} />
+                    <Route path="/especiales" exact component={EspecialHome} />
+                    <Route path="/bebidas" exact component={BebidaHome} />
                 </Switch>
             
                 {/* <Consecutivo/>

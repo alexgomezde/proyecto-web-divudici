@@ -10,6 +10,8 @@ import { Button, Row, Col, FormControl, Form, InputGroup } from 'react-bootstrap
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faTimes,  faSync, faPlus, faEraser, faMugHot } from '@fortawesome/free-solid-svg-icons';
 import TableLogo from '../../images/table.svg';
+import { Link } from 'react-router-dom';
+
 
 
 const Mesa = () => {
@@ -74,7 +76,9 @@ const Mesa = () => {
                     <div className="heading mt-4 mb-4">
                         <h2 className="d-inline mt-4" >Mesas</h2>
                         <button className="float-right">
-                            <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
+                            <Link to={location => ({ ...location, pathname: "/administracion" })} >
+                                <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
+                            </Link>
                         </button>
                         <button className="float-right" onClick={reload}>
                             <FontAwesomeIcon icon={faSync} size="2x" className="text-white"/>

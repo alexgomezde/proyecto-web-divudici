@@ -7,6 +7,7 @@ import { getBebidas } from '../../actions/bebidas';
 import { getRestaurantes } from '../../actions/restaurantes';
 import { getMarcas } from '../../actions/marcas';
 import { getPaises } from '../../actions/paises';
+import { Link } from 'react-router-dom';
 
 
 import { Button, Row, Col, FormControl, Form, InputGroup } from 'react-bootstrap';
@@ -80,7 +81,9 @@ const BebidaGaseosa = () => {
                     <div className="heading mt-4 mb-4">
                         <h2 className="d-inline mt-4" >Bebidas Gaseosas</h2>
                         <button className="float-right">
-                            <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
+                             <Link to={location => ({ ...location, pathname: "/bebidas" })} >
+                                <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
+                            </Link>
                         </button>
                         <button className="float-right" onClick={reload}>
                             <FontAwesomeIcon icon={faSync} size="2x" className="text-white"/>

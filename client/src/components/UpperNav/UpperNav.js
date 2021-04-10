@@ -76,32 +76,42 @@ const UpperNav = ({currentId, setCurrenteId, isOpen, setshow, onExit}) => {
     return(
         
         <Navbar variant="dark" expand="lg" sticky="top" className="navbar-restaurant">
-        <Navbar.Brand href="#home" className="text-white">
-            <FontAwesomeIcon icon={faStore}  className="text-white mr-2"/>
-            Divudici
-        </Navbar.Brand>
+        
+        <Link to={location => ({ ...location, pathname: "/home" })} >
+            <Navbar.Brand href="#home" className="text-white">
+        
+                <FontAwesomeIcon icon={faStore}  className="text-white mr-2"/>
+                Divudici
+            
+            </Navbar.Brand>
+        </Link>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mr-auto">
-            {/* <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#link">Link</Nav.Link> */}
-            <NavDropdown title="Sistema" id="basic-nav-dropdown" className="text-white">
-                <NavDropdown.Item href="#action/3.1">Información</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.2">Reiniciar Sesión</NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item href="#action/3.4">Salir</NavDropdown.Item>
-            </NavDropdown>
+            
+            {user ? (
+                <Nav className="mr-auto">
+                    <NavDropdown title="Sistema" id="basic-nav-dropdown" className="text-white">
+                    <NavDropdown.Item href="#action/3.1">Información</NavDropdown.Item>
+                    <NavDropdown.Item href="#action/3.2">Reiniciar Sesión</NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item href="" onClick={logout}>Salir</NavDropdown.Item>
+                    </NavDropdown>
 
-            <NavDropdown title="Ayuda" id="basic-nav-dropdown">
-                <NavDropdown.Item href="#action/3.1">Sistema</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.2">Seguridad</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.4">Restaurante</NavDropdown.Item>
-            </NavDropdown>
-            </Nav>
+                    <NavDropdown title="Ayuda" id="basic-nav-dropdown">
+                        <NavDropdown.Item href="#action/3.1">Sistema</NavDropdown.Item>
+                        <NavDropdown.Item href="#action/3.2">Seguridad</NavDropdown.Item>
+                        <NavDropdown.Item href="#action/3.4">Restaurante</NavDropdown.Item>
+                    </NavDropdown>
+                </Nav>
+                
+            ): (
+                <></>
+            )}
+            
 
             {user ? (
                 <>
-                    <p className="mr-5">{`Bienvenido(a) ${user.result.nombre} ${user.result.primerApellido}`}</p>
+                    <p className="mr-5 align-middle mt-1 mb-0">{`Bienvenido(a) ${user.result.nombre} ${user.result.primerApellido}`}</p>
                     <Button variant="outline-outline-light" className="btn-restaurant" onClick={logout} >Cerrar Sesión</Button>
                 </>
             ) : (

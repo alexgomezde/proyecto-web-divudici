@@ -7,6 +7,8 @@ import { getEmpleados } from '../../actions/empleados';
 import { getRestaurantes } from '../../actions/restaurantes';
 import { getPaises } from '../../actions/paises';
 import { getPuestos } from '../../actions/puestos';
+import { Link } from 'react-router-dom';
+
 
 import { Button, Row, Col, FormControl, Form, InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -76,7 +78,9 @@ const Empleado = () => {
                     <div className="heading mt-4 mb-4">
                         <h2 className="d-inline mt-4" >Empleados</h2>
                         <button className="float-right">
-                            <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
+                            <Link to={location => ({ ...location, pathname: "/administracion" })} >
+                                <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
+                            </Link>
                         </button>
                         <button className="float-right" onClick={reload}>
                             <FontAwesomeIcon icon={faSync} size="2x" className="text-white"/>

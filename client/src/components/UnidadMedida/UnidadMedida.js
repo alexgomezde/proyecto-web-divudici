@@ -4,6 +4,7 @@ import UnidadMedidaForm from '../UnidadMedidaForm/UnidadMedidaForm';
 import UnidadMedidaData from '../UnidadMedidaData/UnidadMedidaData';
 import { getConsecutivos } from '../../actions/consecutivos';
 import { getUnidadesMedidas } from '../../actions/unidadesMedidas';
+import { Link } from 'react-router-dom';
 
 
 import './styles.css';
@@ -73,7 +74,9 @@ const UnidadMedida = () => {
                     <div className="heading mt-4 mb-4">
                         <h2 className="d-inline mt-4" >Unidades de Medida</h2>
                         <button className="float-right">
-                            <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
+                            <Link to={location => ({ ...location, pathname: "/seguridad" })} >
+                                <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
+                            </Link>
                         </button>
                         <button className="float-right" onClick={reload}>
                             <FontAwesomeIcon icon={faSync} size="2x" className="text-white"/>

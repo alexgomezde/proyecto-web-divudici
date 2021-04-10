@@ -5,7 +5,7 @@ import BuffetData from '../BuffetData/BuffetData';
 import { getConsecutivos } from '../../actions/consecutivos';
 import { getBuffets } from '../../actions/buffets';
 import { getUnidadesMedidas } from '../../actions/unidadesMedidas';
-
+import { Link } from 'react-router-dom';
 
 
 // import './styles.css';
@@ -77,7 +77,9 @@ const Buffet = () => {
                     <div className="heading mt-4 mb-4">
                         <h2 className="d-inline mt-4" >Buffets</h2>
                         <button className="float-right">
-                            <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
+                            <Link to={location => ({ ...location, pathname: "/especiales" })} >
+                                <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
+                            </Link>
                         </button>
                         <button className="float-right" onClick={reload}>
                             <FontAwesomeIcon icon={faSync} size="2x" className="text-white"/>

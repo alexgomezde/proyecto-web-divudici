@@ -4,6 +4,7 @@ import EspecialidadForm from '../EspecialidadForm/EspecialidadForm';
 import EspecialidadData from '../EspecialidadData/EspecialidadData';
 import { getConsecutivos } from '../../actions/consecutivos';
 import { getEspecialidades } from '../../actions/especialidades';
+import { Link } from 'react-router-dom';
 
 import { Button, Row, Col, FormControl, Form, InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -72,7 +73,9 @@ const Especialidad = () => {
                     <div className="heading mt-4 mb-4">
                         <h2 className="d-inline mt-4" >Especialidades</h2>
                         <button className="float-right">
-                            <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
+                            <Link to={location => ({ ...location, pathname: "/especiales" })} >
+                                <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
+                            </Link>
                         </button>
                         <button className="float-right" onClick={reload}>
                             <FontAwesomeIcon icon={faSync} size="2x" className="text-white"/>

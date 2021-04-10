@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import ConsecutivoData from '../ConsecutivoData/ConsecutivoData';
 import ConsecutivoForm from '../ConsecutivoForm/ConsecutivoForm';
 import { getConsecutivos } from '../../actions/consecutivos';
-
+import { Link } from 'react-router-dom';
 
 import './styles.css';
 import { Button, Row, Col, FormControl, Form, InputGroup } from 'react-bootstrap';
@@ -67,7 +67,9 @@ const Consecutivo = () => {
                     <div className="heading mt-4 mb-4">
                         <h2 className="d-inline mt-4" >Consecutivos</h2>
                         <button className="float-right">
-                            <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
+                            <Link to={location => ({ ...location, pathname: "/seguridad" })} >
+                                <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
+                            </Link>
                         </button>
                         <button className="float-right" onClick={reload}>
                             <FontAwesomeIcon icon={faSync} size="2x" className="text-white"/>

@@ -5,6 +5,7 @@ import UsuarioData from '../UsuarioData/UsuarioData';
 import { getConsecutivos } from '../../actions/consecutivos';
 import { getUsuarios } from '../../actions/usuarios';
 import { getRestaurantes } from '../../actions/restaurantes';
+import { Link } from 'react-router-dom';
 
 import { Button, Row, Col, FormControl, Form, InputGroup} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -73,7 +74,9 @@ const Usuario = () => {
                     <div className="heading mt-4 mb-4">
                         <h2 className="d-inline mt-4" >Usuarios</h2>
                         <button className="float-right">
-                            <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
+                            <Link to={location => ({ ...location, pathname: "/seguridad" })} >
+                                <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
+                            </Link>
                         </button>
                         <button className="float-right" onClick={reload}>
                             <FontAwesomeIcon icon={faSync} size="2x" className="text-white"/>

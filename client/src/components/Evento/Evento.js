@@ -4,7 +4,7 @@ import EventoForm from '../EventoForm/EventoForm';
 import EventoData from '../EventoData/EventoData';
 import { getConsecutivos } from '../../actions/consecutivos';
 import { getEventos } from '../../actions/eventos';
-
+import { Link } from 'react-router-dom';
 
 
 
@@ -76,7 +76,9 @@ const Evento = () => {
                     <div className="heading mt-4 mb-4">
                         <h2 className="d-inline mt-4" >Eventos</h2>
                         <button className="float-right">
-                            <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
+                            <Link to={location => ({ ...location, pathname: "/seguridad" })} >
+                                <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
+                            </Link>
                         </button>
                         <button className="float-right" onClick={reload}>
                             <FontAwesomeIcon icon={faSync} size="2x" className="text-white"/>
