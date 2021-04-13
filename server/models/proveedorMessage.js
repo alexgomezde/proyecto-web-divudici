@@ -1,10 +1,6 @@
 import mongoose from 'mongoose';
 
 const proveedorSchema = mongoose.Schema({
-    id_consecutivo: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'ConsecutivoMessage'
-    },
     codigo: String,
     cedula: Number,
     fechaIngreso: String,

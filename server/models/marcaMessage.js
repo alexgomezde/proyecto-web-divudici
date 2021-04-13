@@ -1,10 +1,6 @@
 import mongoose from 'mongoose';
 
 const marcaSchema = mongoose.Schema({
-    id_consecutivo: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'ConsecutivoMessage'
-    },
     codigo: String,
     nombre: String, 
     id_nacionalidad: {

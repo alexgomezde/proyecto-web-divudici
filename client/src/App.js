@@ -36,6 +36,7 @@ import ProductosHome from './components/ProductosHome/ProductosHome';
 import Administracion from './components/Administracion/Administracion';
 import EspecialHome from './components/EspecialHome/EspecialHome';
 import BebidaHome from './components/BebidaHome/BebidaHome';
+import RestauranteHome from './components/RestauranteHome/RestauranteHome';
 
 
 const App = () => {
@@ -78,6 +79,7 @@ const App = () => {
                     <Route path="/administracion" exact component={Administracion} />
                     <Route path="/especiales" exact component={EspecialHome} />
                     <Route path="/bebidas" exact component={BebidaHome} />
+                    <Route path="/restauranteHome" exact component={RestauranteHome} />
                 </Switch>
             
                 {/* <Consecutivo/>

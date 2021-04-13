@@ -6,7 +6,7 @@ import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
 import { getConsecutivos, updateConsecutivo, createConsecutivo } from '../../actions/consecutivos';
 import { createProducto, getProductos, updateProducto } from '../../actions/productos';
 
-const ProductoLimpiezaForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutivo, setCurrentConsecutivo, selectedConsecutivo}) => {
+const ProductoLimpiezaForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutivo, setCurrentConsecutivo}) => {
 
     const dispatch = useDispatch();
     const restaurantes = useSelector((state) => state.restaurantes);
@@ -14,7 +14,6 @@ const ProductoLimpiezaForm = ({currentId, setCurrenteId, isOpen, setshow, curren
     const unidadesMedidas = useSelector((state) => state.unidadesMedidas);
     const consecutivos = useSelector((state) => state.consecutivos);
     const limpieza = useSelector((state) => currentId ? state.productos.find((b) => b._id === currentId) : null);
-    const [tempIdConsecutivo, setTempIdConsecutivo] = useState("");
 
     const [consecutivoData, setConsecutivoData] = useState({
         tipo: 'Limpieza e Higiene', 
@@ -148,12 +147,8 @@ const ProductoLimpiezaForm = ({currentId, setCurrenteId, isOpen, setshow, curren
         });
     }
 
-    useEffect(() => { if(selectedConsecutivo){setLimpiezaData({ ...limpiezaData, id_consecutivo : selectedConsecutivo._id, codigo : selectedConsecutivo.prefijo + selectedConsecutivo.valor})} }, [selectedConsecutivo]);
-
     //populate data on edit
     useEffect(() => { if(limpieza){setLimpiezaData(limpieza)} }, [limpieza]);
-    
-
     
 
     const handleSubmit = (e) => {
@@ -171,8 +166,8 @@ const ProductoLimpiezaForm = ({currentId, setCurrenteId, isOpen, setshow, curren
             }else{
 
                 dispatch(createConsecutivo(consecutivoData));
-                setTempIdConsecutivo(getConsecutivoId());
-                setLimpiezaData({ ...limpiezaData, id_consecutivo : tempIdConsecutivo});
+                setCurrentConsecutivo(getConsecutivoId());
+                setLimpiezaData({ ...limpiezaData, id_consecutivo : currentConsecutivo});
                 dispatch(createProducto(limpiezaData));
                 dispatch(getConsecutivos());
                 generarCodigo();

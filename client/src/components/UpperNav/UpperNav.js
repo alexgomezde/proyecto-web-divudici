@@ -111,7 +111,7 @@ const UpperNav = ({currentId, setCurrenteId, isOpen, setshow, onExit}) => {
 
             {user ? (
                 <>
-                    <p className="mr-5 align-middle mt-1 mb-0">{`Bienvenido(a) ${user.result.nombre} ${user.result.primerApellido}`}</p>
+                    <p className="mr-5 align-middle mt-1 mb-1">{`Bienvenido(a) ${user.result.nombre} ${user.result.primerApellido}`}</p>
                     <Button variant="outline-outline-light" className="btn-restaurant" onClick={logout} >Cerrar Sesión</Button>
                 </>
             ) : (

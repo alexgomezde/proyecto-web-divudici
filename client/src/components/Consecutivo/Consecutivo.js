@@ -24,7 +24,7 @@ const Consecutivo = () => {
     const search = (e) => {
 
         e.preventDefault();
-        
+
         let inputSearchTermError = '';
 
         if(!inputSearchTerm ){
@@ -49,17 +49,17 @@ const Consecutivo = () => {
     }
 
     const clearForm = () => {
-        
+
         setinputSearchTermError('');
         setinputSearchTerm('');
         setSelectedTypeSearch('');
-    }    
-    
+    }
+
     useEffect(() => {
         dispatch(getConsecutivos());
     }, [ dispatch ]);
 
-       
+
     return (
         <>
             <Row>
@@ -75,9 +75,9 @@ const Consecutivo = () => {
                             <FontAwesomeIcon icon={faSync} size="2x" className="text-white"/>
                         </button>
                     </div>
-                    
 
-                </Col>  
+
+                </Col>
                 <Col md="3">
                     <div className="sidebar text-center">
                     <FontAwesomeIcon icon={faTools} size="9x" className="text-white mt-5"/>
@@ -87,7 +87,7 @@ const Consecutivo = () => {
                     <div className="content">
                         <Form autoComplete="off" noValidate onSubmit={search}>
                             <Row className="mb-4 mt-4">
-                                
+
                                 <Col md="8" className="pl-0" >
 
                                     <InputGroup >
@@ -98,7 +98,7 @@ const Consecutivo = () => {
                                                 <option value="descripcion">Descripción</option>
                                             </select>
                                         </InputGroup.Prepend>
-                                        
+
                                         <FormControl  aria-describedby="basic-addon1" id="inputSearch" value={inputSearchTerm} onChange={(e) => {setinputSearchTerm(e.target.value)}} />
                                         <InputGroup.Append>
                                             <Button type="submit" variant="outline-light" id="searchButton"><FontAwesomeIcon icon={faSearch} /></Button>
@@ -109,21 +109,21 @@ const Consecutivo = () => {
                                 <Col md="4">
                                     <Button variant="outline-light" className="btn-restaurant" onClick={clearForm} ><FontAwesomeIcon icon={faEraser} /></Button>
                                     <Button variant="outline-light" className="ml-3 btn-restaurant" onClick={() => setShow(true)} ><FontAwesomeIcon icon={faPlus} /></Button>
-                                    
+
                                 </Col>
-                                
+
                             </Row>
                         </Form>
-                        
+
                         <Row>
                         <div className="table-wrapper">
-                            
+
                             <ConsecutivoData setShow={setShow} currentId={currentId} setCurrenteId={setCurrenteId} inputSearchTerm={inputSearchTerm} selectedTypeSearch={selectedTypeSearch} />
-                            
+
                         </div>
                         </Row>
-                        
-                        
+
+
                     </div>
                 </Col>
             </Row>
@@ -134,5 +134,3 @@ const Consecutivo = () => {
 }
 
 export default Consecutivo;
-
-

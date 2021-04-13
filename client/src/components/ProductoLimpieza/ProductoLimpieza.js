@@ -23,8 +23,6 @@ const ProductoLimpieza = () => {
     const [inputSearchTermError, setinputSearchTermError] = useState('');
     const [currentConsecutivo, setCurrentConsecutivo] = useState(null);
 
-    const selectedConsecutivo = useSelector((state) => !currentConsecutivo ? state.consecutivos.find((c) => c.prefijo === "LH-") : null);
-
     const reload=()=>{window.location.reload()};
 
     const search = (e) => {
@@ -139,7 +137,7 @@ const ProductoLimpieza = () => {
                 </Col>
             </Row>
 
-            <ProductoLimpiezaForm currentId={currentId} setCurrenteId={setCurrenteId} isOpen={show} setshow={setShow}  currentConsecutivo={currentConsecutivo} setCurrentConsecutivo={setCurrentConsecutivo} selectedConsecutivo={selectedConsecutivo}/>
+            <ProductoLimpiezaForm currentId={currentId} setCurrenteId={setCurrenteId} isOpen={show} setshow={setShow}  currentConsecutivo={currentConsecutivo} setCurrentConsecutivo={setCurrentConsecutivo} />
         </>
     );
 }
