@@ -1,5 +1,6 @@
 import UsuarioMessage from '../models/usuarioMessage.js';
 import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 
 export const getUsuarios = async (req, res) => {
@@ -16,8 +17,9 @@ export const getUsuarios = async (req, res) => {
 
 export const createUsuario = async (req, res) => {
 
-    const usuario = req.body;
-    const newUsuario = new UsuarioMessage(usuario);
+    const { codigo, nombre, primerApellido, segundoApellido, telefonoFijo, telefonoCelular, privilegio, id_restaurante, login, password, password2} = req.body;
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const newUsuario = new UsuarioMessage({ codigo, nombre, primerApellido, segundoApellido, telefonoFijo, telefonoCelular, privilegio, id_restaurante, login, password:hashedPassword , password2:hashedPassword});
 
     try {
 
@@ -34,7 +36,12 @@ export const createUsuario = async (req, res) => {
 
 export const updateUsuario = async (req, res) => {
     const { id: _id } = req.params;
-    const usuario = req.body;
+    const { id, codigo, nombre, primerApellido, segundoApellido, telefonoFijo, telefonoCelular, privilegio, id_restaurante, login, password, password2} = req.body;
+
+    const hashedPassword = await bcrypt.hash(password, 12)
+
+    const usuario = new UsuarioMessage({ _id, codigo, nombre, primerApellido, segundoApellido, telefonoFijo, telefonoCelular, privilegio, id_restaurante, login, password:hashedPassword , password2:hashedPassword});
+
 
     if(!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send('No existe un usuario con ese id');
 
@@ -61,19 +68,11 @@ export const login = async (req, res) => {
 
         const existingUser =  await UsuarioMessage.findOne({ login });
 
-        if(!existingUser) return res.status(404).json({message: "Usuario no existe"});
+        if(!existingUser) return res.status(404).json({message: "Credenciales inválidas"});
 
-        let isPasswordCorrect = false;
-
-        if(password === existingUser.password){
-
-            isPasswordCorrect = true;
-        }
-
+        const isPasswordCorrect = await bcrypt.compare(password, existingUser.password);
 
         if(!isPasswordCorrect) return res.status(404).json({message: "Credenciales inválidas"});
-
-        //const successUser = { login: existingUser.login, id: existingUser._id, privilegio: existingUser.privilegio};
 
         res.status(200).json({ result: existingUser});
 
