@@ -13,7 +13,6 @@ const UsuarioForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
     const restaurantes = useSelector((state) => state.restaurantes);
     const usuarios = useSelector((state) => state.usuarios);
     const consecutivos = useSelector((state) => state.consecutivos);
-    const [checked, setChecked] = useState(false);
     const [checkedEdit, setCheckedEdit] = useState(false);
     const [radioValue, setRadioValue] = useState(null);
     const radios = [
@@ -46,6 +45,7 @@ const UsuarioForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
         login: '',
         password: '',
         password2: '',
+        updatePassword: checkedEdit,
         nombreError: '', 
         primerApellidoError: '',
         segundoApellidoError: '',
@@ -433,7 +433,7 @@ const UsuarioForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
                                 </Col>
                                 <Col>
                                     <FormGroup>
-                                        <Form.Check type="checkbox" label="Cambio de Contraseña" name="" defaultChecked={checkedEdit} onChange={(e) => { setCheckedEdit(!checkedEdit)}}/>
+                                        <Form.Check type="checkbox" label="Cambio de Contraseña" name="" defaultChecked={checkedEdit} onChange={(e) => { setUsuarioData({ ...usuarioData, updatePassword: !checkedEdit}); setCheckedEdit(!checkedEdit)}}/>
                                     </FormGroup>
                                     
                                 </Col>
