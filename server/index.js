@@ -18,6 +18,7 @@ import empleadoRoutes from './routes/empleados.js';
 import usuarioRoutes from './routes/usuarios.js';
 import productoRoutes from './routes/productos.js';
 import proveedorRoutes from './routes/proveedores.js';
+import bitacoraRoutes from './routes/bitacoras.js';
 
 
 const app = express();
@@ -41,6 +42,7 @@ app.use('/empleados', empleadoRoutes);
 app.use('/usuarios', usuarioRoutes);
 app.use('/productos', productoRoutes);
 app.use('/proveedores', proveedorRoutes);
+app.use('/bitacoras', bitacoraRoutes);
 
 
 //database connection

@@ -37,6 +37,7 @@ import Administracion from './components/Administracion/Administracion';
 import EspecialHome from './components/EspecialHome/EspecialHome';
 import BebidaHome from './components/BebidaHome/BebidaHome';
 import RestauranteHome from './components/RestauranteHome/RestauranteHome';
+import Bitacora from './components/Bitacora/Bitacora';
 
 
 const App = () => {
@@ -80,6 +81,7 @@ const App = () => {
                     <Route path="/especiales" exact component={EspecialHome} />
                     <Route path="/bebidas" exact component={BebidaHome} />
                     <Route path="/restauranteHome" exact component={RestauranteHome} />
+                    <Route path="/bitacoras" exact component={Bitacora} />
                 </Switch>
             
                 {/* <Consecutivo/>

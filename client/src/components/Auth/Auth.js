@@ -51,6 +51,7 @@ const Auth = ({currentId, setCurrenteId, isOpen, setshow, onExit}) => {
         if(isValid){
             
             console.log(usuarioData);
+
             dispatch(login(usuarioData, history));
         }
 

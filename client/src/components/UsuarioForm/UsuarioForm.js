@@ -4,6 +4,7 @@ import { Button, Row, Col, Form, FormControl, Modal, FormGroup, ButtonGroup, Tog
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
 import { getConsecutivos, updateConsecutivo, createConsecutivo } from '../../actions/consecutivos';
+import { getBitacoras, createBitacora } from '../../actions/bitacoras';
 import { createUsuario, getUsuarios, updateUsuario } from '../../actions/usuarios';
 import UsuarioData from '../UsuarioData/UsuarioData';
 
@@ -22,10 +23,19 @@ const UsuarioForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
         { name: 'Cuenta', value: 'cuenta' }
     ];
     const [tempIdConsecutivo, setTempIdConsecutivo] = useState("");
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
 
     const [consecutivoData, setConsecutivoData] = useState({
         tipo: 'Usuarios', 
         descripcion: 'Usuario creado automáticamente', 
+        valor: '', 
+        tienePrefijo: true, 
+        prefijo: ''    
+    });
+
+    const [bitacoraConsecutivoData, setBitacoraConsecutivoData] = useState({
+        tipo: 'Bitácora', 
+        descripcion: 'Bitacora creada automáticamente', 
         valor: '', 
         tienePrefijo: true, 
         prefijo: ''    
@@ -58,7 +68,13 @@ const UsuarioForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
         password2Error: '',
     });
 
-    console.table(usuarioData);
+    const [bitacoraData, setBitacoraData] = useState({
+        codigo: '',
+        id_usuario: user.result._id, 
+        descripcion: ''
+    });
+
+    console.table(bitacoraData);
 
     const validate = () => {
 
@@ -198,6 +214,45 @@ const UsuarioForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
         return codigo;
     }
 
+    const generarCodigoBitacora = () => {
+
+        let codigoEncontrado = false;
+        let codigo = '';
+        let valorMayor = 0;
+        let prefix = 'BIT-';
+
+        consecutivos.forEach(consecutivo => {
+
+            if(consecutivo.prefijo === prefix){
+
+                if(consecutivo.valor > valorMayor){
+
+                    valorMayor = consecutivo.valor;
+                }
+                codigoEncontrado = true;
+            }
+        });
+
+        valorMayor++;
+
+        if(!codigoEncontrado){
+            bitacoraConsecutivoData.valor= 1;
+            bitacoraConsecutivoData.prefijo = prefix;
+            
+            codigo = prefix;
+        }else{
+
+            codigo = prefix + valorMayor;
+
+            bitacoraConsecutivoData.valor= valorMayor++;
+            bitacoraConsecutivoData.prefijo = prefix;
+        }
+
+        bitacoraData.codigo = codigo;
+
+        return codigo;
+    }
+
     const getConsecutivoId = () => {
         consecutivos.forEach(consecutivo => {
             if(consecutivo.prefijo === consecutivoData.prefijo && consecutivo.valor === consecutivoData.valor){
@@ -220,6 +275,10 @@ const UsuarioForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
 
         if(isValid){
             if(currentId) {
+                generarCodigoBitacora();
+                dispatch(createConsecutivo(bitacoraConsecutivoData));
+                bitacoraData.descripcion =  `Edición del usuario ${usuarioData.codigo}`;
+                dispatch(createBitacora(bitacoraData));
                 dispatch(updateUsuario(currentId, usuarioData));
                 setCurrenteId(null);
                 dispatch(getUsuarios());
@@ -227,6 +286,10 @@ const UsuarioForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
                 setshow(false);
             }else{
 
+                generarCodigoBitacora();
+                dispatch(createConsecutivo(bitacoraConsecutivoData));
+                bitacoraData.descripcion =  `Creación del usuario ${usuario.codigo}`;
+                dispatch(createBitacora(bitacoraData));
                 dispatch(createConsecutivo(consecutivoData));
                 setTempIdConsecutivo(getConsecutivoId());
                 setUsuarioData({ ...usuarioData, id_consecutivo : tempIdConsecutivo});
