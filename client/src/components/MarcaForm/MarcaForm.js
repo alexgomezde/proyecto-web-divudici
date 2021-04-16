@@ -7,9 +7,10 @@ import { getConsecutivos, createConsecutivo, updateConsecutivo } from '../../act
 import { createMarca, updateMarca } from '../../actions/marcas';
 import FileBase from 'react-file-base64';
 import { getMarcas } from '../../actions/marcas';
+import { createBitacora } from '../../actions/bitacoras';
 
 
-const MarcaForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutivo, setCurrentConsecutivo}) => {
+const MarcaForm = ({currentId, setCurrenteId, isOpen, setshow, bitacoraData, generarCodigoBitacora, bitacoraConsecutivoData}) => {
 
     const dispatch = useDispatch();
     const paises = useSelector((state) => state.paises);
@@ -172,6 +173,10 @@ const MarcaForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutiv
 
         if(isValid){
             if(currentId) {
+                generarCodigoBitacora();
+                dispatch(createConsecutivo(bitacoraConsecutivoData));
+                bitacoraData.descripcion =  `Edición de la marca ${marcaData.codigo}`;
+                dispatch(createBitacora(bitacoraData));
                 dispatch(updateMarca(currentId, marcaData));
                 setCurrenteId(null);
                 dispatch(getMarcas());
@@ -179,7 +184,10 @@ const MarcaForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutiv
                 setshow(false);
                 ;
             }else{
-
+                generarCodigoBitacora();
+                dispatch(createConsecutivo(bitacoraConsecutivoData));
+                bitacoraData.descripcion =  `Creación de la marca ${marcaData.codigo}`;
+                dispatch(createBitacora(bitacoraData));
                 dispatch(createConsecutivo(consecutivoData));
                 setTempIdConsecutivo(getConsecutivoId());
                 setMarcaData({ ...marcaData, id_consecutivo : tempIdConsecutivo});

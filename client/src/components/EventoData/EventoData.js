@@ -1,7 +1,8 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteEvento } from '../../actions/eventos';
-
+import { createConsecutivo } from '../../actions/consecutivos';
+import { createBitacora } from '../../actions/bitacoras';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -9,11 +10,20 @@ import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Button, Table } from 'react-bootstrap';
 
 
-const EventoData = ({ setShow, currentId,  setCurrenteId, inputSearchTerm, selectedTypeSearch}) => {
+const EventoData = ({ setShow, currentId,  setCurrenteId, inputSearchTerm, selectedTypeSearch, bitacoraData, setBitacoraData, generarCodigoBitacora, bitacoraConsecutivoData}) => {
 
     
     const dispatch = useDispatch();
     const eventos = useSelector((state) => state.eventos);
+
+    const borrar = (id, codigo) => {
+
+        generarCodigoBitacora();
+        dispatch(createConsecutivo(bitacoraConsecutivoData));
+        bitacoraData.descripcion =  `Eliminación del evento ${codigo}`;
+        dispatch(createBitacora(bitacoraData));
+        dispatch(deleteEvento(id));
+    }
 
     return(
     
@@ -50,7 +60,7 @@ const EventoData = ({ setShow, currentId,  setCurrenteId, inputSearchTerm, selec
                             <td key={evento.nombre}>{evento.nombre}</td>
                             <td>
                                 <Button variant="outline-light" className="btn-action" onClick={() => {setCurrenteId(evento._id); setShow(true)}} ><FontAwesomeIcon icon={faPen}></FontAwesomeIcon></Button>
-                                <Button variant="outline-light" className="btn-action" onClick={() => dispatch(deleteEvento(evento._id))}><FontAwesomeIcon icon={faTrash}></FontAwesomeIcon></Button>
+                                <Button variant="outline-light" className="btn-action" onClick={() => borrar(evento._id, evento.codigo)}><FontAwesomeIcon icon={faTrash}></FontAwesomeIcon></Button>
                             </td>
                         </tr>
                     )

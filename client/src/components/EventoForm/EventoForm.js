@@ -5,8 +5,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
 import { getConsecutivos, updateConsecutivo, createConsecutivo } from '../../actions/consecutivos';
 import { createEvento, getEventos, updateEvento } from '../../actions/eventos';
+import { createBitacora } from '../../actions/bitacoras';
 
-const EventoForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutivo, setCurrentConsecutivo, selectedConsecutivo}) => {
+const EventoForm = ({currentId, setCurrenteId, isOpen, setshow, bitacoraData, generarCodigoBitacora, bitacoraConsecutivoData}) => {
 
     const dispatch = useDispatch();
     const evento = useSelector((state) => currentId ? state.eventos.find((e) => e._id === currentId) : null);
@@ -114,12 +115,20 @@ const EventoForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecuti
 
         if(isValid){
             if(currentId) {
+                generarCodigoBitacora();
+                dispatch(createConsecutivo(bitacoraConsecutivoData));
+                bitacoraData.descripcion =  `Edición del evento ${eventoData.codigo}`;
+                dispatch(createBitacora(bitacoraData));
                 dispatch(updateEvento(currentId, eventoData));
                 setCurrenteId(null);
                 dispatch(getEventos());
                 clearForm();
                 setshow(false);
             }else{
+                generarCodigoBitacora();
+                dispatch(createConsecutivo(bitacoraConsecutivoData));
+                bitacoraData.descripcion =  `Creación del evento ${eventoData.codigo}`;
+                dispatch(createBitacora(bitacoraData));
                 dispatch(createConsecutivo(consecutivoData));
                 setTempIdConsecutivo(getConsecutivoId());
                 setEventoData({ ...eventoData, id_consecutivo : tempIdConsecutivo});

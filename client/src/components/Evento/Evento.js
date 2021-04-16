@@ -24,8 +24,14 @@ const Evento = () => {
     const [selectedTypeSearch, setSelectedTypeSearch] = useState('');
     const [inputSearchTermError, setinputSearchTermError] = useState('');
     const [currentConsecutivo, setCurrentConsecutivo] = useState(null);
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
 
-    const selectedConsecutivo = useSelector((state) => !currentConsecutivo ? state.consecutivos.find((c) => c.prefijo === "EVE-") : null);
+    const [bitacoraData, setBitacoraData] = useState({
+        codigo: '',
+        id_usuario: user.result._id, 
+        descripcion: ''
+    });
+
 
     const reload=()=>{window.location.reload()};
 
@@ -68,7 +74,54 @@ const Evento = () => {
         dispatch(getEventos());
     }, [ currentId, currentConsecutivo, dispatch ]);
 
+    const [bitacoraConsecutivoData, setBitacoraConsecutivoData] = useState({
+        tipo: 'Bitácora', 
+        descripcion: 'Bitácora creada automáticamente', 
+        valor: '', 
+        tienePrefijo: true, 
+        prefijo: ''    
+    });
 
+    const consecutivos = useSelector((state) => state.consecutivos);
+
+    const generarCodigoBitacora = () => {
+
+        let codigoEncontrado = false;
+        let codigo = '';
+        let valorMayor = 0;
+        let prefix = 'BIT-';
+
+        consecutivos.forEach(consecutivo => {
+
+            if(consecutivo.prefijo === prefix){
+
+                if(consecutivo.valor > valorMayor){
+
+                    valorMayor = consecutivo.valor;
+                }
+                codigoEncontrado = true;
+            }
+        });
+
+        valorMayor++;
+
+        if(!codigoEncontrado){
+            bitacoraConsecutivoData.valor= 1;
+            bitacoraConsecutivoData.prefijo = prefix;
+            
+            codigo = prefix;
+        }else{
+
+            codigo = prefix + valorMayor;
+
+            bitacoraConsecutivoData.valor= valorMayor++;
+            bitacoraConsecutivoData.prefijo = prefix;
+        }
+
+        bitacoraData.codigo = codigo;
+
+        return codigo;
+    }
     return (
         <>
             <Row>
@@ -127,7 +180,7 @@ const Evento = () => {
                         <Row>
                         <div className="table-wrapper">
                             
-                            <EventoData setShow={setShow} currentId={currentId} setCurrenteId={setCurrenteId} inputSearchTerm={inputSearchTerm} selectedTypeSearch={selectedTypeSearch} />
+                            <EventoData setShow={setShow} currentId={currentId} setCurrenteId={setCurrenteId} inputSearchTerm={inputSearchTerm} selectedTypeSearch={selectedTypeSearch} bitacoraData={bitacoraData} setBitacoraData={setBitacoraData} generarCodigoBitacora={generarCodigoBitacora} bitacoraConsecutivoData={bitacoraConsecutivoData}/>
                             
                         </div>
                         </Row>
@@ -137,7 +190,7 @@ const Evento = () => {
                 </Col>
             </Row>
 
-            <EventoForm currentId={currentId} setCurrenteId={setCurrenteId} isOpen={show} setshow={setShow}  currentConsecutivo={currentConsecutivo} setCurrentConsecutivo={setCurrentConsecutivo} selectedConsecutivo={selectedConsecutivo}/>
+            <EventoForm currentId={currentId} setCurrenteId={setCurrenteId} isOpen={show} setshow={setShow}  currentConsecutivo={currentConsecutivo} setCurrentConsecutivo={setCurrentConsecutivo} bitacoraData={bitacoraData} setBitacoraData={setBitacoraData} generarCodigoBitacora={generarCodigoBitacora} bitacoraConsecutivoData={bitacoraConsecutivoData}/>
         </>
     );
 }
