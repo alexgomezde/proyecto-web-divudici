@@ -7,14 +7,24 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 // import './styles.css';
 import { Button, Table } from 'react-bootstrap';
+import { createConsecutivo } from '../../actions/consecutivos';
+import { createBitacora } from '../../actions/bitacoras';
 
 
-const EspecialidadData = ({ setShow, currentId,  setCurrenteId, inputSearchTerm, selectedTypeSearch}) => {
+const EspecialidadData = ({ setShow, currentId,  setCurrenteId, inputSearchTerm, selectedTypeSearch, bitacoraData, setBitacoraData, generarCodigoBitacora, bitacoraConsecutivoData}) => {
 
     
     const dispatch = useDispatch();
     const especialidades = useSelector((state) => state.especialidades);
 
+    const borrar = (id, codigo) => {
+
+        generarCodigoBitacora();
+        dispatch(createConsecutivo(bitacoraConsecutivoData));
+        bitacoraData.descripcion =  `Eliminación de la especialidad ${codigo}`;
+        dispatch(createBitacora(bitacoraData));
+        dispatch(deleteEspecialidad(id));
+    }
     return(
     
         <Table className="text-center" striped>
@@ -63,7 +73,7 @@ const EspecialidadData = ({ setShow, currentId,  setCurrenteId, inputSearchTerm,
                             <td key={especialidad.detalle}>{especialidad.detalle}</td>
                             <td>
                                 <Button variant="outline-light" className="btn-action" onClick={() => {setCurrenteId(especialidad._id); setShow(true)}} ><FontAwesomeIcon icon={faPen}></FontAwesomeIcon></Button>
-                                <Button variant="outline-light" className="btn-action" onClick={() => dispatch(deleteEspecialidad(especialidad._id))}><FontAwesomeIcon icon={faTrash}></FontAwesomeIcon></Button>
+                                <Button variant="outline-light" className="btn-action" onClick={() => borrar(especialidad._id, especialidad.codigo)}><FontAwesomeIcon icon={faTrash}></FontAwesomeIcon></Button>
                             </td>
                         </tr>
                     )

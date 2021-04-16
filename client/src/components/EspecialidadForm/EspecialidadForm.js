@@ -6,10 +6,9 @@ import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
 import { getConsecutivos, updateConsecutivo, createConsecutivo } from '../../actions/consecutivos';
 import { createEspecialidad, getEspecialidades, updateEspecialidad } from '../../actions/especialidades';
 import FileBase from 'react-file-base64';
+import { createBitacora } from '../../actions/bitacoras';
 
-
-
-const EspecialidadForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutivo, setCurrentConsecutivo, selectedConsecutivo}) => {
+const EspecialidadForm = ({currentId, setCurrenteId, isOpen, setshow, bitacoraData, generarCodigoBitacora, bitacoraConsecutivoData}) => {
 
     const dispatch = useDispatch();
     const restaurantes = useSelector((state) => state.restaurantes);
@@ -141,12 +140,20 @@ const EspecialidadForm = ({currentId, setCurrenteId, isOpen, setshow, currentCon
 
         if(isValid){
             if(currentId) {
+                generarCodigoBitacora();
+                dispatch(createConsecutivo(bitacoraConsecutivoData));
+                bitacoraData.descripcion =  `Edición de la especialidad ${especialidadData.codigo}`;
+                dispatch(createBitacora(bitacoraData));
                 dispatch(updateEspecialidad(currentId, especialidadData));
                 setCurrenteId(null);
                 dispatch(getEspecialidades());
                 clearForm();
                 setshow(false);
             }else{
+                generarCodigoBitacora();
+                dispatch(createConsecutivo(bitacoraConsecutivoData));
+                bitacoraData.descripcion =  `Creación de la especialidad ${especialidadData.codigo}`;
+                dispatch(createBitacora(bitacoraData));
                 dispatch(createConsecutivo(consecutivoData));
                 setTempIdConsecutivo(getConsecutivoId());
                 setEspecialidadData({ ...especialidadData, id_consecutivo : tempIdConsecutivo});

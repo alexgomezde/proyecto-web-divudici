@@ -6,10 +6,10 @@ import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
 import { getConsecutivos, updateConsecutivo, createConsecutivo } from '../../actions/consecutivos';
 import { createEmpleado, getEmpleados, updateEmpleado } from '../../actions/empleados';
 import FileBase from 'react-file-base64';
+import { createBitacora } from '../../actions/bitacoras';
 
 
-
-const EmpleadoForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutivo, setCurrentConsecutivo, selectedConsecutivo}) => {
+const EmpleadoForm = ({currentId, setCurrenteId, isOpen, setshow, bitacoraData, generarCodigoBitacora, bitacoraConsecutivoData}) => {
 
     const dispatch = useDispatch();
     const restaurantes = useSelector((state) => state.restaurantes);
@@ -181,12 +181,20 @@ const EmpleadoForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecu
 
         if(isValid){
             if(currentId) {
+                generarCodigoBitacora();
+                dispatch(createConsecutivo(bitacoraConsecutivoData));
+                bitacoraData.descripcion =  `Edición del empleado ${empleadoData.codigo}`;
+                dispatch(createBitacora(bitacoraData));
                 dispatch(updateEmpleado(currentId, empleadoData));
                 setCurrenteId(null);
                 dispatch(getEmpleados());
                 clearForm();
                 setshow(false);
             }else{
+                generarCodigoBitacora();
+                dispatch(createConsecutivo(bitacoraConsecutivoData));
+                bitacoraData.descripcion =  `Creación del empleado ${empleadoData.codigo}`;
+                dispatch(createBitacora(bitacoraData));
                 dispatch(createConsecutivo(consecutivoData));
                 setTempIdConsecutivo(getConsecutivoId());
                 setEmpleadoData({ ...empleadoData, id_consecutivo : tempIdConsecutivo});
