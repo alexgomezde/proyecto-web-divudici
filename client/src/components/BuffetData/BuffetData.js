@@ -1,6 +1,8 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteBuffet } from '../../actions/buffets';
+import { createConsecutivo } from '../../actions/consecutivos';
+import { createBitacora } from '../../actions/bitacoras';
 
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,12 +11,21 @@ import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Button, Table } from 'react-bootstrap';
 
 
-const BuffetData = ({ setShow, currentId,  setCurrenteId, inputSearchTerm, selectedTypeSearch}) => {
+const BuffetData = ({ setShow, currentId,  setCurrenteId, inputSearchTerm, selectedTypeSearch, bitacoraData, setBitacoraData, generarCodigoBitacora, bitacoraConsecutivoData}) => {
 
     
     const dispatch = useDispatch();
     const buffets = useSelector((state) => state.buffets);
     const unidadesMedidas = useSelector((state) => state.unidadesMedidas);
+
+    const borrar = (id, codigo) => {
+
+        generarCodigoBitacora();
+        dispatch(createConsecutivo(bitacoraConsecutivoData));
+        bitacoraData.descripcion =  `Eliminación del buffet ${codigo}`;
+        dispatch(createBitacora(bitacoraData));
+        dispatch(deleteBuffet(id));
+    }
 
     return(
     
@@ -66,7 +77,7 @@ const BuffetData = ({ setShow, currentId,  setCurrenteId, inputSearchTerm, selec
                             
                             <td>
                                 <Button variant="outline-light" className="btn-action" onClick={() => {setCurrenteId(buffet._id); setShow(true)}} ><FontAwesomeIcon icon={faPen}></FontAwesomeIcon></Button>
-                                <Button variant="outline-light" className="btn-action" onClick={() => dispatch(deleteBuffet(buffet._id))}><FontAwesomeIcon icon={faTrash}></FontAwesomeIcon></Button>
+                                <Button variant="outline-light" className="btn-action" onClick={() => borrar(buffet._id, buffet.codigo)}><FontAwesomeIcon icon={faTrash}></FontAwesomeIcon></Button>
                             </td>
                         </tr>
                     )

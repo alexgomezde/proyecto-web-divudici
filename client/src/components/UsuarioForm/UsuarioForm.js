@@ -3,10 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Row, Col, Form, FormControl, Modal, FormGroup, ButtonGroup, ToggleButton } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
-import { getConsecutivos, updateConsecutivo, createConsecutivo } from '../../actions/consecutivos';
-import { getBitacoras, createBitacora } from '../../actions/bitacoras';
+import { getConsecutivos, createConsecutivo } from '../../actions/consecutivos';
+import { createBitacora } from '../../actions/bitacoras';
 import { createUsuario, getUsuarios, updateUsuario } from '../../actions/usuarios';
-import UsuarioData from '../UsuarioData/UsuarioData';
 
 const UsuarioForm = ({currentId, setCurrenteId, isOpen, setshow, bitacoraData, generarCodigoBitacora, bitacoraConsecutivoData}) => {
 

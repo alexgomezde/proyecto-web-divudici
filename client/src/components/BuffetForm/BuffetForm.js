@@ -6,10 +6,10 @@ import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
 import { getConsecutivos, createConsecutivo, updateConsecutivo } from '../../actions/consecutivos';
 import { createBuffet, getBuffets, updateBuffet } from '../../actions/buffets';
 import FileBase from 'react-file-base64';
-import { getMarcas } from '../../actions/marcas';
+import { createBitacora } from '../../actions/bitacoras';
 
 
-const BuffetForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutivo, setCurrentConsecutivo}) => {
+const BuffetForm = ({currentId, setCurrenteId, isOpen, setshow, bitacoraData, generarCodigoBitacora, bitacoraConsecutivoData}) => {
 
     const dispatch = useDispatch();
     const unidadesMedidas = useSelector((state) => state.unidadesMedidas);
@@ -137,6 +137,10 @@ const BuffetForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecuti
 
         if(isValid){
             if(currentId) {
+                generarCodigoBitacora();
+                dispatch(createConsecutivo(bitacoraConsecutivoData));
+                bitacoraData.descripcion =  `Edición del buffet ${buffetData.codigo}`;
+                dispatch(createBitacora(bitacoraData));
                 dispatch(updateBuffet(currentId, buffetData));
                 setCurrenteId(null);
                 dispatch(getBuffets());
@@ -144,7 +148,10 @@ const BuffetForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecuti
                 setshow(false);
                 ;
             }else{
-
+                generarCodigoBitacora();
+                dispatch(createConsecutivo(bitacoraConsecutivoData));
+                bitacoraData.descripcion =  `Creación del buffet ${buffetData.codigo}`;
+                dispatch(createBitacora(bitacoraData));
                 dispatch(createConsecutivo(consecutivoData));
                 setTempIdConsecutivo(getConsecutivoId());
                 setBuffetData({ ...buffetData, id_consecutivo : tempIdConsecutivo});
