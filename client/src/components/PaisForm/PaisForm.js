@@ -7,9 +7,10 @@ import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
 import { getConsecutivos, createConsecutivo, updateConsecutivo } from '../../actions/consecutivos';
 import { createPais, updatePais, getPaises } from '../../actions/paises';
 import FileBase from 'react-file-base64';
+import { createBitacora } from '../../actions/bitacoras';
 
 
-const PaisFrom = ({currentId, setCurrenteId, isOpen, setshow, onExit, currentConsecutivo, setCurrentConsecutivo}) => {
+const PaisFrom = ({currentId, setCurrenteId, isOpen, setshow, bitacoraData, generarCodigoBitacora, bitacoraConsecutivoData}) => {
 
     const dispatch = useDispatch();
     const pais = useSelector((state) => currentId ? state.paises.find((r) => r._id === currentId) : null);
@@ -118,13 +119,20 @@ const PaisFrom = ({currentId, setCurrenteId, isOpen, setshow, onExit, currentCon
 
         if(isValid){
             if(currentId) {
+                generarCodigoBitacora();
+                dispatch(createConsecutivo(bitacoraConsecutivoData));
+                bitacoraData.descripcion =  `Edición del país ${paisData.codigo}`;
+                dispatch(createBitacora(bitacoraData));
                 dispatch(updatePais(currentId, paisData));
                 setCurrenteId(null);
                 dispatch(getPaises());
                 clearForm();
                 setshow(false);
             }else{
-
+                generarCodigoBitacora();
+                dispatch(createConsecutivo(bitacoraConsecutivoData));
+                bitacoraData.descripcion =  `Creación del país ${paisData.codigo}`;
+                dispatch(createBitacora(bitacoraData));
                 dispatch(createConsecutivo(consecutivoData));
                 setTempIdConsecutivo(getConsecutivoId());
                 setPaisData({ ...paisData, id_consecutivo : tempIdConsecutivo});

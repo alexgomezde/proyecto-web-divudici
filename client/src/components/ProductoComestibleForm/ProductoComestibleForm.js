@@ -5,11 +5,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
 import { getConsecutivos, updateConsecutivo, createConsecutivo } from '../../actions/consecutivos';
 import { createProducto, getProductos, updateProducto } from '../../actions/productos';
-import FileBase from 'react-file-base64';
+import { createBitacora } from '../../actions/bitacoras';
 
-
-
-const ProductoComestibleForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutivo, setCurrentConsecutivo, selectedConsecutivo}) => {
+const ProductoComestibleForm = ({currentId, setCurrenteId, isOpen, setshow, bitacoraData, generarCodigoBitacora, bitacoraConsecutivoData}) => {
 
     const dispatch = useDispatch();
     const restaurantes = useSelector((state) => state.restaurantes);
@@ -164,13 +162,20 @@ const ProductoComestibleForm = ({currentId, setCurrenteId, isOpen, setshow, curr
 
         if(isValid){
             if(currentId) {
+                generarCodigoBitacora();
+                dispatch(createConsecutivo(bitacoraConsecutivoData));
+                bitacoraData.descripcion =  `Edición del producto ${comestibleData.codigo}`;
+                dispatch(createBitacora(bitacoraData));
                 dispatch(updateProducto(currentId, comestibleData));
                 setCurrenteId(null);
                 dispatch(getProductos());
                 clearForm();
                 setshow(false);
             }else{
-
+                generarCodigoBitacora();
+                dispatch(createConsecutivo(bitacoraConsecutivoData));
+                bitacoraData.descripcion =  `Creación del producto ${comestibleData.codigo}`;
+                dispatch(createBitacora(bitacoraData));
                 dispatch(createConsecutivo(consecutivoData));
                 setTempIdConsecutivo(getConsecutivoId());
                 setComestibleData({ ...comestibleData, id_consecutivo : tempIdConsecutivo});

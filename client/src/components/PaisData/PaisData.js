@@ -1,7 +1,8 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { deletePais } from '../../actions/paises';
-
+import { createConsecutivo } from '../../actions/consecutivos';
+import { createBitacora } from '../../actions/bitacoras';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -9,13 +10,20 @@ import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Button, Table } from 'react-bootstrap';
 
 
-const PaisData = ({ setShow, currentId,  setCurrenteId, inputSearchTerm, selectedTypeSearch}) => {
+const PaisData = ({ setShow, currentId,  setCurrenteId, inputSearchTerm, selectedTypeSearch, bitacoraData, generarCodigoBitacora, bitacoraConsecutivoData}) => {
 
     
     const dispatch = useDispatch();
     const paises = useSelector((state) => state.paises);
 
-    console.log(paises);
+    const borrar = (id, codigo) => {
+
+        generarCodigoBitacora();
+        dispatch(createConsecutivo(bitacoraConsecutivoData));
+        bitacoraData.descripcion =  `Eliminación del país ${codigo}`;
+        dispatch(createBitacora(bitacoraData));
+        dispatch(deletePais(id));
+    }
 
     return(
     
@@ -58,7 +66,7 @@ const PaisData = ({ setShow, currentId,  setCurrenteId, inputSearchTerm, selecte
                             <td key={pais.bandera}><img src={pais.bandera} width="50px" height="30px" alt={`Imagen de la bandera de ${pais.nombre}`}/></td>
                             <td>
                                 <Button variant="outline-light" className="btn-action" onClick={() => {setCurrenteId(pais._id); setShow(true)}} ><FontAwesomeIcon icon={faPen}></FontAwesomeIcon></Button>
-                                <Button variant="outline-light" className="btn-action" onClick={() => dispatch(deletePais(pais._id))}><FontAwesomeIcon icon={faTrash}></FontAwesomeIcon></Button>
+                                <Button variant="outline-light" className="btn-action" onClick={() => borrar(pais._id, pais.codigo)}><FontAwesomeIcon icon={faTrash}></FontAwesomeIcon></Button>
                             </td>
                         </tr>
                     )
