@@ -6,10 +6,11 @@ import { faEraser, faSave } from '@fortawesome/free-solid-svg-icons';
 import { getConsecutivos, updateConsecutivo, createConsecutivo } from '../../actions/consecutivos';
 import { createBebida, getBebidas, updateBebida } from '../../actions/bebidas';
 import FileBase from 'react-file-base64';
+import { createBitacora } from '../../actions/bitacoras';
 
 
 
-const BebidaCalienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutivo, setCurrentConsecutivo, selectedConsecutivo}) => {
+const BebidaCalienteForm = ({currentId, setCurrenteId, isOpen, setshow, bitacoraData, generarCodigoBitacora, bitacoraConsecutivoData}) => {
 
     const dispatch = useDispatch();
     const restaurantes = useSelector((state) => state.restaurantes);
@@ -146,12 +147,20 @@ const BebidaCalienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentC
 
         if(isValid){
             if(currentId) {
+                generarCodigoBitacora();
+                dispatch(createConsecutivo(bitacoraConsecutivoData));
+                bitacoraData.descripcion =  `Edición de la bebida ${bebidaData.codigo}`;
+                dispatch(createBitacora(bitacoraData));
                 dispatch(updateBebida(currentId, bebidaData));
                 setCurrenteId(null);
                 dispatch(getBebidas());
                 clearForm();
                 setshow(false);
             }else{
+                generarCodigoBitacora();
+                dispatch(createConsecutivo(bitacoraConsecutivoData));
+                bitacoraData.descripcion =  `Creación de la bebida ${bebidaData.codigo}`;
+                dispatch(createBitacora(bitacoraData));
                 dispatch(createConsecutivo(consecutivoData));
                 setTempIdConsecutivo(getConsecutivoId());
                 setBebidaData({ ...bebidaData, id_consecutivo : tempIdConsecutivo});
