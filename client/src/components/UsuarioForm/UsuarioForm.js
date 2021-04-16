@@ -8,7 +8,7 @@ import { getBitacoras, createBitacora } from '../../actions/bitacoras';
 import { createUsuario, getUsuarios, updateUsuario } from '../../actions/usuarios';
 import UsuarioData from '../UsuarioData/UsuarioData';
 
-const UsuarioForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutivo, setCurrentConsecutivo, selectedConsecutivo}) => {
+const UsuarioForm = ({currentId, setCurrenteId, isOpen, setshow, bitacoraData, generarCodigoBitacora, bitacoraConsecutivoData}) => {
 
     const dispatch = useDispatch();
     const restaurantes = useSelector((state) => state.restaurantes);
@@ -23,19 +23,10 @@ const UsuarioForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
         { name: 'Cuenta', value: 'cuenta' }
     ];
     const [tempIdConsecutivo, setTempIdConsecutivo] = useState("");
-    const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
-
+    
     const [consecutivoData, setConsecutivoData] = useState({
         tipo: 'Usuarios', 
         descripcion: 'Usuario creado automáticamente', 
-        valor: '', 
-        tienePrefijo: true, 
-        prefijo: ''    
-    });
-
-    const [bitacoraConsecutivoData, setBitacoraConsecutivoData] = useState({
-        tipo: 'Bitácora', 
-        descripcion: 'Bitacora creada automáticamente', 
         valor: '', 
         tienePrefijo: true, 
         prefijo: ''    
@@ -67,14 +58,6 @@ const UsuarioForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
         passwordError: '',
         password2Error: '',
     });
-
-    const [bitacoraData, setBitacoraData] = useState({
-        codigo: '',
-        id_usuario: user.result._id, 
-        descripcion: ''
-    });
-
-    console.table(bitacoraData);
 
     const validate = () => {
 
@@ -214,44 +197,7 @@ const UsuarioForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
         return codigo;
     }
 
-    const generarCodigoBitacora = () => {
-
-        let codigoEncontrado = false;
-        let codigo = '';
-        let valorMayor = 0;
-        let prefix = 'BIT-';
-
-        consecutivos.forEach(consecutivo => {
-
-            if(consecutivo.prefijo === prefix){
-
-                if(consecutivo.valor > valorMayor){
-
-                    valorMayor = consecutivo.valor;
-                }
-                codigoEncontrado = true;
-            }
-        });
-
-        valorMayor++;
-
-        if(!codigoEncontrado){
-            bitacoraConsecutivoData.valor= 1;
-            bitacoraConsecutivoData.prefijo = prefix;
-            
-            codigo = prefix;
-        }else{
-
-            codigo = prefix + valorMayor;
-
-            bitacoraConsecutivoData.valor= valorMayor++;
-            bitacoraConsecutivoData.prefijo = prefix;
-        }
-
-        bitacoraData.codigo = codigo;
-
-        return codigo;
-    }
+    
 
     const getConsecutivoId = () => {
         consecutivos.forEach(consecutivo => {
@@ -288,7 +234,7 @@ const UsuarioForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
 
                 generarCodigoBitacora();
                 dispatch(createConsecutivo(bitacoraConsecutivoData));
-                bitacoraData.descripcion =  `Creación del usuario ${usuario.codigo}`;
+                bitacoraData.descripcion =  `Creación del usuario ${usuarioData.codigo}`;
                 dispatch(createBitacora(bitacoraData));
                 dispatch(createConsecutivo(consecutivoData));
                 setTempIdConsecutivo(getConsecutivoId());

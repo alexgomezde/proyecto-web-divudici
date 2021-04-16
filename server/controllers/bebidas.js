@@ -1,6 +1,7 @@
 import BebidaMessage from '../models/bebidaMessage.js';
+import BitacoraMessage from '../models/bitacoraMessage.js';
+import ConsecutivoMessage from '../models/consecutivoMessage.js';
 import mongoose from 'mongoose';
-
 
 export const getBebidas = async (req, res) => {
 
