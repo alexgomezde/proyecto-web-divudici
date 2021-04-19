@@ -13,7 +13,7 @@ const UsuarioData = ({ setShow, currentId,  setCurrenteId, inputSearchTerm, sele
     
     const dispatch = useDispatch();
     const usuarios = useSelector((state) => state.usuarios);
-
+    console.log(usuarios)
     const borrar = (id, codigo) => {
 
         generarCodigoBitacora();

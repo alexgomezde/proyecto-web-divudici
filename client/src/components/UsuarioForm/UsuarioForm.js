@@ -239,6 +239,7 @@ const UsuarioForm = ({currentId, setCurrenteId, isOpen, setshow, bitacoraData, g
                 setTempIdConsecutivo(getConsecutivoId());
                 setUsuarioData({ ...usuarioData, id_consecutivo : tempIdConsecutivo});
                 dispatch(createUsuario(usuarioData));
+                dispatch(getUsuarios());
                 dispatch(getConsecutivos());
                 generarCodigo();
                 clearForm();

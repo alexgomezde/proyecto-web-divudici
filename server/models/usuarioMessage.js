@@ -1,12 +1,13 @@
 import mongoose from 'mongoose';
 
+
 const usuarioSchema = mongoose.Schema({
     codigo: String,
     nombre: String, 
     primerApellido: String,
     segundoApellido: String,
-    telefonoFijo: Number,
-    telefonoCelular: Number,
+    telefonoFijo: String,
+    telefonoCelular: String,
     privilegio: String,
     id_restaurante: {
         type: mongoose.Schema.Types.ObjectId,
