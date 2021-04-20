@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getRestaurantes } from '../../actions/restaurantes';
+import { useHistory } from 'react-router-dom';
 
 import Restaurante from '../../components/Restaurante/Restaurante';
 import { Button, Row, Col, Form, FormGroup} from 'react-bootstrap';
@@ -12,6 +13,7 @@ const RestauranteHome = ({currentId, setCurrenteId, isOpen, setshow, onExit}) =>
 
     const dispatch = useDispatch();
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
+    const history = useHistory();
 
     const [bitacoraData, setBitacoraData] = useState({
         codigo: '',
@@ -37,6 +39,7 @@ const RestauranteHome = ({currentId, setCurrenteId, isOpen, setshow, onExit}) =>
 
         if(isValid){
             
+            history.push('/salon');
         }
 
     }

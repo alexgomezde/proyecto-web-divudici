@@ -38,6 +38,7 @@ import EspecialHome from './components/EspecialHome/EspecialHome';
 import BebidaHome from './components/BebidaHome/BebidaHome';
 import RestauranteHome from './components/RestauranteHome/RestauranteHome';
 import Bitacora from './components/Bitacora/Bitacora';
+import RestauranteSalon from './components/RestauranteSalon/RestauranteSalon';
 
 
 const App = () => {
@@ -82,36 +83,18 @@ const App = () => {
                     <Route path="/bebidas" exact component={BebidaHome} />
                     <Route path="/restauranteHome" exact component={RestauranteHome} />
                     <Route path="/bitacoras" exact component={Bitacora} />
+                    <Route path="/salon" exact component={RestauranteSalon} />
                 </Switch>
             
-                {/* <Consecutivo/>
-                <Restaurante/>
-                <UnidadMedida />
-                <Pais />
-                <Marca />
-                <Buffet />
-                <Evento />
-                <BebidaCaliente />
-                <BebidaHelada/>
-                <BebidaGaseosa/>
-                <BebidaLicor/>
-                <BebidaVino/>
-                <Especialidad/>
-                <Mesa/>
-                <Puesto/>
-                <Empleado/>
-                <Usuario/>
-                <ProductoComestible/>
-                <ProductoDesechable/>
-                <ProductoLimpieza/>
-                <ProductoTecnologia/>
-                <ProductoUtencilio/>
-                <Proveedor/> */}
-
+              
+                
+                {/* <RestauranteSalon/> */}
         
             </Container>
 
         </BrowserRouter>
+
+        
     )
 }
 
