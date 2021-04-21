@@ -17,6 +17,7 @@ const urlUsuariosLogin = 'http://localhost:5000/usuarios/login';
 const urlProductos = 'http://localhost:5000/productos';
 const urlProveedores = 'http://localhost:5000/proveedores';
 const urlBitacoras = 'http://localhost:5000/bitacoras';
+const urlClientes = 'http://localhost:5000/clientes';
 
 export const fetchConsecutivos = () => axios.get(urlConsecutvios);
 export const createConsecutivo = (newConsecutivo) => axios.post(urlConsecutvios, newConsecutivo);
@@ -96,3 +97,8 @@ export const deleteProveedor = (id) => axios.delete(`${urlProveedores}/${id}`);
 
 export const fetchBitacoras = () => axios.get(urlBitacoras);
 export const createBitacora = (newBitacora) => axios.post(urlBitacoras, newBitacora);
+
+export const fetchClientes = () => axios.get(urlClientes);
+export const createCliente = (newProducto) => axios.post(urlClientes, newProducto);
+export const updateCliente = (id, updatedProducto) => axios.patch(`${urlClientes}/${id}`, updatedProducto);
+export const deleteCliente = (id) => axios.delete(`${urlClientes}/${id}`);

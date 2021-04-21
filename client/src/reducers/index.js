@@ -16,6 +16,7 @@ import productos from './productos';
 import proveedores from './proveedores';
 import bitacoras from './bitacoras';
 import auth from './auth';
+import clientes from './clientes';
 
 
 export default combineReducers({ 
@@ -35,5 +36,6 @@ export default combineReducers({
     productos,
     proveedores,
     bitacoras,
-    auth
+    auth,
+    clientes
 });

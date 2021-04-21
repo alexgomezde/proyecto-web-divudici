@@ -39,6 +39,8 @@ import BebidaHome from './components/BebidaHome/BebidaHome';
 import RestauranteHome from './components/RestauranteHome/RestauranteHome';
 import Bitacora from './components/Bitacora/Bitacora';
 import RestauranteSalon from './components/RestauranteSalon/RestauranteSalon';
+import ReportesHome from './components/ReportesHome/ReportesHome';
+import Cliente from './components/Cliente/Cliente';
 
 
 const App = () => {
@@ -84,6 +86,8 @@ const App = () => {
                     <Route path="/restauranteHome" exact component={RestauranteHome} />
                     <Route path="/bitacoras" exact component={Bitacora} />
                     <Route path="/salon" exact component={RestauranteSalon} />
+                    <Route path="/reportesHome" exact component={ReportesHome} />
+                    <Route path="/clientes" exact component={Cliente} />
                 </Switch>
             
               

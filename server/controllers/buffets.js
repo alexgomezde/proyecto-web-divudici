@@ -24,7 +24,6 @@ export const createBuffet = async (req, res) => {
 
         await newBuffet.save();
         res.status(201).json(newBuffet);
-        console.log("BUFFET CREADO");
 
     } catch (error) {
         

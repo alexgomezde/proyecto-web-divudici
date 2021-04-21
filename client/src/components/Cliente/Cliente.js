@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch} from 'react-redux';
-import BitacoraData from '../BitacoraData/BitacoraData';
-import { getBitacoras } from '../../actions/bitacoras';
-import { getUsuarios } from '../../actions/usuarios';
+import ClienteData from '../ClienteData/ClienteData';
+import { getClientes } from '../../actions/clientes';
+import { getRestaurantes } from '../../actions/restaurantes';
 import { Link } from 'react-router-dom';
 
 import { Button, Row, Col, FormControl, Form, InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faTimes,  faSync, faEraser, faFileAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faTimes,  faSync, faEraser, faUserLock } from '@fortawesome/free-solid-svg-icons';
 
-const Bitacora = () => {
+const Cliente = () => {
 
     const dispatch = useDispatch();
     const [inputSearchTerm, setinputSearchTerm] = useState('');
@@ -53,8 +53,8 @@ const Bitacora = () => {
     }   
     
     useEffect(() => {
-        dispatch(getBitacoras());
-        dispatch(getUsuarios());
+        dispatch(getClientes());
+        dispatch(getRestaurantes());
     }, [ dispatch ]);
 
 
@@ -63,7 +63,7 @@ const Bitacora = () => {
             <Row>
                 <Col md="12">
                     <div className="heading mt-4 mb-4">
-                        <h2 className="d-inline mt-4" >Bitácora</h2>
+                        <h2 className="d-inline mt-4" >Clientes</h2>
                         <button className="float-right">
                             <Link to={location => ({ ...location, pathname: "/reportesHome" })} >
                                 <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
@@ -78,7 +78,7 @@ const Bitacora = () => {
                 </Col>  
                 <Col md="3">
                     <div className="sidebar text-center">
-                    <FontAwesomeIcon icon={faFileAlt} size="9x" className="text-white mt-5"/>
+                    <FontAwesomeIcon icon={faUserLock} size="9x" className="text-white mt-5"/>
                     </div>
                 </Col>
                 <Col md="9">
@@ -92,8 +92,8 @@ const Bitacora = () => {
                                         <InputGroup.Prepend>
                                             <select className="form-control" id="input-dropdown-search"  searchable="Search here.." value={selectedTypeSearch} onChange={(e) => {setSelectedTypeSearch(e.target.value)}}>
                                                 <option value="" disabled >Buscar...</option>
-                                                <option value="general">General</option>
-                                                <option value="usuario">Usuario</option>
+                                                <option value="codigo">Código</option>
+                                                <option value="nombre">Nombre</option>
                                             </select>
                                         </InputGroup.Prepend>
                                         
@@ -113,7 +113,7 @@ const Bitacora = () => {
                         <Row>
                         <div className="table-wrapper">
                             
-                            <BitacoraData inputSearchTerm={inputSearchTerm} selectedTypeSearch={selectedTypeSearch} />
+                            <ClienteData inputSearchTerm={inputSearchTerm} selectedTypeSearch={selectedTypeSearch} />
                             
                         </div>
                         </Row>
@@ -126,4 +126,4 @@ const Bitacora = () => {
     );
 }
 
-export default Bitacora;
+export default Cliente;

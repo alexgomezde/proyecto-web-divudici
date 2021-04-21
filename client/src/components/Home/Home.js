@@ -137,7 +137,7 @@ const Home = ({currentId, setCurrenteId, isOpen, setshow, onExit}) => {
             {(user.result.privilegio === "sistema" || user.result.privilegio === "seguridad") && 
                 <Col md="4" className="text-center p-5">
                     <button>
-                        <Link to={location => ({ ...location, pathname: "/bitacoras" })}>
+                        <Link to={location => ({ ...location, pathname: "/reportesHome" })}>
                             <FontAwesomeIcon icon={faFile} size="9x" className="text-white"/>
                             <p className="mt-2 text-white h4">Reportes</p>
                         </Link>
