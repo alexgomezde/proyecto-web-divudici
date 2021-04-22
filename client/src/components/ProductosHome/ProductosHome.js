@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Restaurante from '../../components/Restaurante/Restaurante';
 import { Button, Row, Col, Form, FormControl, Navbar, Nav, NavDropdown, FormGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFish, faUtensilSpoon, faRecycle, faLaptop, faBroom } from '@fortawesome/free-solid-svg-icons';
+import { faFish, faUtensilSpoon, faRecycle, faLaptop, faBroom, faArrowCircleLeft } from '@fortawesome/free-solid-svg-icons';
 
 
 const ProductosHome = ({currentId, setCurrenteId, isOpen, setshow, onExit}) => {
@@ -70,7 +70,13 @@ const ProductosHome = ({currentId, setCurrenteId, isOpen, setshow, onExit}) => {
         
         <Row className="home mt-5">
             <Col md="12" >
-            <h2 className="text-center text-white mt-4 ">Productos</h2>
+            <h2 className="text-center text-white mt-4 ">
+            <button className="float-left ">
+                    <Link to={location => ({ ...location, pathname: "/proveedores" })} >
+                        <FontAwesomeIcon icon={faArrowCircleLeft} size="1x" className="text-white"/>
+                    </Link> 
+                </button>
+                Productos</h2>
             </Col>
 
             {(user.result.privilegio === "sistema" || user.result.privilegio === "cuenta") && 

@@ -20,6 +20,8 @@ import productoRoutes from './routes/productos.js';
 import proveedorRoutes from './routes/proveedores.js';
 import bitacoraRoutes from './routes/bitacoras.js';
 import clienteRoutes from './routes/clientes.js';
+import facturaRoutes from './routes/facturas.js';
+import cajaRoutes from './routes/cajas.js';
 
 
 const app = express();
@@ -45,6 +47,9 @@ app.use('/productos', productoRoutes);
 app.use('/proveedores', proveedorRoutes);
 app.use('/bitacoras', bitacoraRoutes);
 app.use('/clientes', clienteRoutes);
+app.use('/facturas', facturaRoutes);
+app.use('/facturas', facturaRoutes);
+app.use('/cajas', cajaRoutes);
 
 
 //database connection

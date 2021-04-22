@@ -103,11 +103,12 @@ const Home = ({currentId, setCurrenteId, isOpen, setshow, onExit}) => {
 
             {(user.result.privilegio === "sistema" ) && 
                 <Col md="4" className="text-center pt-5">
-                    <button>
-                        <FontAwesomeIcon icon={faUserTag} size="9x" className="text-white"/>
-                        <p className="mt-2 text-white h4">Clientes</p>
-                    </button>
-                    {/* <Link to="" className="btn-restaurant">Seguridad</Link> */}
+                    <Link to={location => ({ ...location, pathname: "/clientes" })} >
+                        <button>
+                            <FontAwesomeIcon icon={faUserTag} size="9x" className="text-white"/>
+                            <p className="mt-2 text-white h4">Clientes</p>
+                        </button>
+                    </Link>
                 </Col>
             }
 

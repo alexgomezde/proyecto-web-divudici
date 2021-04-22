@@ -41,6 +41,9 @@ import Bitacora from './components/Bitacora/Bitacora';
 import RestauranteSalon from './components/RestauranteSalon/RestauranteSalon';
 import ReportesHome from './components/ReportesHome/ReportesHome';
 import Cliente from './components/Cliente/Cliente';
+import Factura from './components/Factura/Factura';
+import Caja from './components/Caja/Caja';
+import RestauranteCierre from './components/RestauranteCierre/RestauranteCierre';
 
 
 const App = () => {
@@ -88,6 +91,9 @@ const App = () => {
                     <Route path="/salon" exact component={RestauranteSalon} />
                     <Route path="/reportesHome" exact component={ReportesHome} />
                     <Route path="/clientes" exact component={Cliente} />
+                    <Route path="/facturas" exact component={Factura} />
+                    <Route path="/cajas" exact component={Caja} />
+                    <Route path="/cierreCaja" exact component={RestauranteCierre} />
                 </Switch>
             
               

@@ -3,6 +3,7 @@ import { useDispatch, useSelector} from 'react-redux';
 import { getBitacoras } from '../../actions/bitacoras';
 import { getMesas } from '../../actions/mesas';
 import { getRestaurantes } from '../../actions/restaurantes';
+import { getEspecialidades} from '../../actions/especialidades';
 import { Link } from 'react-router-dom';
 import ClienteForm from '../ClienteForm/ClienteForm';
 
@@ -19,6 +20,8 @@ const RestauranteSalon = () => {
 
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
     const [show, setShow] = useState(false);
+    const [currentMesaId, setCurrenteMesaId] = useState(null);
+    const [currentRestauranteId, setCurrentRestauranteId] = useState(user.result.id_restaurante);
     const dispatch = useDispatch();
    
     const reload=()=>{window.location.reload()};
@@ -28,29 +31,13 @@ const RestauranteSalon = () => {
         dispatch(getBitacoras());
         dispatch(getMesas());
         dispatch(getRestaurantes());
-    }, [ dispatch ]);
+        dispatch(getEspecialidades());
+    }, [ currentMesaId, dispatch ]);
 
     const mesas = useSelector((state) => state.mesas);
     const restaurantes = useSelector((state) => state.restaurantes);
     const bebidas = useSelector((state) => state.bebidas);
 
-
-    const filteredBebidas = bebidas.map( bebida => {
-
-        if(bebida.id_restaurante === user.result.id_restaurante){
-
-            return bebida;
-        }
-
-    })
-
-    console.log(mesas);
-
-    // const selectedMesas = mesas.map( mesa => {
-
-        
-
-    // })
 
 
     return (
@@ -69,7 +56,7 @@ const RestauranteSalon = () => {
 
                         })}
                         <button className="float-right">
-                            <Link to={location => ({ ...location, pathname: "/home" })} >
+                            <Link to={location => ({ ...location, pathname: "/cierreCaja" })} >
                                 <FontAwesomeIcon icon={faTimes} size="2x" className="text-white"/>
                             </Link> 
                         </button>
@@ -117,9 +104,10 @@ const RestauranteSalon = () => {
 
                                 return (
                                     <Col md="3 text-center">
-                                        <Button variant="outline-light" className="menu-item mt-2" onClick={() => setShow(true)}>
+                                        <Button variant="outline-light" className="menu-item mt-2" onClick={() => { setCurrenteMesaId(mesa._id); setShow(true);}}>
                                             <img src={TableLogo} alt="Mesa logo" width="50px"></img>
                                             <p>{mesa.nombre}</p>
+                                            <p>Cantidad Sillas {mesa.cantidadSillas}</p>
                                         </Button>
                                     </Col>
                                 )
@@ -133,7 +121,7 @@ const RestauranteSalon = () => {
                 </Col>
             </Row>
 
-            <ClienteForm  isOpen={show} setshow={setShow}   />
+            <ClienteForm  isOpen={show} setshow={setShow} currentMesaId={currentMesaId} setCurrenteMesaId={setCurrenteMesaId} currentRestauranteId={currentRestauranteId}/>
 
         </>
     );

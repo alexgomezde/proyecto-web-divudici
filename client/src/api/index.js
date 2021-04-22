@@ -18,6 +18,8 @@ const urlProductos = 'http://localhost:5000/productos';
 const urlProveedores = 'http://localhost:5000/proveedores';
 const urlBitacoras = 'http://localhost:5000/bitacoras';
 const urlClientes = 'http://localhost:5000/clientes';
+const urlFacturas = 'http://localhost:5000/facturas';
+const urlCajas = 'http://localhost:5000/cajas';
 
 export const fetchConsecutivos = () => axios.get(urlConsecutvios);
 export const createConsecutivo = (newConsecutivo) => axios.post(urlConsecutvios, newConsecutivo);
@@ -102,3 +104,9 @@ export const fetchClientes = () => axios.get(urlClientes);
 export const createCliente = (newProducto) => axios.post(urlClientes, newProducto);
 export const updateCliente = (id, updatedProducto) => axios.patch(`${urlClientes}/${id}`, updatedProducto);
 export const deleteCliente = (id) => axios.delete(`${urlClientes}/${id}`);
+
+export const fetchFacturas = () => axios.get(urlFacturas);
+export const createFactura = (newFactura) => axios.post(urlFacturas, newFactura);
+
+export const fetchCajas = () => axios.get(urlCajas);
+export const createCaja = (newCaja) => axios.post(urlCajas, newCaja);

@@ -5,208 +5,72 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEraser, faSave, faGreaterThan, faLessThan } from '@fortawesome/free-solid-svg-icons';
 import { createConsecutivo, getConsecutivos, updateConsecutivo } from '../../actions/consecutivos';
 import { createProveedor, updateProveedor } from '../../actions/proveedores';
-import FileBase from 'react-file-base64';
 import { getProveedores } from '../../actions/proveedores';
 import Board from '../Board/Board';
 
 
-const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecutivo, setCurrentConsecutivo}) => {
+const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, setCurrenteMesaId, currentRestauranteId}) => {
 
     const dispatch = useDispatch();
-    const productos = useSelector((state) => state.productos);
+    const mesas = useSelector((state) => state.mesas);
     const consecutivos = useSelector((state) => state.consecutivos);
-    const proveedor = useSelector((state) => currentId ? state.proveedores.find((r) => r._id === currentId) : null);
-    const [currentProductRestId, setCurrentProductRestId] = useState(null);
-    const [currentProductProvId, setCurrentProductProvId] = useState(null);
+    const especialidades = useSelector((state) => state.especialidades);
+
+    const mesa = useSelector((state) => currentMesaId ? state.mesas.find((m) => m._id === currentMesaId) : null);
+    const restaurante = useSelector((state) => currentRestauranteId ? state.restaurantes.find((r) => r._id === currentRestauranteId) : null);
+
     const [tempIdConsecutivo, setTempIdConsecutivo] = useState("");
-    let date = new Date();
-    date.setDate(date.getDate()); 
-    const actualDate = date.toISOString(); 
+    // let date = new Date();
+    // date.setDate(date.getDate()); 
+    // const actualDate = date.toISOString(); 
+
+    const [silla, setSilla] = useState({
+        id_especialidad: '',
+        precio: '',
+        buffet: ''
+    })
 
     const [consecutivoData, setConsecutivoData] = useState({
-        tipo: 'Proveedores', 
-        descripcion: 'Proveedor creado automáticamente', 
+        tipo: 'Clientes', 
+        descripcion: 'Cliente creado automáticamente', 
         valor: '', 
         tienePrefijo: true, 
         prefijo: ''    
     });
+
     
-    const [proveedorData, setProveedorData] = useState({
-        id_consecutivo: '',
+    const [clienteData, setClienteData] = useState({
         codigo: '',
-        cedula: '',
-        fechaIngreso: '',
-        nombre: '', 
-        primerApellido: '', 
-        segundoApellido: '',
-        correoElectronico: '',
-        direccion: '',
-        foto: '',
-        telefonoOficina: '',
-        telefonoFax: '',
-        telefonoCelular: '',
-        productos: [],
-        nombreContacto: '',
-        telefonoContacto: '',
-        direccionContacto: '',
-        cedulaError: '',
-        fechaIngresoError: '',
-        nombreError: '', 
-        primerApellidoError: '', 
-        segundoApellidoError: '',
-        correoElectronicoError: '',
-        direccionError: '',
-        fotoError: '',
-        telefonoOficinaError: '',
-        telefonoFaxError: '',
-        telefonoCelularError: '',
-        productosError: '',
-        nombreContactoError: '',
-        telefonoContactoError: '',
-        direccionContactoError: ''
+        nombre: '',
+        id_mesa: '',
+        id_restaurante: '',
+        nombreRestaurante: '',
+        nombreMesa: '',
+        numeroMesa: '',
+        montoPagado: '', 
+        horaEntrada: '', 
+        horaSalida: '',
+        duracionMesa: '',   
+        reservacion: '',
+        fechaLlegada: '',
+        fechaReservacion: '',
+        pedidos: [],
+        estadoCuenta: '',
+        nombreError: '',
+        cantidadSillas: ''
+        
     });
-
-    const agregarProducto=()=>{
-
-        let verifier = true;
-
-        if(!currentProductRestId){
-            setProveedorData({ ...proveedorData, productosError: "Debe seleccionar un producto de la lista del restaurante"});
-            verifier= false;
-        }else if(proveedorData.productos){
-
-            for( let i=0; i < proveedorData.productos.length; i++){
-
-                if(currentProductRestId === proveedorData.productos[i]){
-                    setProveedorData({ ...proveedorData, productosError: "El producto ya existe en la lista del proveedor"});
-                    verifier= false;
-                }
-            }
-            
-        }
-        
-        if(verifier){
-            setProveedorData({ ...proveedorData, productosError: ""});
-            proveedorData.productos.push(currentProductRestId);
-            setCurrentProductRestId(null);
-        }
-        
-    };
-
-    const eliminarProducto=()=>{
-
-        if(!currentProductProvId){
-            setProveedorData({ ...proveedorData, productosError: "Debe seleccionar un producto de la lista del proveedor"});
-        }else{
-
-            setProveedorData({ ...proveedorData, productosError: ""});
-
-            for( var i = 0; i < proveedorData.productos.length; i++){ 
-
-                console.log(proveedorData.productos[i])
-                console.log(currentProductProvId)
-    
-                if ( proveedorData.productos[i] === currentProductProvId) { 
-            
-                    proveedorData.productos.splice(i, 1); 
-                }
-            
-            }
-            setCurrentProductProvId(null);
-
-        }
-    };
 
     const validate = () => {
 
-        let cedulaError = '';
-        let fechaIngresoError = '';
         let nombreError = '';
-        let primerApellidoError = '';
-        let segundoApellidoError = '';
-        let correoElectronicoError = '';
-        let direccionError = '';
-        let fotoError = '';
-        let telefonoOficinaError = '';
-        let telefonoFaxError = '';
-        let telefonoCelularError = '';
-        let productosError = '';
-        let nombreContactoError = '';
-        let telefonoContactoError = '';
-        let direccionContactoError = '';
-        
-        if(!proveedorData.cedula){
-            cedulaError = 'Debe ingresar la cédula del proveedor';
-        }else if(proveedorData.telefono < 1){
-            cedulaError = 'Números deben ser mayor a 0';
+
+        if(!clienteData.nombre){
+            nombreError = 'Debe ingresar el nombre del cliente';
         }
 
-        if(!proveedorData.fechaIngreso){
-            fechaIngresoError = 'Debe seleccionar la fecha de ingreso del proveedor';
-        }
-
-        if(!proveedorData.nombre){
-            nombreError = 'Debe ingresar el nombre del proveedor';
-        }
-
-        if(!proveedorData.primerApellido){
-            primerApellidoError = 'Debe ingresar el primer apellido del proveedor';
-        }
-
-        if(!proveedorData.segundoApellido){
-            segundoApellidoError = 'Debe ingresar el segundo apellido del proveedor';
-        }
-
-        if(!proveedorData.correoElectronico){
-            correoElectronicoError = 'Debe ingresar el correo electrónico del proveedor';
-        }
-
-        if(!proveedorData.direccion){
-            direccionError = 'Debe ingresar la dirección del proveedor';
-        }
-
-        if(!proveedorData.foto){
-            fotoError = 'Debe subir una foto del proveedor';
-        }
-
-        if(!proveedorData.telefonoOficina){
-            telefonoOficinaError = 'Debe ingresar el teléfono de oficina del proveedor';
-        }else if(proveedorData.telefonoOficina < 1){
-            telefonoOficinaError = 'Números deben ser mayor a 0';
-        }
-
-        if(!proveedorData.telefonoFax){
-            telefonoFaxError = 'Debe ingresar el fax del proveedor';
-        }else if(proveedorData.telefonoFax < 1){
-            telefonoFaxError = 'Números deben ser mayor a 0';
-        }
-
-        if(!proveedorData.telefonoCelular){
-            telefonoCelularError = 'Debe ingresar el celular del proveedor';
-        }else if(proveedorData.telefonoCelular < 1){
-            telefonoCelularError = 'Números deben ser mayor a 0';
-        }
-
-        if(proveedorData.productos.length < 1){
-            productosError = 'Debe seleccionar los productos del proveedor';
-        }
-
-        if(!proveedorData.nombreContacto){
-            nombreContactoError = 'Debe ingresar el nombre de contacto del proveedor';
-        }
-
-        if(!proveedorData.telefonoContacto){
-            telefonoContactoError = 'Debe ingresar el teléfono de contacto del proveedor';
-        }else if(proveedorData.telefonoContacto < 1){
-            telefonoContactoError = 'Números deben ser mayor a 0';
-        }
-
-        if(!proveedorData.direccionContacto){
-            direccionContactoError = 'Debe ingresar la dirección de contacto del proveedor';
-        }
-
-        if(nombreError || cedulaError  || fechaIngresoError || primerApellidoError || segundoApellidoError || correoElectronicoError || direccionError || fotoError || telefonoOficinaError || telefonoFaxError || telefonoCelularError || productosError || nombreContactoError || telefonoContactoError || direccionContactoError){
-            setProveedorData({ ...proveedorData, nombreError, cedulaError, fechaIngresoError, primerApellidoError, segundoApellidoError, correoElectronicoError, direccionError, fotoError, telefonoOficinaError, telefonoFaxError, telefonoCelularError, productosError, nombreContactoError, telefonoContactoError, direccionContactoError});
+        if(nombreError ){
+            setClienteData({ ...clienteData, nombreError});
             return false;
         }
 
@@ -247,22 +111,33 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
             consecutivoData.prefijo = 'CLI-';
         }
 
-        proveedorData.codigo = codigo;
+        clienteData.codigo = codigo;
 
         return codigo;
     }
 
-    const getConsecutivoId = () => {
-        consecutivos.forEach(consecutivo => {
-            if(consecutivo.prefijo === consecutivoData.prefijo && consecutivo.valor === consecutivoData.valor){
-                return consecutivo._id;
-            }
-        });
+
+
+    useEffect(() => { if(mesa){
+        setClienteData({...clienteData, 
+            id_mesa: mesa._id, 
+            nombreMesa: mesa.nombre, 
+            numeroMesa: mesa.numero,
+            cantidadSillas: mesa.cantidadSillas,
+            id_restaurante: restaurante._id,
+            nombreRestaurante: restaurante.nombre
+        })
+        } 
+    }, [mesa, restaurante]);
+
+    let sillas = [];
+
+    for(let i=0; i < clienteData.cantidadSillas; i++){
+
+        sillas.push(i+1);
     }
 
-    //populate data on edit
-    useEffect(() => { if(proveedor){setProveedorData(proveedor)} 
-    }, [proveedor]);
+    console.log(sillas)
 
     
 
@@ -273,7 +148,7 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
 
         if(isValid){
             if(currentId) {
-                dispatch(updateProveedor(currentId, proveedorData));
+                dispatch(updateProveedor(currentId, clienteData));
                 setCurrenteId(null);
                 dispatch(getProveedores());
                 clearForm();
@@ -282,9 +157,8 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
             }else{
 
                 dispatch(createConsecutivo(consecutivoData));
-                setTempIdConsecutivo(getConsecutivoId());
-                setProveedorData({ ...proveedorData, id_consecutivo : tempIdConsecutivo});
-                dispatch(createProveedor(proveedorData));
+                setClienteData({ ...clienteData, id_consecutivo : tempIdConsecutivo});
+                dispatch(createProveedor(clienteData));
                 dispatch(getConsecutivos());
                 generarCodigo();
                 clearForm();
@@ -295,43 +169,12 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
     }
         
     const clearForm = () => {
-        // setCurrenteId(null);
-        setProveedorData({
-            cedula: '',
-            fechaIngreso: '',
-            nombre: '', 
-            primerApellido: '', 
-            segundoApellido: '',
-            correoElectronico: '',
-            direccion: '',
-            foto: '',
-            telefonoOficina: '',
-            telefonoFax: '',
-            telefonoCelular: '',
-            productos: [],
-            nombreContacto: '',
-            telefonoContacto: '',
-            direccionContacto: '',
-            cedulaError: '',
-            fechaIngresoError: '',
-            nombreError: '', 
-            primerApellidoError: '', 
-            segundoApellidoError: '',
-            correoElectronicoError: '',
-            direccionError: '',
-            fotoError: '',
-            telefonoOficinaError: '',
-            telefonoFaxError: '',
-            telefonoCelularError: '',
-            productosError: '',
-            nombreContactoError: '',
-            telefonoContactoError: '',
-            direccionContactoError: ''
+        // setCurrenteMesaId(null);
+        setClienteData({ ...clienteData, nombre: '', nombreError: ''
         });
     }
-
-    console.table(proveedorData)
     
+    // console.table(clienteData)
     
     return(
 
@@ -352,7 +195,7 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
                                         </Col>
                                         <Col>
                                             <FormGroup>
-                                                <FormControl type="text" disabled name="codigo" value={ !currentId ? generarCodigo() : proveedorData.codigo} ></FormControl>
+                                                <FormControl type="text" disabled name="codigo" value={ !currentId ? generarCodigo() : clienteData.codigo} ></FormControl>
                                             </FormGroup>
                                         </Col>
                                     </Row>
@@ -362,8 +205,8 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
                                         </Col>
                                         <Col>
                                             <FormGroup>
-                                                <FormControl className={ (proveedorData.nombreError) ? 'is-invalid' : ''} type="text" name="nombre" value={proveedorData.nombre} onChange={(e) => setProveedorData({ ...proveedorData, nombre: e.target.value})}></FormControl>
-                                                <small className="form-text text-danger">{proveedorData.nombreError}</small>
+                                                <FormControl className={ (clienteData.nombreError) ? 'is-invalid' : ''} type="text" name="nombre" value={clienteData.nombre} onChange={(e) => setClienteData({ ...clienteData, nombre: e.target.value})}></FormControl>
+                                                <small className="form-text text-danger">{clienteData.nombreError}</small>
                                             </FormGroup>
                                         </Col>
                                     </Row>
@@ -373,8 +216,7 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
                                         </Col>
                                         <Col>
                                             <FormGroup>
-                                                <FormControl className={ (proveedorData.primerApellidoError) ? 'is-invalid' : ''} type="text" name="primerApellido" value={proveedorData.primerApellido} onChange={(e) => setProveedorData({ ...proveedorData, primerApellido: e.target.value})}></FormControl>
-                                                <small className="form-text text-danger">{proveedorData.primerApellidoError}</small>
+                                                <FormControl type="text" name="nombreMesa" value={clienteData.nombreMesa} disabled></FormControl>
                                             </FormGroup>
                                         </Col>
                                     </Row>
@@ -384,8 +226,8 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
                                         </Col>
                                         <Col>
                                             <FormGroup>
-                                                <FormControl className={ (proveedorData.segundoApellidoError) ? 'is-invalid' : ''} type="text" name="segundoApellido" value={proveedorData.segundoApellido} onChange={(e) => setProveedorData({ ...proveedorData, segundoApellido: e.target.value})}></FormControl>
-                                                <small className="form-text text-danger">{proveedorData.segundoApellidoError}</small>
+                                                <FormControl className={ (clienteData.segundoApellidoError) ? 'is-invalid' : ''} type="text" name="segundoApellido" value={clienteData.segundoApellido} onChange={(e) => setClienteData({ ...clienteData, segundoApellido: e.target.value})}></FormControl>
+                                                <small className="form-text text-danger">{clienteData.segundoApellidoError}</small>
                                             </FormGroup>
                                         </Col>
                                     </Row>
@@ -397,8 +239,7 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
                                         </Col>
                                         <Col>
                                             <FormGroup>
-                                                <FormControl className={ (proveedorData.primerApellidoError) ? 'is-invalid' : ''} type="text" name="primerApellido" value={proveedorData.primerApellido} onChange={(e) => setProveedorData({ ...proveedorData, primerApellido: e.target.value})}></FormControl>
-                                                <small className="form-text text-danger">{proveedorData.primerApellidoError}</small>
+                                                <FormControl type="text" name="nombreRestaurante" value={clienteData.nombreRestaurante} disabled></FormControl>
                                             </FormGroup>
                                         </Col>
                                     </Row>
@@ -408,8 +249,8 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
                                         </Col>
                                         <Col>
                                             <FormGroup>
-                                                <FormControl className={ (proveedorData.primerApellidoError) ? 'is-invalid' : ''} type="text" name="primerApellido" value={proveedorData.primerApellido} onChange={(e) => setProveedorData({ ...proveedorData, primerApellido: e.target.value})}></FormControl>
-                                                <small className="form-text text-danger">{proveedorData.primerApellidoError}</small>
+                                                <FormControl className={ (clienteData.primerApellidoError) ? 'is-invalid' : ''} type="text" name="primerApellido" value={clienteData.primerApellido} onChange={(e) => setClienteData({ ...clienteData, primerApellido: e.target.value})}></FormControl>
+                                                <small className="form-text text-danger">{clienteData.primerApellidoError}</small>
                                             </FormGroup>
                                         </Col>
                                     </Row>
@@ -419,8 +260,8 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
                                         </Col>
                                         <Col>
                                             <FormGroup>
-                                                <FormControl className={ (proveedorData.primerApellidoError) ? 'is-invalid' : ''} type="text" name="primerApellido" value={proveedorData.primerApellido} onChange={(e) => setProveedorData({ ...proveedorData, primerApellido: e.target.value})}></FormControl>
-                                                <small className="form-text text-danger">{proveedorData.primerApellidoError}</small>
+                                                <FormControl className={ (clienteData.primerApellidoError) ? 'is-invalid' : ''} type="text" name="primerApellido" value={clienteData.primerApellido} onChange={(e) => setClienteData({ ...clienteData, primerApellido: e.target.value})}></FormControl>
+                                                <small className="form-text text-danger">{clienteData.primerApellidoError}</small>
                                             </FormGroup>
                                         </Col>
                                     </Row>
@@ -431,8 +272,8 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
                                         </Col>
                                         <Col>
                                             <FormGroup>
-                                                <FormControl className={ (proveedorData.primerApellidoError) ? 'is-invalid' : ''} type="text" name="primerApellido" value={proveedorData.primerApellido} onChange={(e) => setProveedorData({ ...proveedorData, primerApellido: e.target.value})}></FormControl>
-                                                <small className="form-text text-danger">{proveedorData.primerApellidoError}</small>
+                                                <FormControl className={ (clienteData.primerApellidoError) ? 'is-invalid' : ''} type="text" name="primerApellido" value={clienteData.primerApellido} onChange={(e) => setClienteData({ ...clienteData, primerApellido: e.target.value})}></FormControl>
+                                                <small className="form-text text-danger">{clienteData.primerApellidoError}</small>
                                             </FormGroup>
                                         </Col>
                                     </Row>
@@ -450,8 +291,7 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
                                         </Col>
                                         <Col md="3">
                                             <FormGroup>
-                                                <FormControl className={ (proveedorData.primerApellidoError) ? 'is-invalid' : ''} type="text" name="primerApellido" value={proveedorData.primerApellido} onChange={(e) => setProveedorData({ ...proveedorData, primerApellido: e.target.value})}></FormControl>
-                                                <small className="form-text text-danger">{proveedorData.primerApellidoError}</small>
+                                                <FormControl type="text" name="numeroMesa" value={clienteData.numeroMesa} onChange={(e) => setClienteData({ ...clienteData, numeroMesa: e.target.value})} disabled></FormControl>
                                             </FormGroup>
                                         </Col>
                                         <Col md="3" className="text-center pt-1">
@@ -459,29 +299,39 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
                                         </Col>
                                     </Row>
 
-                                    <Row>
-                                        <Col md="2" className="text-right pt-1">
-                                            <Form.Label> Silla #1</Form.Label>
-                                        </Col>
-                                        <Col md="3">
-                                            <FormGroup>
-                                                <FormControl className={ (proveedorData.primerApellidoError) ? 'is-invalid' : ''} type="text" name="primerApellido" value={proveedorData.primerApellido} onChange={(e) => setProveedorData({ ...proveedorData, primerApellido: e.target.value})}></FormControl>
-                                                <small className="form-text text-danger">{proveedorData.primerApellidoError}</small>
-                                            </FormGroup>
-                                        </Col>
-                                        <Col md="3">
-                                            <FormGroup>
-                                                <FormControl className={ (proveedorData.primerApellidoError) ? 'is-invalid' : ''} type="text" name="primerApellido" value={proveedorData.primerApellido} onChange={(e) => setProveedorData({ ...proveedorData, primerApellido: e.target.value})}></FormControl>
-                                                <small className="form-text text-danger">{proveedorData.primerApellidoError}</small>
-                                            </FormGroup>
-                                        </Col>
-                                        <Col md="3">
-                                        <FormGroup>
-                                            <Form.Check type="checkbox" label="Buffet" name="tienePrefijo" className="pt-2"  onChange={(e) => {setConsecutivoData({ ...consecutivoData, tienePrefijo: e.target.checked});  }}/>
-                                        </FormGroup>
-                                        
-                                    </Col>
-                                    </Row>
+                                    {
+                                        sillas.map( silla => {
+
+
+                                            return(
+                                                <Row>
+                                                    <Col md="2" className="text-right pt-1">
+                                                        <Form.Label> Silla #{silla}</Form.Label>
+                                                    </Col>
+                                                    <Col md="3">
+                                                        <Form.Control as="select" name="id_especialidad"  value={clienteData.id_restaurante} onChange={(e) => setClienteData({ ...clienteData, id_restaurante: e.target.value})} >
+                                                            <option value="">--Seleccione--</option>
+                                                            {especialidades.map((especialidad) => <option key={especialidad._id} value={especialidad._id}>{especialidad.nombre}</option>)}               
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col md="3">
+                                                        <FormGroup>
+                                                            <FormControl className={ (clienteData.primerApellidoError) ? 'is-invalid' : ''} type="text" name="primerApellido" value={clienteData.primerApellido} onChange={(e) => setClienteData({ ...clienteData, primerApellido: e.target.value})} disabled></FormControl>
+                                                            <small className="form-text text-danger">{clienteData.primerApellidoError}</small>
+                                                        </FormGroup>
+                                                    </Col>
+                                                    <Col md="3">
+                                                        <FormGroup>
+                                                            <Form.Check type="checkbox" label="Buffet" name="tienePrefijo" className="pt-2"  onChange={(e) => {setConsecutivoData({ ...consecutivoData, tienePrefijo: e.target.checked});  }}/>
+                                                        </FormGroup>
+                                                    </Col>
+                                                </Row>
+                                            )
+                                        })
+                                    }
+                                    
+                                    
+                                    
                                   
                                    
                                 </Col>
@@ -509,8 +359,8 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
                                     </Col>
                                     <Col>
                                         <FormGroup>
-                                            <FormControl className={ (proveedorData.primerApellidoError) ? 'is-invalid' : ''} type="text" name="primerApellido" value={actualDate} onChange={(e) => setProveedorData({ ...proveedorData, primerApellido: e.target.value})} disabled></FormControl>
-                                            <small className="form-text text-danger">{proveedorData.primerApellidoError}</small>
+                                            <FormControl className={ (clienteData.primerApellidoError) ? 'is-invalid' : ''} type="text" name="primerApellido"  onChange={(e) => setClienteData({ ...clienteData, primerApellido: e.target.value})} disabled></FormControl>
+                                            <small className="form-text text-danger">{clienteData.primerApellidoError}</small>
                                         </FormGroup>
                                     </Col>
                                 </Row>
@@ -523,8 +373,8 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
 
                                     <Col>
                                         <FormGroup>
-                                            <FormControl className={ (proveedorData.fechaIngresoError) ? 'is-invalid' : ''} type="date" name="fechaIngreso" value={proveedorData.fechaIngreso} onChange={(e) => setProveedorData({ ...proveedorData, fechaIngreso: e.target.value.toString("yyyy-MM-dd")})}></FormControl>
-                                            <small className="form-text text-danger">{proveedorData.fechaIngresoError}</small>
+                                            <FormControl className={ (clienteData.fechaIngresoError) ? 'is-invalid' : ''} type="date" name="fechaIngreso" value={clienteData.fechaIngreso} onChange={(e) => setClienteData({ ...clienteData, fechaIngreso: e.target.value.toString("yyyy-MM-dd")})}></FormControl>
+                                            <small className="form-text text-danger">{clienteData.fechaIngresoError}</small>
                                         </FormGroup>
                                     </Col>
                                 </Row>
@@ -537,8 +387,8 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentConsecut
                                 </Col>
                                 <Col >
                                     <FormGroup>
-                                    <FormControl className={ (proveedorData.nombreContactoError) ? 'is-invalid' : ''} type="text" name="nombreContacto" value={proveedorData.nombreContacto} onChange={(e) => setProveedorData({ ...proveedorData, nombreContacto: e.target.value})}></FormControl>
-                                        <small className="form-text text-danger">{proveedorData.nombreContactoError}</small>
+                                    <FormControl className={ (clienteData.nombreContactoError) ? 'is-invalid' : ''} type="text" name="nombreContacto" value={clienteData.nombreContacto} onChange={(e) => setClienteData({ ...clienteData, nombreContacto: e.target.value})}></FormControl>
+                                        <small className="form-text text-danger">{clienteData.nombreContactoError}</small>
                                     </FormGroup>
                                 </Col>
                             </Row>

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Restaurante from '../../components/Restaurante/Restaurante';
 import { Button, Row, Col} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserShield, faIdCard, faUserTag, faTruckMoving, faTools, faFile } from '@fortawesome/free-solid-svg-icons';
+import { faArrowCircleLeft, faIdCard } from '@fortawesome/free-solid-svg-icons';
 import BuffetLogo from '../../images/buffet.svg';
 import TableLogo from '../../images/table.svg';
 import CheftLogo from '../../images/chef.svg';
@@ -21,7 +21,13 @@ const Administracion = ({currentId, setCurrenteId, isOpen, setshow, onExit}) => 
         
         <Row className="home mt-5">
             <Col md="12" >
-            <h2 className="text-center text-white mt-4 ">Administración</h2>
+            <h2 className="text-center text-white mt-4 ">
+                <button className="float-left ">
+                    <Link to={location => ({ ...location, pathname: "/home" })} >
+                        <FontAwesomeIcon icon={faArrowCircleLeft} size="1x" className="text-white"/>
+                    </Link> 
+                </button>
+                Administración</h2>
             </Col>
 
             {(user.result.privilegio === "sistema" || user.result.privilegio === "cuenta") && 

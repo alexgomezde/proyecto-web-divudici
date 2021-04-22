@@ -76,7 +76,7 @@ const ReportesHome = ({currentId, setCurrenteId, isOpen, setshow, onExit}) => {
             
                 <h2 className="text-center text-white mt-4 ">
                     <button className="float-left ">
-                                <Link to={location => ({ ...location, pathname: "/Home" })} >
+                                <Link to={location => ({ ...location, pathname: "/home" })} >
                                     <FontAwesomeIcon icon={faArrowCircleLeft} size="1x" className="text-white"/>
                                 </Link> 
                     </button>
@@ -97,7 +97,7 @@ const ReportesHome = ({currentId, setCurrenteId, isOpen, setshow, onExit}) => {
                 
             }
 
-            {(user.result.privilegio === "seguridad") && 
+            {(user.result.privilegio === "seguridad" || user.result.privilegio === "sistema") && 
 
             <Col md="4" className="text-center pt-5 mb-5">
                 <Link to={location => ({ ...location, pathname: "/clientes" })} >
@@ -113,7 +113,7 @@ const ReportesHome = ({currentId, setCurrenteId, isOpen, setshow, onExit}) => {
             {(user.result.privilegio === "seguridad") && 
 
             <Col md="4" className="text-center pt-5 mb-5">
-                <Link to={location => ({ ...location, pathname: "/clientes" })} >
+                <Link to={location => ({ ...location, pathname: "/facturas" })} >
                     <button>
                         <FontAwesomeIcon icon={faFileInvoiceDollar} size="9x" className="text-white"/>
                         <p className="mt-2 text-white h4">Facturación</p>
