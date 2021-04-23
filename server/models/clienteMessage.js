@@ -12,13 +12,18 @@ const clienteSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'RestauranteMessage'
     },
-    horaEntrada: Date,
-    horaSalida: Date,
-    duracionMesa: Date,
+    horaEntrada: String,
+    horaSalida: String,
+    duracionMesa: String,
     reservacion: Boolean,
-    fechaLlegada: Date, 
+    fechaLlegada: String, 
     fechaReservacion: String, 
-    pedidos: Array,
+    pedidos: [{
+        id : Number,
+        id_especialidad : String,
+        precio: Number,
+        buffet: Boolean
+         }],
     estadoCuenta: Boolean
 });
 

@@ -4,6 +4,7 @@ import { getBitacoras } from '../../actions/bitacoras';
 import { getMesas } from '../../actions/mesas';
 import { getRestaurantes } from '../../actions/restaurantes';
 import { getEspecialidades} from '../../actions/especialidades';
+import { getConsecutivos} from '../../actions/consecutivos';
 import { Link } from 'react-router-dom';
 import ClienteForm from '../ClienteForm/ClienteForm';
 
@@ -21,6 +22,7 @@ const RestauranteSalon = () => {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
     const [show, setShow] = useState(false);
     const [currentMesaId, setCurrenteMesaId] = useState(null);
+    const [currentId, setCurrenteId] = useState(null);
     const [currentRestauranteId, setCurrentRestauranteId] = useState(user.result.id_restaurante);
     const dispatch = useDispatch();
    
@@ -32,6 +34,7 @@ const RestauranteSalon = () => {
         dispatch(getMesas());
         dispatch(getRestaurantes());
         dispatch(getEspecialidades());
+        dispatch(getConsecutivos());
     }, [ currentMesaId, dispatch ]);
 
     const mesas = useSelector((state) => state.mesas);
@@ -107,7 +110,8 @@ const RestauranteSalon = () => {
                                         <Button variant="outline-light" className="menu-item mt-2" onClick={() => { setCurrenteMesaId(mesa._id); setShow(true);}}>
                                             <img src={TableLogo} alt="Mesa logo" width="50px"></img>
                                             <p>{mesa.nombre}</p>
-                                            <p>Cantidad Sillas {mesa.cantidadSillas}</p>
+                                            <p>Número mesa: {mesa.numero}</p>
+                                            <p>Cantidad Sillas: {mesa.cantidadSillas}</p>
                                         </Button>
                                     </Col>
                                 )

@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Row, Col, Form, FormControl, Modal, FormGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEraser, faSave, faGreaterThan, faLessThan } from '@fortawesome/free-solid-svg-icons';
-import { createConsecutivo, getConsecutivos, updateConsecutivo } from '../../actions/consecutivos';
-import { createProveedor, updateProveedor } from '../../actions/proveedores';
+import { faEraser, faSave, faPrint } from '@fortawesome/free-solid-svg-icons';
+import { createConsecutivo, getConsecutivos } from '../../actions/consecutivos';
+import { createCliente, updateCliente } from '../../actions/clientes';
 import { getProveedores } from '../../actions/proveedores';
-import Board from '../Board/Board';
+import moment from 'moment';
 
 
 const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, setCurrenteMesaId, currentRestauranteId}) => {
@@ -23,12 +23,6 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
     // let date = new Date();
     // date.setDate(date.getDate()); 
     // const actualDate = date.toISOString(); 
-
-    const [silla, setSilla] = useState({
-        id_especialidad: '',
-        precio: '',
-        buffet: ''
-    })
 
     const [consecutivoData, setConsecutivoData] = useState({
         tipo: 'Clientes', 
@@ -47,15 +41,15 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
         nombreRestaurante: '',
         nombreMesa: '',
         numeroMesa: '',
-        montoPagado: '', 
-        horaEntrada: '', 
+        montoPagado: 0, 
+        horaEntrada: moment().format('LT'), 
         horaSalida: '',
         duracionMesa: '',   
-        reservacion: '',
-        fechaLlegada: '',
+        reservacion: false,
+        fechaLlegada: moment().format('L'),
         fechaReservacion: '',
         pedidos: [],
-        estadoCuenta: '',
+        estadoCuenta: false,
         nombreError: '',
         cantidadSillas: ''
         
@@ -130,15 +124,57 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
         } 
     }, [mesa, restaurante]);
 
-    let sillas = [];
 
-    for(let i=0; i < clienteData.cantidadSillas; i++){
+    if(clienteData.pedidos.length === 0){
 
-        sillas.push(i+1);
+        for(let i=0; i < clienteData.cantidadSillas; i++){
+
+            let silla = {
+                id: i+1,
+                id_especialidad: -1,
+                precio: 0, 
+                buffet: false,
+                productosBuffet: []
+            };
+    
+            clienteData.pedidos.push(silla);
+        }
     }
 
-    console.log(sillas)
+    const updatePedidoSilla = (sillaId, especialidadId) => {
 
+        const sillasIndex = clienteData.pedidos.findIndex(element => element.id === sillaId );
+
+        if(especialidadId != -1){
+            
+            const especialidad = especialidades.find(element => element._id === especialidadId );
+
+            let newArray = [...clienteData.pedidos];
+
+            newArray[sillasIndex] = {...newArray[sillasIndex], id_especialidad: especialidad._id, precio: especialidad.precio};
+
+            clienteData.pedidos = newArray;
+
+        }else{
+
+            let newArray = [...clienteData.pedidos];
+
+            newArray[sillasIndex] = {...newArray[sillasIndex], id_especialidad: -1, precio: 0};
+
+            clienteData.pedidos = newArray;
+        }
+
+
+        let montoAPagar = 0;
+
+        clienteData.pedidos.forEach(element => {
+            
+            montoAPagar += element.precio;
+        });
+
+        setClienteData({ ...clienteData, montoPagado : montoAPagar});
+        
+    }
     
 
     const handleSubmit = (e) => {
@@ -148,17 +184,16 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
 
         if(isValid){
             if(currentId) {
-                dispatch(updateProveedor(currentId, clienteData));
+                dispatch(updateCliente(currentId, clienteData));
                 setCurrenteId(null);
                 dispatch(getProveedores());
                 clearForm();
                 setshow(false);
-                ;
             }else{
 
                 dispatch(createConsecutivo(consecutivoData));
                 setClienteData({ ...clienteData, id_consecutivo : tempIdConsecutivo});
-                dispatch(createProveedor(clienteData));
+                dispatch(createCliente(clienteData));
                 dispatch(getConsecutivos());
                 generarCodigo();
                 clearForm();
@@ -169,8 +204,13 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
     }
         
     const clearForm = () => {
-        // setCurrenteMesaId(null);
-        setClienteData({ ...clienteData, nombre: '', nombreError: ''
+        setCurrenteMesaId(null);
+        clienteData.pedidos.length=0;
+        setClienteData({ ...clienteData, 
+            nombre: '',
+            nombreError: '',
+            cantidadSillas: 0, 
+            montoPagado: 0
         });
     }
     
@@ -226,8 +266,7 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
                                         </Col>
                                         <Col>
                                             <FormGroup>
-                                                <FormControl className={ (clienteData.segundoApellidoError) ? 'is-invalid' : ''} type="text" name="segundoApellido" value={clienteData.segundoApellido} onChange={(e) => setClienteData({ ...clienteData, segundoApellido: e.target.value})}></FormControl>
-                                                <small className="form-text text-danger">{clienteData.segundoApellidoError}</small>
+                                                <FormControl type="number" name="segundoApellido" value={clienteData.montoPagado} disabled></FormControl>
                                             </FormGroup>
                                         </Col>
                                     </Row>
@@ -249,8 +288,7 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
                                         </Col>
                                         <Col>
                                             <FormGroup>
-                                                <FormControl className={ (clienteData.primerApellidoError) ? 'is-invalid' : ''} type="text" name="primerApellido" value={clienteData.primerApellido} onChange={(e) => setClienteData({ ...clienteData, primerApellido: e.target.value})}></FormControl>
-                                                <small className="form-text text-danger">{clienteData.primerApellidoError}</small>
+                                                <FormControl type="text" name="horaEntrada" value={clienteData.horaEntrada} disabled></FormControl>
                                             </FormGroup>
                                         </Col>
                                     </Row>
@@ -260,8 +298,7 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
                                         </Col>
                                         <Col>
                                             <FormGroup>
-                                                <FormControl className={ (clienteData.primerApellidoError) ? 'is-invalid' : ''} type="text" name="primerApellido" value={clienteData.primerApellido} onChange={(e) => setClienteData({ ...clienteData, primerApellido: e.target.value})}></FormControl>
-                                                <small className="form-text text-danger">{clienteData.primerApellidoError}</small>
+                                                <FormControl type="text" name="horaSalida" value={clienteData.horaSalida} disabled></FormControl>
                                             </FormGroup>
                                         </Col>
                                     </Row>
@@ -272,8 +309,7 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
                                         </Col>
                                         <Col>
                                             <FormGroup>
-                                                <FormControl className={ (clienteData.primerApellidoError) ? 'is-invalid' : ''} type="text" name="primerApellido" value={clienteData.primerApellido} onChange={(e) => setClienteData({ ...clienteData, primerApellido: e.target.value})}></FormControl>
-                                                <small className="form-text text-danger">{clienteData.primerApellidoError}</small>
+                                                <FormControl type="text" name="duracion" value={clienteData.duracionMesa} disabled></FormControl>
                                             </FormGroup>
                                         </Col>
                                     </Row>
@@ -300,39 +336,34 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
                                     </Row>
 
                                     {
-                                        sillas.map( silla => {
+                                        clienteData.pedidos.map( silla => {
 
 
                                             return(
                                                 <Row>
                                                     <Col md="2" className="text-right pt-1">
-                                                        <Form.Label> Silla #{silla}</Form.Label>
+                                                        <Form.Label> Silla #{silla.id}</Form.Label>
                                                     </Col>
                                                     <Col md="3">
-                                                        <Form.Control as="select" name="id_especialidad"  value={clienteData.id_restaurante} onChange={(e) => setClienteData({ ...clienteData, id_restaurante: e.target.value})} >
-                                                            <option value="">--Seleccione--</option>
+                                                        <Form.Control as="select" name="id_especialidad"  value={silla.id_especialidad} onChange={ (e) => {updatePedidoSilla( silla.id, e.target.value,);  } } >
+                                                            <option value="-1">--Seleccione--</option>
                                                             {especialidades.map((especialidad) => <option key={especialidad._id} value={especialidad._id}>{especialidad.nombre}</option>)}               
                                                         </Form.Control>
                                                     </Col>
                                                     <Col md="3">
                                                         <FormGroup>
-                                                            <FormControl className={ (clienteData.primerApellidoError) ? 'is-invalid' : ''} type="text" name="primerApellido" value={clienteData.primerApellido} onChange={(e) => setClienteData({ ...clienteData, primerApellido: e.target.value})} disabled></FormControl>
-                                                            <small className="form-text text-danger">{clienteData.primerApellidoError}</small>
+                                                            <FormControl  type="text" name="primerApellido" value={silla.precio} disabled></FormControl>
                                                         </FormGroup>
                                                     </Col>
                                                     <Col md="3">
                                                         <FormGroup>
-                                                            <Form.Check type="checkbox" label="Buffet" name="tienePrefijo" className="pt-2"  onChange={(e) => {setConsecutivoData({ ...consecutivoData, tienePrefijo: e.target.checked});  }}/>
+                                                            <Form.Check type="checkbox" label="Buffet" name="buffet" className="pt-2" checked={ silla.buffet } />
                                                         </FormGroup>
                                                     </Col>
                                                 </Row>
                                             )
                                         })
                                     }
-                                    
-                                    
-                                    
-                                  
                                    
                                 </Col>
                             </Row>          
@@ -347,7 +378,7 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
                                     </Col>
                                     <Col>
                                         <FormGroup>
-                                            <Form.Check type="checkbox" label="Reservación" name="tienePrefijo"  onChange={(e) => {setConsecutivoData({ ...consecutivoData, tienePrefijo: e.target.checked});  }}/>
+                                            <Form.Check type="checkbox" label="Reservación" name="reservacion" value={clienteData.reservacion} onChange={(e) => {setClienteData({ ...clienteData, reservacion: e.target.checked});  }}/>
                                         </FormGroup>
                                         
                                     </Col>
@@ -359,25 +390,27 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
                                     </Col>
                                     <Col>
                                         <FormGroup>
-                                            <FormControl className={ (clienteData.primerApellidoError) ? 'is-invalid' : ''} type="text" name="primerApellido"  onChange={(e) => setClienteData({ ...clienteData, primerApellido: e.target.value})} disabled></FormControl>
-                                            <small className="form-text text-danger">{clienteData.primerApellidoError}</small>
+                                            <FormControl type="text" name="fechaLlegada"  value={clienteData.fechaLlegada} disabled></FormControl>
                                         </FormGroup>
                                     </Col>
                                 </Row>
 
-                                <Row>
+                                {clienteData.reservacion && 
 
-                                    <Col md="3" className="text-right pt-1">
-                                        <Form.Label>Reservación</Form.Label>
-                                    </Col>
+                                    <Row>
+                                        <Col md="3" className="text-right pt-1">
+                                            <Form.Label>Reservación</Form.Label>
+                                        </Col>
 
-                                    <Col>
-                                        <FormGroup>
-                                            <FormControl className={ (clienteData.fechaIngresoError) ? 'is-invalid' : ''} type="date" name="fechaIngreso" value={clienteData.fechaIngreso} onChange={(e) => setClienteData({ ...clienteData, fechaIngreso: e.target.value.toString("yyyy-MM-dd")})}></FormControl>
-                                            <small className="form-text text-danger">{clienteData.fechaIngresoError}</small>
-                                        </FormGroup>
-                                    </Col>
-                                </Row>
+                                        <Col>
+                                            <FormGroup>
+                                                <FormControl className={ (clienteData.fechaReservacionError) ? 'is-invalid' : ''} type="date" name="fechaReservacion" value={clienteData.fechaReservacion} onChange={(e) => setClienteData({ ...clienteData, fechaReservacion: e.target.value.toString("yyyy-MM-dd")})}></FormControl>
+                                                <small className="form-text text-danger">{clienteData.fechaReservacionError}</small>
+                                            </FormGroup>
+                                        </Col>
+                                    </Row>
+
+                                }
                                 
 
                             <h6 className="mt-3 mb-4">Facturación</h6>
@@ -387,9 +420,18 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
                                 </Col>
                                 <Col >
                                     <FormGroup>
-                                    <FormControl className={ (clienteData.nombreContactoError) ? 'is-invalid' : ''} type="text" name="nombreContacto" value={clienteData.nombreContacto} onChange={(e) => setClienteData({ ...clienteData, nombreContacto: e.target.value})}></FormControl>
-                                        <small className="form-text text-danger">{clienteData.nombreContactoError}</small>
+                                    <FormControl className={ (clienteData.nombreContactoError) ? 'is-invalid' : ''} type="text" name="nombreContacto" value={clienteData.estadoCuenta ? 'PAGADO': 'SIN PAGAR'} disabled></FormControl>
                                     </FormGroup>
+                                </Col>
+                            </Row>
+
+                            <Row>
+                                <Col md="3"className="text-right">
+                                </Col>
+                                <Col >
+                                    <Button className="mr-2 btn-restaurant" variant="outline-light">
+                                        <FontAwesomeIcon icon={faPrint} size="2x"></FontAwesomeIcon>
+                                    </Button>
                                 </Col>
                             </Row>
                             
