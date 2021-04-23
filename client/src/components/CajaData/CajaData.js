@@ -44,13 +44,12 @@ const CajaData = ({ inputSearchTerm, selectedTypeSearch}) => {
         
                     return(
                         <tr key={caja._id}>
-                            <td key={caja.codigo}>{caja.codigo}</td>
+                            <td key={caja._id}>{caja._id}</td>
                             <td key={caja.fecha}>{caja.fecha}</td>
                             <td key={caja.descripcion}>{caja.descripcion}</td>
-                            <td key={caja.EntradaDinero}>{caja.EntradaDinero}</td>
-                            <td key={caja.AperturaCaja}>{caja.AperturaCaja}</td>
-                            <td key={caja.EntradaDinero}>{caja.EntradaDinero}</td>
-                            <td key={caja.CierreCaja}>{caja.CierreCaja}</td>
+                            <td key={caja.entradaDinero}>{caja.entradaDinero}</td>
+                            <td key={caja.aperturaCaja}>{caja.aperturaCaja}</td>
+                            <td key={caja.cierreCaja}>{caja.cierreCaja}</td>
                             {restaurantes.map( restaurante => {
                                 if(restaurante._id === caja.id_restaurante){
 

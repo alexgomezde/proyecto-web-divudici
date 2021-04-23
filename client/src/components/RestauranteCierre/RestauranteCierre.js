@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getRestaurantes } from '../../actions/restaurantes';
+import { createCaja } from '../../actions/cajas';
 import { useHistory } from 'react-router-dom';
+import moment from 'moment';
 
 import Restaurante from '../../components/Restaurante/Restaurante';
 import { Button, Row, Col, Form, FormGroup} from 'react-bootstrap';
@@ -14,6 +16,16 @@ const RestauranteCierre = ({currentId, setCurrenteId, isOpen, setshow, onExit}) 
     const dispatch = useDispatch();
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
     const history = useHistory();
+
+    const [cajaData, setCajaData] = useState({
+        fecha: moment().format('L'),
+        descripcion: `Cierre de caja realizada por ${user.result.codigo}`,
+        entradaDinero: '',
+        aperturaCaja: 0,
+        cierreCaja: '',
+        id_restaurante: user.result.id_restaurante,
+        cierreCajaError: '',
+    })
 
     const [bitacoraData, setBitacoraData] = useState({
         codigo: '',
@@ -38,7 +50,7 @@ const RestauranteCierre = ({currentId, setCurrenteId, isOpen, setshow, onExit}) 
         const isValid = validate();
 
         if(isValid){
-            
+            dispatch(createCaja(cajaData));
             history.push('/home');
         }
 
@@ -46,16 +58,16 @@ const RestauranteCierre = ({currentId, setCurrenteId, isOpen, setshow, onExit}) 
 
     const validate = () => {
 
-        let montoAperturaError = '';
+        let cierreCajaError = '';
 
-        if(!bitacoraData.montoApertura){
-            montoAperturaError = 'Debe el monto de cierre';
-        }else if(bitacoraData.montoApertura < 1){
-            montoAperturaError = 'El monto de apertura debe mayor de 0';
+        if(!cajaData.cierreCaja){
+            cierreCajaError = 'Debe ingresar el monto de cierre';
+        }else if(cajaData.cierreCaja < 1){
+            cierreCajaError = 'El monto de cierre debe mayor a 0';
         }
         
-        if(montoAperturaError){
-            setBitacoraData({ ...bitacoraData, montoAperturaError});
+        if(cierreCajaError){
+            setCajaData({ ...cajaData, cierreCajaError});
             return false;
         }        
         return true;
@@ -99,8 +111,8 @@ const RestauranteCierre = ({currentId, setCurrenteId, isOpen, setshow, onExit}) 
                         <Form.Label className="text-white">Monto de Cierre</Form.Label>
                             
                         <FormGroup>
-                            <Form.Control className={ (bitacoraData.montoAperturaError) ? 'is-invalid' : ''} type="number" name="nombre" value={bitacoraData.montoApertura} onChange={(e) => setBitacoraData({ ...bitacoraData, montoApertura: e.target.value})}></Form.Control>
-                            <small className="form-text text-danger">{bitacoraData.montoAperturaError}</small>
+                            <Form.Control className={ (cajaData.cierreCajaError) ? 'is-invalid' : ''} type="number" name="nombre" value={cajaData.cierreCaja} onChange={(e) => setCajaData({ ...cajaData, cierreCaja: e.target.value, entradaDinero: e.target.value})}></Form.Control>
+                            <small className="form-text text-danger">{cajaData.cierreCajaError}</small>
                         </FormGroup>
 
             

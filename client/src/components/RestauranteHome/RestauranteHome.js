@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getRestaurantes } from '../../actions/restaurantes';
+import { createCaja } from '../../actions/cajas';
 import { useHistory } from 'react-router-dom';
+import moment from 'moment';
 
 import Restaurante from '../../components/Restaurante/Restaurante';
 import { Button, Row, Col, Form, FormGroup} from 'react-bootstrap';
@@ -20,10 +22,18 @@ const RestauranteHome = ({currentId, setCurrenteId, isOpen, setshow, onExit}) =>
         usuario: user.result._id, 
         fecha: new Date().toLocaleDateString(),
         descripción: '',
-        id_restaurante: '',
-        montoApertura: '',
-        montoAperturaError: ''
+        id_restaurante: ''
     });
+
+    const [cajaData, setCajaData] = useState({
+        fecha: moment().format('L'),
+        descripcion: `Apertura de caja realizada por ${user.result.codigo}`,
+        entradaDinero: '',
+        aperturaCaja: '',
+        cierreCaja: 0,
+        id_restaurante: user.result.id_restaurante,
+        entradaDineroError: '',
+    })
 
 
     useEffect(() => {
@@ -38,6 +48,8 @@ const RestauranteHome = ({currentId, setCurrenteId, isOpen, setshow, onExit}) =>
         const isValid = validate();
 
         if(isValid){
+
+            dispatch(createCaja(cajaData));
             
             history.push('/salon');
         }
@@ -46,26 +58,28 @@ const RestauranteHome = ({currentId, setCurrenteId, isOpen, setshow, onExit}) =>
 
     const validate = () => {
 
-        let montoAperturaError = '';
+        let entradaDineroError = '';
 
-        if(!bitacoraData.montoApertura){
-            montoAperturaError = 'Debe el monto de apertura';
-        }else if(bitacoraData.montoApertura < 1){
-            montoAperturaError = 'El monto de apertura debe mayor de 0';
+        if(!cajaData.entradaDinero){
+            entradaDineroError = 'Debe ingresar el monto de apertura';
+        }else if(cajaData.entradaDinero < 1){
+            entradaDineroError = 'El monto de apertura debe mayor a 0';
         }
         
-        if(montoAperturaError){
-            setBitacoraData({ ...bitacoraData, montoAperturaError});
+        if(entradaDineroError){
+            setCajaData({ ...cajaData, entradaDineroError});
             return false;
         }        
         return true;
     }
 
+
+
     const clearForm = () => {
 
-        setBitacoraData({
-            montoApertura: '', 
-            montoAperturaError: '', 
+        setCajaData({
+            entradaDinero: '', 
+            entradaDineroError: '', 
         });
     }
 
@@ -93,8 +107,8 @@ const RestauranteHome = ({currentId, setCurrenteId, isOpen, setshow, onExit}) =>
                         <Form.Label className="text-white">Monto de Apertura</Form.Label>
                             
                         <FormGroup>
-                            <Form.Control className={ (bitacoraData.montoAperturaError) ? 'is-invalid' : ''} type="number" name="nombre" value={bitacoraData.montoApertura} onChange={(e) => setBitacoraData({ ...bitacoraData, montoApertura: e.target.value})}></Form.Control>
-                            <small className="form-text text-danger">{bitacoraData.montoAperturaError}</small>
+                            <Form.Control className={ (cajaData.entradaDineroError) ? 'is-invalid' : ''} type="number" name="entradaDinero" value={ cajaData.entradaDinero } onChange={(e) => setCajaData({ ...cajaData, entradaDinero: e.target.value, aperturaCaja: e.target.value})}></Form.Control>
+                            <small className="form-text text-danger">{cajaData.entradaDineroError}</small>
                         </FormGroup>
 
             
