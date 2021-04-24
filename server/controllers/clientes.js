@@ -20,6 +20,8 @@ export const createCliente = async (req, res) => {
     const cliente = req.body;
     const newCliente = new ClienteMessage(cliente);
 
+    console.log(newCliente);
+
     try {
 
         await newCliente.save();

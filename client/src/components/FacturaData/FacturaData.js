@@ -47,10 +47,9 @@ const FacturaData = ({ inputSearchTerm, selectedTypeSearch}) => {
                             <td key={factura.codigo}>{factura.codigo}</td>
                             <td key={factura.fecha}>{factura.fecha}</td>
                             <td key={factura.descripcion}>{factura.descripcion}</td>
-                            <td key={factura.EntradaDinero}>{factura.EntradaDinero}</td>
-                            <td key={factura.AperturaCaja}>{factura.AperturaCaja}</td>
-                            <td key={factura.EntradaDinero}>{factura.EntradaDinero}</td>
-                            <td key={factura.CierreCaja}>{factura.CierreCaja}</td>
+                            <td key={factura.entradaDinero}>{factura.entradaDinero}</td>
+                            <td key={factura.aperturaCaja}>{factura.aperturaCaja}</td>
+                            <td key={factura.cierreCaja}>{factura.cierreCaja}</td>
                             {restaurantes.map( restaurante => {
                                 if(restaurante._id === factura.id_restaurante){
 

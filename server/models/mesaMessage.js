@@ -12,6 +12,14 @@ const mesaSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'RestauranteMessage'
     },
+    estado: {
+        type: String,
+        default: 'disponible'
+    },
+    codigoCliente:{
+        type: String,
+        default: null
+    }
 });
 
 const MesaMessage = mongoose.model('MesaMessage', mesaSchema);

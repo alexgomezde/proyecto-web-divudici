@@ -5,12 +5,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEraser, faSave, faPrint } from '@fortawesome/free-solid-svg-icons';
 import { createConsecutivo, getConsecutivos } from '../../actions/consecutivos';
 import { createCliente, updateCliente } from '../../actions/clientes';
-import { getProveedores } from '../../actions/proveedores';
+import { getMesas, updateMesa } from '../../actions/mesas';
+import { createFactura } from '../../actions/facturas';
 import moment from 'moment';
 
 
-const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, setCurrenteMesaId, currentRestauranteId}) => {
 
+const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, setCurrenteMesaId, currentRestauranteId , currentClienteId, setClienteCurrenteId}) => {
+
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
     const dispatch = useDispatch();
     const mesas = useSelector((state) => state.mesas);
     const consecutivos = useSelector((state) => state.consecutivos);
@@ -18,11 +21,9 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
 
     const mesa = useSelector((state) => currentMesaId ? state.mesas.find((m) => m._id === currentMesaId) : null);
     const restaurante = useSelector((state) => currentRestauranteId ? state.restaurantes.find((r) => r._id === currentRestauranteId) : null);
+    const cliente = useSelector((state) => currentClienteId ? state.clientes.find((c) => c.codigo === currentClienteId) : null);
 
-    const [tempIdConsecutivo, setTempIdConsecutivo] = useState("");
-    // let date = new Date();
-    // date.setDate(date.getDate()); 
-    // const actualDate = date.toISOString(); 
+    const reload=()=>{window.location.reload()};
 
     const [consecutivoData, setConsecutivoData] = useState({
         tipo: 'Clientes', 
@@ -30,6 +31,24 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
         valor: '', 
         tienePrefijo: true, 
         prefijo: ''    
+    });
+
+    const [consecutivoFacturaData, setConsecutivoFacturaData] = useState({
+        tipo: 'Facturas', 
+        descripcion: 'Factura creada automáticamente', 
+        valor: '', 
+        tienePrefijo: true, 
+        prefijo: ''    
+    });
+
+    const [mesaData, setMesaData] = useState({
+        codigo: '',
+        nombre: '', 
+        numero: '',
+        cantidadSillas: '',
+        id_restaurante: '', 
+        estado: '',
+        codigoCliente: ''
     });
 
     
@@ -42,7 +61,7 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
         nombreMesa: '',
         numeroMesa: '',
         montoPagado: 0, 
-        horaEntrada: moment().format('LT'), 
+        horaEntrada: moment().format('LTS'), 
         horaSalida: '',
         duracionMesa: '',   
         reservacion: false,
@@ -53,6 +72,16 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
         nombreError: '',
         cantidadSillas: ''
         
+    });
+
+    const [facturaData, setFacturaData] = useState({
+        codigo: '',
+        fecha: moment().format('L'),
+        descripcion: `Factura pagada por ${clienteData.codigo} y registrada por ${user.result.codigo}`,
+        entradaDinero: '',
+        aperturaCaja: 75000,
+        cierreCaja: 0,
+        id_restaurante: currentRestauranteId
     });
 
     const validate = () => {
@@ -111,6 +140,45 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
     }
 
 
+    const generarCodigoFactura = () => {
+
+        let codigoEncontrado = false;
+        let codigo = '';
+        let valorMayor = 0;
+        let prefix = 'FAC-';
+
+        consecutivos.forEach(consecutivo => {
+
+            if(consecutivo.prefijo === prefix){
+
+                if(consecutivo.valor > valorMayor){
+
+                    valorMayor = consecutivo.valor;
+                }
+                codigoEncontrado = true;
+            }
+        });
+
+        valorMayor++;
+
+        if(!codigoEncontrado){
+            consecutivoFacturaData.valor= 1;
+            consecutivoFacturaData.prefijo = prefix;
+            
+            codigo = prefix;
+        }else{
+
+            codigo = prefix + valorMayor;
+
+            consecutivoFacturaData.valor= valorMayor++;
+            consecutivoFacturaData.prefijo = prefix;
+        }
+
+        facturaData.codigo = codigo;
+
+    }
+
+
 
     useEffect(() => { if(mesa){
         setClienteData({...clienteData, 
@@ -121,6 +189,8 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
             id_restaurante: restaurante._id,
             nombreRestaurante: restaurante.nombre
         })
+
+        setMesaData(mesa);
         } 
     }, [mesa, restaurante]);
 
@@ -183,16 +253,33 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
         const isValid = validate();
 
         if(isValid){
-            if(currentId) {
-                dispatch(updateCliente(currentId, clienteData));
-                setCurrenteId(null);
-                dispatch(getProveedores());
+            if(cliente) {
+
+                console.log("ELIMINAR CLIENTE")
+
+                if(clienteData.estadoCuenta){
+                    mesaData.estado = "disponible";
+                    mesaData.codigoCliente = null;
+                    dispatch(updateMesa(mesaData._id, mesaData ));
+                }
+                console.log(clienteData);
+                dispatch(updateCliente(clienteData._id, clienteData));
+                setClienteCurrenteId(null);
+                dispatch(getMesas());
                 clearForm();
                 setshow(false);
+
+                reload();
             }else{
 
+
+                console.log("INGRESAR CLIENTE")
                 dispatch(createConsecutivo(consecutivoData));
-                setClienteData({ ...clienteData, id_consecutivo : tempIdConsecutivo});
+                mesaData.estado = "ocupada";
+                mesaData.codigoCliente = clienteData.codigo ;
+                dispatch(updateMesa(mesaData._id, mesaData ));
+                dispatch(getMesas());
+                console.log(clienteData)
                 dispatch(createCliente(clienteData));
                 dispatch(getConsecutivos());
                 generarCodigo();
@@ -205,16 +292,60 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
         
     const clearForm = () => {
         setCurrenteMesaId(null);
+        setClienteCurrenteId(null);
         clienteData.pedidos.length=0;
-        setClienteData({ ...clienteData, 
+        // setMesaData({ ...mesaData, estado: "disponible"});
+        setClienteData({ ...clienteData,
             nombre: '',
             nombreError: '',
             cantidadSillas: 0, 
-            montoPagado: 0
+            montoPagado: 0,
+            horaSalida: '',
+            horaEntrada: moment().format('LTS'),
+            duracionMesa: '',
+            estadoCuenta: false
         });
     }
     
-    // console.table(clienteData)
+    useEffect(() => { if(cliente){setClienteData(cliente)} 
+    }, [cliente]);
+
+    
+
+    const facturar = () => {
+
+        generarCodigoFactura();
+        facturaData.entradaDinero = clienteData.montoPagado;
+        dispatch(createConsecutivo(consecutivoFacturaData));
+        dispatch(createFactura(facturaData));
+        clienteData.estadoCuenta = true;
+        clienteData.horaSalida = moment().format('LTS');
+        diffDuration();
+        dispatch(updateCliente(clienteData._id, clienteData))
+    }
+
+    const diffDuration = () => {
+
+        // start time and end time
+        var startTime = moment(clienteData.horaEntrada, "HH:mm:ss a");
+        var endTime = moment(clienteData.horaSalida, "HH:mm:ss a");
+
+        // calculate total duration
+        var duration = moment.duration(endTime.diff(startTime));
+
+        // duration in hours
+        var hours = parseInt(duration.asHours());
+
+        // duration in minutes
+        var minutes = parseInt(duration.asMinutes())%60;
+
+        var output = `${hours} horas y ${minutes} minutos`;
+
+        clienteData.duracionMesa = output;
+    }
+
+
+    console.log(cliente)
     
     return(
 
@@ -235,7 +366,7 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
                                         </Col>
                                         <Col>
                                             <FormGroup>
-                                                <FormControl type="text" disabled name="codigo" value={ !currentId ? generarCodigo() : clienteData.codigo} ></FormControl>
+                                                <FormControl type="text" disabled name="codigo" value={ !currentClienteId ? generarCodigo() : clienteData.codigo} ></FormControl>
                                             </FormGroup>
                                         </Col>
                                     </Row>
@@ -357,7 +488,7 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
                                                     </Col>
                                                     <Col md="3">
                                                         <FormGroup>
-                                                            <Form.Check type="checkbox" label="Buffet" name="buffet" className="pt-2" checked={ silla.buffet } />
+                                                            <Form.Check type="checkbox" label="Buffet" name="buffet" className="pt-2" checked={ silla.buffet } onChange={(e) => setClienteData({ ...clienteData, buffet: e.target.value})}/>
                                                         </FormGroup>
                                                     </Col>
                                                 </Row>
@@ -425,16 +556,19 @@ const ClienteForm = ({currentId, setCurrenteId, isOpen, setshow, currentMesaId, 
                                 </Col>
                             </Row>
 
+                            { currentClienteId &&
+
                             <Row>
                                 <Col md="3"className="text-right">
                                 </Col>
                                 <Col >
-                                    <Button className="mr-2 btn-restaurant" variant="outline-light">
+                                    <Button className="mr-2 btn-restaurant" variant="outline-light" onClick={() => facturar()}>
                                         <FontAwesomeIcon icon={faPrint} size="2x"></FontAwesomeIcon>
                                     </Button>
                                 </Col>
                             </Row>
                             
+                            }
 
                         </Col>
                     </Row>

@@ -5,12 +5,13 @@ import { getMesas } from '../../actions/mesas';
 import { getRestaurantes } from '../../actions/restaurantes';
 import { getEspecialidades} from '../../actions/especialidades';
 import { getConsecutivos} from '../../actions/consecutivos';
+import { getClientes } from '../../actions/clientes';
 import { Link } from 'react-router-dom';
 import ClienteForm from '../ClienteForm/ClienteForm';
 
 import { Button, Row, Col } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faTimes,  faSync, faCalendarAlt, faPeopleArrows, faFileAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faTimes,  faSync, faCalendarAlt, faPeopleArrows } from '@fortawesome/free-solid-svg-icons';
 import TableLogo from '../../images/table.svg';
 import BuffetLogo from '../../images/buffet.svg';
 import './styles.css';
@@ -22,7 +23,7 @@ const RestauranteSalon = () => {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
     const [show, setShow] = useState(false);
     const [currentMesaId, setCurrenteMesaId] = useState(null);
-    const [currentId, setCurrenteId] = useState(null);
+    const [currentClienteId, setClienteCurrenteId] = useState(null);
     const [currentRestauranteId, setCurrentRestauranteId] = useState(user.result.id_restaurante);
     const dispatch = useDispatch();
    
@@ -35,12 +36,13 @@ const RestauranteSalon = () => {
         dispatch(getRestaurantes());
         dispatch(getEspecialidades());
         dispatch(getConsecutivos());
+        dispatch(getClientes());
     }, [ currentMesaId, dispatch ]);
 
     const mesas = useSelector((state) => state.mesas);
     const restaurantes = useSelector((state) => state.restaurantes);
     const bebidas = useSelector((state) => state.bebidas);
-
+    const clientes = useSelector((state) => state.clientes);
 
 
     return (
@@ -107,7 +109,7 @@ const RestauranteSalon = () => {
 
                                 return (
                                     <Col md="3 text-center">
-                                        <Button variant="outline-light" className="menu-item mt-2" onClick={() => { setCurrenteMesaId(mesa._id); setShow(true);}}>
+                                        <Button variant="secondary" className={(mesa.estado === "disponible") ? 'btn btn-success mt-2' : 'btn btn-danger mt-2'} onClick={() => { setCurrenteMesaId(mesa._id); setClienteCurrenteId(mesa.codigoCliente); setShow(true);}}>
                                             <img src={TableLogo} alt="Mesa logo" width="50px"></img>
                                             <p>{mesa.nombre}</p>
                                             <p>Número mesa: {mesa.numero}</p>
@@ -125,7 +127,7 @@ const RestauranteSalon = () => {
                 </Col>
             </Row>
 
-            <ClienteForm  isOpen={show} setshow={setShow} currentMesaId={currentMesaId} setCurrenteMesaId={setCurrenteMesaId} currentRestauranteId={currentRestauranteId}/>
+            <ClienteForm  isOpen={show} setshow={setShow} currentMesaId={currentMesaId} setCurrenteMesaId={setCurrenteMesaId} currentRestauranteId={currentRestauranteId} currentClienteId={currentClienteId} setClienteCurrenteId={setClienteCurrenteId}/>
 
         </>
     );
